@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-28T15:45:50 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-23T15:52:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -24,8 +24,8 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? " SELECT pkg_name, tipp_id, ti_title,id1.id_value as eissn, id2.id_value as issn,tipp_host_platform_url,tipp_coverage_note FROM title_instance_package_platform, package,	title_instance as ti       JOIN identifier_occurrence as io1 on io1.io_ti_fk = ti.ti_id         JOIN identifier as id1 on io1.io_canonical_id = id1.id_id			JOIN identifier_namespace as ns1 on ns1.idns_id = id1.id_ns_fk       JOIN identifier_occurrence as io2 on io2.io_ti_fk = ti.ti_id         JOIN identifier as id2 on io2.io_canonical_id = id2.id_id			JOIN identifier_namespace as ns2 on ns2.idns_id = id2.id_ns_fk WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND 				  ns1.idns_ns in ('eISSN','eissn') and ns2.idns_ns in ('ISSN','issn') AND tipp_access_start_date > '$P{compare_date}' "
-: "SELECT pkg_name, tipp_id, ti_title,id1.id_value as eissn, id2.id_value as issn,tipp_host_platform_url,tipp_coverage_note FROM title_instance_package_platform, package,	title_instance as ti       JOIN identifier_occurrence as io1 on io1.io_ti_fk = ti.ti_id         JOIN identifier as id1 on io1.io_canonical_id = id1.id_id			JOIN identifier_namespace as ns1 on ns1.idns_id = id1.id_ns_fk       JOIN identifier_occurrence as io2 on io2.io_ti_fk = ti.ti_id         JOIN identifier as id2 on io2.io_canonical_id = id2.id_id			JOIN identifier_namespace as ns2 on ns2.idns_id = id2.id_ns_fk WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id AND 				  ns1.idns_ns in ('eISSN','eissn') and ns2.idns_ns in ('ISSN','issn') AND tipp_access_start_date <= '$P{compare_date}'"]]></defaultValueExpression>
+? "SELECT pkg_name, tipp_id, ti_title,IFNULL(ti_eissn.eissn,'') as eissn, IFNULL(ti_issn.issn,'') as issn,tipp_host_platform_url,IFNULL(tipp_coverage_note,'') as tipp_coverage_note FROM title_instance_package_platform as tipp, package as pkg, title_instance as ti left join ( select io_ti_fk as io_b,id_value as eissn from identifier_occurrence as io, identifier as id, identifier_namespace as ns where  id.id_ns_fk = ns.idns_id and io.io_canonical_id = id_id  and ns.idns_ns in ( 'eISSN', 'eissn' ) ) as  ti_eissn on io_b = ti.ti_id  left join ( select io_ti_fk as io_a,id_value as issn   from identifier_occurrence as io,   identifier as id, identifier_namespace as ns  where  id.id_ns_fk = ns.idns_id and io.io_canonical_id = id_id  and ns.idns_ns in ( 'ISSN', 'issn' ) ) as  ti_issn on io_a = ti.ti_id  WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id   AND ( coalesce(tipp.tipp_access_start_date,pkg.pkg_start_date ) >=  '$P{compare_date}' )"
+: "SELECT pkg_name, tipp_id, ti_title,IFNULL(ti_eissn.eissn,'') as eissn, IFNULL(ti_issn.issn,'') as issn,tipp_host_platform_url,IFNULL( tipp_coverage_note,'') as tipp_coverage_note FROM title_instance_package_platform as tipp, package as pkg, title_instance as ti left join ( select io_ti_fk as io_b,id_value as eissn from identifier_occurrence as io, identifier as id, identifier_namespace as ns where  id.id_ns_fk = ns.idns_id and io.io_canonical_id = id_id  and ns.idns_ns in ( 'eISSN', 'eissn' ) ) as  ti_eissn on io_b = ti.ti_id  left join ( select io_ti_fk as io_a,id_value as issn   from identifier_occurrence as io,   identifier as id, identifier_namespace as ns  where  id.id_ns_fk = ns.idns_id and io.io_canonical_id = id_id  and ns.idns_ns in ( 'ISSN', 'issn' ) ) as  ti_issn on io_a = ti.ti_id  WHERE tipp_pkg_fk = $P!{search_pkg_id} AND pkg_id = tipp_pkg_fk AND tipp_ti_fk = ti_id   AND ( coalesce(tipp.tipp_access_start_date,pkg.pkg_start_date ) <=  '$P{compare_date}' )"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all the Previous or Expected titles for the package selected]]></parameterDescription>
@@ -51,15 +51,21 @@
 			<band height="29">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 				<staticText>
-					<reportElement mode="Opaque" x="-20" y="0" width="60" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0"/>
+					<reportElement mode="Opaque" x="0" y="0" width="50" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="b68ac5e2-d77b-433d-ab42-ac0762b5fbb0">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="13"/>
+						<font size="9"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
 					<text><![CDATA[TIPP ID]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="40" y="0" width="240" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441"/>
+					<reportElement mode="Opaque" x="50" y="0" width="230" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="3271dd5a-3f12-49bf-9e1e-d49f4ddf0441">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
@@ -72,7 +78,7 @@
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
 					</textElement>
-					<text><![CDATA[host platform]]></text>
+					<text><![CDATA[Host Platform]]></text>
 				</staticText>
 				<staticText>
 					<reportElement mode="Opaque" x="453" y="0" width="171" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="73199ea8-7646-4a06-9d2a-6c77eeec3535"/>
@@ -91,7 +97,7 @@
 					<text><![CDATA[eISSN]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="710" y="0" width="112" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="f386dd82-3f0f-48f8-9e79-f1ba24261764"/>
+					<reportElement mode="Opaque" x="710" y="0" width="92" height="29" forecolor="#007A5E" backcolor="#E1E6E5" uuid="f386dd82-3f0f-48f8-9e79-f1ba24261764"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="15"/>
 						<paragraph leftIndent="15"/>
@@ -164,21 +170,23 @@
 	<detail>
 		<band height="26">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="822" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed">
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="802" height="1" uuid="37864285-068c-41e2-83db-9392ad4d5fed">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement x="-20" y="0" width="60" height="20" uuid="2d37952a-a831-4ee4-9787-890325f86f2c">
+				<reportElement x="0" y="0" width="50" height="20" uuid="2d37952a-a831-4ee4-9787-890325f86f2c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="40" y="0" width="240" height="20" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d">
+				<reportElement x="50" y="0" width="230" height="20" uuid="4904daf8-9d74-4f5e-ba0d-c5aba908645d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -205,7 +213,7 @@
 				<textFieldExpression><![CDATA[$F{tipp_host_platform_url}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="710" y="0" width="112" height="20" uuid="e9a6aaeb-df78-460d-a1ce-ddf9d364f46a">
+				<reportElement x="710" y="0" width="92" height="20" uuid="e9a6aaeb-df78-460d-a1ce-ddf9d364f46a">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
