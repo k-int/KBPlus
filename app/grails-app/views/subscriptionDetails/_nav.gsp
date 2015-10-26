@@ -59,7 +59,7 @@
     %{--Custom URL mapping for re-use of index--}%
     <li <%='finance'== actionName ? ' class="active"' : '' %>>
         <g:link mapping="subfinance" controller="finance" action="index"
-                params="${[sub:params.id, shortcode: params.shortcode]}">Subscription Financials</g:link></li>
+                params="${[sub:params.id, shortcode: institution?.shortcode]}">Subscription Financials</g:link></li>
 </g:if>
 
 </ul>

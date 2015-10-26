@@ -46,7 +46,6 @@
        <g:render template="nav"  />
     </div>
 
-
     <g:render template="/templates/pendingChanges" model="${['pendingChanges': pendingChanges,'flash':flash,'model':subscriptionInstance]}"/>
 
 
