@@ -14,7 +14,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 class FinanceController {
 
     def springSecurityService
-    private final def dateFormat      = new java.text.SimpleDateFormat("YYYY-MM-dd")
+    private final def dateFormat      = new java.text.SimpleDateFormat("yyyy-MM-dd")
     private final def dateTimeFormat  = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
     private final def ci_count        = 'select count(ci.id) from CostItem as ci '
     private final def ci_select       = 'select ci from CostItem as ci '
