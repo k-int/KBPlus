@@ -15,6 +15,7 @@
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
 
+        <%-- Removed downloads for JSON and XML in 'titles' tab on package details
         <li class="dropdown pull-right">
           <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
 
@@ -26,6 +27,7 @@
             </g:each>
           </ul>
         </li>
+        --%>
 
         <li class="pull-right">
           View:
