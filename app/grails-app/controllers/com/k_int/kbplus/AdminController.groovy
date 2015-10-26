@@ -39,25 +39,6 @@ class AdminController {
     result.pendingRequests = UserOrg.findAllByStatus(0, [sort:'dateRequested'])
     result
   }
-  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
-  def logViewer(){
-    def f = new File ("${Holders.config.log_location}")
-    
-    return [file: "${f.canonicalPath}"]
-  }
-  
-  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
-  def appConfig(){
-    def result =[:]
-    //SystemAdmin should only be created once in BootStrap
-    result.adminObj = SystemAdmin.list().first()
-    result.editable = true
-    if(request.method == "POST"){
-      result.adminObj.refresh()
-    }
-    result.currentconf= Holders.config
-    result 
-  }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def updatePendingChanges() {
