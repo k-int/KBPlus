@@ -417,7 +417,7 @@ class AdminController {
     dataloadService.updateSiteMapping();
     dataloadService.updateFTIndexes();
     log.debug("redirecting to home...");
-    redirect(url: request.getHeader('referer'))
+    redirect(controller:'home')
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -448,7 +448,7 @@ class AdminController {
     }
 
     log.debug("redirecting to home...");
-    redirect(url: request.getHeader('referer'))
+    redirect(controller:'home')
 
   }
 
