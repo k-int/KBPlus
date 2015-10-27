@@ -316,7 +316,7 @@
                             inst_shortcode: '${params.shortcode}',
                             q: '%'+term , // contains search term
                             page_limit: 20,
-                            subFilter:$(s.ft.filterSubscription).data().subFilter.split(":")[1],
+                            subFilter:$(s.ft.filterSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.SubscriptionPackage'
                         };
                     },
