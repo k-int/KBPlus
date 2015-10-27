@@ -141,7 +141,8 @@
                 ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>",
                 ajaxFinanceRefData:"<g:createLink controller='finance' action='financialRef'/>",
                 ajaxFinanceCodeDel:"<g:createLink controller='finance' action='removeBC'/>",
-                ajaxFinanceExport:"<g:createLink controller='finance' action='financialsExport'></g:createLink>"
+                ajaxFinanceExport:"<g:createLink controller='finance' action='financialsExport'></g:createLink>",
+                ajaxFinanceCreateCode:"<g:createLink controller='finance' action='createCode'/>"
             },
             misc: {
                 recentlyUpdated: '#recent',
@@ -718,7 +719,7 @@
                             inst_shortcode: '${params.shortcode}',
                             q: '%'+term , // contains search term
                             page_limit: 20,
-                            subFilter:$(s.ct.newSubscription).val().split(":")[1],
+                            subFilter: $(s.ct.newSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.SubscriptionPackage'
                         };
                     },
@@ -742,7 +743,7 @@
                         return {
                             format:'json',
                             q: term,
-                            subFilter: $(s.ct.newSubscription).val().split(":")[1],
+                            subFilter: $(s.ct.newSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.IssueEntitlement'
                         };
                     },
