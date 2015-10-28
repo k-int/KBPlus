@@ -1017,6 +1017,7 @@
             //todo bind select2 functionality in the content, use addCode controller method
             s.mybody.on('click', s.ft.codeEdit, function(event) {
                 event.preventDefault();
+                cost_item_id = $(this).parent("div").attr('id')
                 $(this).popover({
                      trigger: 'manual',
                      html:true,
@@ -1026,7 +1027,7 @@
                      'max-width':600,
                      content:function() {
                         //return getContent();
-                        return 'Addition of more codes!'
+                        return '<input type="text" class="select2" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" data-ci_id='+cost_item_id+' name="additionalBudgetCode" id="additionalBudgetCode" ><input type="button" name="addAdditionalBudgetCode" id="addAdditionalBudgetCode" value="Add"/>'
                      }
                 });
 
@@ -1034,6 +1035,58 @@
                     $(this).popover('hide').removeClass('pop');
                 } else {
                     $(this).popover('show').addClass('pop');
+
+
+                  $('#additionalBudgetCode').select2({
+                    placeholder: "New code or lookup  code",
+                    allowClear: true,
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    minimumInputLength: 1,
+                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                      url: s.url.ajaxLookupURL,
+                      dataType: 'json',
+                      data: function (term, page) {
+                          return {
+                              format:'json',
+                              q: term,
+                              shortcode: '${params.shortcode}',
+                              baseClass:'com.k_int.kbplus.CostItemGroup'
+                          };
+                      },
+                      results: function (data, page) {
+                          return {results: data.values};
+                      }
+                    },
+                    createSearchChoice:function(term, data) {
+                       var existsAlready     = false;
+                       for (var i = 0; i < data.length; i++)
+                       {
+                          if(term.toLowerCase() == data[i].text.toLowerCase())
+                          {
+                              existsAlready = true;
+                              break;
+                          }
+                       }
+                       if(!existsAlready)
+                          return {id:-1+term, text:"new code: "+term};
+                    }
+                  });
+                  $('#addAdditionalBudgetCode').click(function(){
+                     var cost_item_id = $("input[name='additionalBudgetCode']").attr('data-ci_id')
+                     cost_item_id = cost_item_id.split("_")[1]
+                     new_code = $("input[name='additionalBudgetCode']").val()
+                     var data = {
+                      shortcode :"${params.shortcode}",
+                      ci_id : cost_item_id,
+                      code : new_code
+                     };
+                      $.ajax({
+                        method: "POST",
+                        url: s.url.ajaxFinanceCreateCode,
+                        data: data
+                      })
+                  });
                 }
             });
 
