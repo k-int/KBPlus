@@ -10,7 +10,6 @@
 
 <body>
 <div class="row-fluid">
-
     <div class="span3">
         <div class="well">
             <ul class="nav nav-list">
@@ -33,8 +32,7 @@
         </div>
     </div>
 
-    <div class="span9">
-
+    <div class="container">
         <div class="page-header">
             <h1><g:message code="default.edit.label" args="[entityName]"/></h1>
         </div>
@@ -56,7 +54,7 @@
 
         <fieldset>
               <g:set var="usages" value="${propDefInstance.countOccurrences('com.k_int.kbplus.LicenseCustomProperty','com.k_int.kbplus.SystemAdminCustomProperty','com.k_int.kbplus.OrgCustomProperty')}" />
-
+              <g:set var="usageOwner" value="${propDefInstance.getOccurrencesOwner('com.k_int.kbplus.LicenseCustomProperty','com.k_int.kbplus.SystemAdminCustomProperty','com.k_int.kbplus.OrgCustomProperty')}" />
             <g:form class="form-horizontal" action="edit" id="${propDefInstance?.id}">
                 <g:hiddenField name="version" value="${propDefInstance?.version}"/>
                 <fieldset>
@@ -94,6 +92,20 @@
                             
                         </div>
                     </div>
+                    <div class="control-group ">
+                        <label class="control-label" for="name">Occurrence Owners</label>
+                        <div class="controls">
+                            <div class="well" style="width: 300px">
+                            <ul class="overflow-y-scroll" style="overflow:auto; max-height: 300px;">
+                                <g:each in="${usageOwner}" var="${cls}">
+                                    <g:each in="${cls}" var="${ownerInstance}">
+                                        <li>${ownerInstance.getClass().getName()}:${ownerInstance.id}</li>
+                                    </g:each>
+                                </g:each>
+                            </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-actions">
                         <button type="submit" <%= ( editable ) ? '' : 'disabled' %> class="btn btn-primary">
                             <i class="icon-ok icon-white"></i>
@@ -107,7 +119,6 @@
                 </fieldset>
             </g:form>
         </fieldset>
-
     </div>
 
 </div>
