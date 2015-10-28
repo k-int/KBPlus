@@ -1073,18 +1073,28 @@
                     }
                   });
                   $('#addAdditionalBudgetCode').click(function(){
-                     var cost_item_id = $("input[name='additionalBudgetCode']").attr('data-ci_id')
-                     cost_item_id = cost_item_id.split("_")[1]
-                     new_code = $("input[name='additionalBudgetCode']").val()
+                     var budget_code_ci = $("input[name='additionalBudgetCode']").attr('data-ci_id')
+                     var cost_item_id = budget_code_ci.split("_")[1]
+                     var new_code = $("input[name='additionalBudgetCode']").val()
                      var data = {
                       shortcode :"${params.shortcode}",
-                      ci_id : cost_item_id,
+                      id : cost_item_id,
                       code : new_code
                      };
                       $.ajax({
                         method: "POST",
                         url: s.url.ajaxFinanceCreateCode,
-                        data: data
+                        data: data,
+                        success: function (data) {
+                            console.log(data)
+                            var new_codes = ""
+                            $.each(data.codes, function (index,value){
+                              new_codes += value
+                            })
+                            $('#'+budget_code_ci).prepend(new_codes);
+                            $(".pop").popover('hide').removeClass('pop');
+
+                        },
                       })
                   });
                 }

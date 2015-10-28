@@ -986,14 +986,13 @@ class FinanceController {
             response.sendError(403)
             return
         }
-
         def code  = params.code?.trim()
         def ci    = CostItem.findByIdAndOwner(params.id, institution)
 
         if (code && ci)
         {
             def cig_codes = createBudgetCodes(ci,code,institution.shortcode)
-            if (result.codes.isEmpty())
+            if (cig_codes.isEmpty())
                 result.error = "Unable to create budget code(s): ${code}"
             else
             {
