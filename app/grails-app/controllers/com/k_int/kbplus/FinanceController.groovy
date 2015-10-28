@@ -61,7 +61,7 @@ class FinanceController {
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
         //todo Once we know we are in sub only mode, make nessesary adjustments in setupQueryData()
-        result.inSubMode   = params.int('sub')? true : false
+        result.inSubMode   = params.sub ? true : false
         if (result.inSubMode)
         {
             result.fixedSubscription = params.int('sub')? Subscription.get(params.sub) : null
