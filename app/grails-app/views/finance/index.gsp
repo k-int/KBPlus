@@ -88,11 +88,11 @@
     <div style="padding-left: 2%" hidden="hidden" class="loadingData">
         <span>Loading...<img src="${resource(dir: 'images', file: 'loading.gif')}" /></span>
     </div>
-
-    <div id="CreateTemplateWrapper" class="wrapper">
-        <g:render template="create"></g:render>
-    </div>
-
+    <g:if test="${editable}">
+        <div id="CreateTemplateWrapper" class="wrapper">
+            <g:render template="create"></g:render>
+        </div>
+    </g:if>
     <button class="btn btn-primary pull-right"  data-offset="#costTable" title="Select this button to go back to the top of the page" id="top">Back to top</button>
 </div>
 

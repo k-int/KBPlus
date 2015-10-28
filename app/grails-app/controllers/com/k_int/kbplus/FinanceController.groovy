@@ -53,11 +53,6 @@ class FinanceController {
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
-        if (!isFinanceAuthorised(result.institution, user)) {
-            flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
-            response.sendError(401)
-            return;
-        }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
         //todo Once we know we are in sub only mode, make nessesary adjustments in setupQueryData()

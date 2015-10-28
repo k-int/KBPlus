@@ -29,24 +29,42 @@
             </g:else>
         </td>
         <td>
-          <g:simpleReferenceTypedown id="${ci.id}_sub" modified="${true}" class="refObj" data-mode="sub" data-isSubPkg="${false}"
+          <g:if test="${editable}">
+            <g:simpleReferenceTypedown id="${ci.id}_sub" modified="${true}" class="refObj" data-mode="sub" data-isSubPkg="${false}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
                         data-placeholder="${ci?.sub==null? 'Enter sub name':''}" data-ownerfield="sub"
                         data-defaultValue="${ci.sub?.name}" data-ownerid="${ci.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.Subscription"/>
+          </g:if>
+          <g:else>
+            <input type="text" id="${ci.id}_sub" style="width:350px;" placeholder="No subscription" value="${ci.sub?.name}"
+                        disabled="disabled"/>
+          </g:else>
         <td>
-          <g:simpleReferenceTypedown id="${ci.id}_subPkg" modified="${true}" class="refObj" data-isSubPkg="${true}"
+          <g:if test="${editable}">
+            <g:simpleReferenceTypedown id="${ci.id}_subPkg" modified="${true}" class="refObj" data-isSubPkg="${true}"
                         style="width:350px;" name="name" data-shortcode="${params.shortcode}"
                         data-placeholder="${ci?.subPkg==null? 'Enter sub pkg name':''}" data-mode="pkg" data-ownerfield="subPkg"
                         data-defaultValue="${ci?.subPkg?.pkg?.name}" data-ownerid="${ci.id}" data-subfilter="${ci?.sub?.id}"
                         data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.SubscriptionPackage"/>
+          </g:if>
+          <g:else>
+            <input type="text" id="${ci.id}_subPkg" style="width:350px;" placeholder="No sub pkg" value="${ci?.subPkg?.pkg?.name}"
+                        disabled="disabled"/>
+          </g:else>
         </td>
         <td colspan="2">
-        <g:simpleReferenceTypedown id="${ci.id}_ie" modified="${true}" class="refObj" data-mode="ie"
-                                   style="width:350px;" name="title" data-shortcode="${params.shortcode}" data-subfilter="${ci?.sub?.id}"
-                                   data-placeholder="${ci?.issueEntitlement==null? 'Enter IE name':''}" data-ownerfield="issueEntitlement"
-                                   data-defaultValue="${ci?.issueEntitlement?.tipp?.title?.title}" data-ownerid="${ci.id}"
-                                   data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.IssueEntitlement"/>
+          <g:if test="${editable}">
+            <g:simpleReferenceTypedown id="${ci.id}_ie" modified="${true}" class="refObj" data-mode="ie"
+                        style="width:350px;" name="title" data-shortcode="${params.shortcode}" data-subfilter="${ci?.sub?.id}"
+                        data-placeholder="${ci?.issueEntitlement==null? 'Enter IE name':''}" data-ownerfield="issueEntitlement"
+                        data-defaultValue="${ci?.issueEntitlement?.tipp?.title?.title}" data-ownerid="${ci.id}"
+                        data-owner="${ci.class.name}" baseClass="com.k_int.kbplus.IssueEntitlement"/>
+          </g:if>
+          <g:else>
+            <input type="text" id="${ci.id}_ie" style="width:350px;" placeholder="No IE name"
+                        value="${ci?.issueEntitlement?.tipp?.title?.title}" disabled="disabled"/>
+          </g:else>
         </td>
         <g:if test="${editable}">
             <td rowspan="2"> <input type="checkbox" value="${ci.id}" class="bulkcheck"/> </td>
