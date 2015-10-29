@@ -524,8 +524,14 @@
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
 
             console.log('Params that are to be sent...',$(this).parents('form:first').serialize());
-
-            $.ajax({
+            if($(this).val() =='reset'){
+                var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
+                reqFields.forEach(function (item){
+                    $(item).val("")
+                })
+                $("#submitFilterMode").val("Search")
+            }
+           $.ajax({
                 type:'POST',
                 data:$(this).parents('form:first').serialize(),
                 url:s.url.ajaxFinanceIndex,
