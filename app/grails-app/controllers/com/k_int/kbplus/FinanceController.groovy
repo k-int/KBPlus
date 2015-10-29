@@ -40,7 +40,18 @@ class FinanceController {
         return retval
     }
 
+    def checkUserIsMember(user, org) {
+        def result = false;
+        // def uo = UserOrg.findByUserAndOrg(user,org)
+        def uoq = UserOrg.where {
+            (user == user && org == org && (status == 1 || status == 3))
+        }
 
+        if (uoq.count() > 0)
+            result = true;
+
+        result
+    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
@@ -53,6 +64,12 @@ class FinanceController {
         //Check nothing strange going on with financial data
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
+
+        if (!checkUserIsMember(user, result.institution)) {
+            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
         //todo Once we know we are in sub only mode, make nessesary adjustments in setupQueryData()
