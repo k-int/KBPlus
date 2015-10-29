@@ -544,7 +544,6 @@
                 },
                 complete:function(XMLHttpRequest,textStatus){
                     _filterSelection();
-                    fadeAway('info',15000);
                     _bindBehavior();
                 }
             });
@@ -645,12 +644,6 @@
             }
           }, config | {});
           return $.ajax(config);
-        }
-
-        function fadeAway(id,time) {
-             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
-                $('#'+id).remove();
-             });
         }
 
         /**
