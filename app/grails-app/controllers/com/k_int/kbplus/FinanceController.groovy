@@ -491,6 +491,10 @@ class FinanceController {
                 params.remove('subscriptionFilter')
             }
         }
+        else if (params?.sub && result.inSubMode) {
+            fqResult.qry_string += " AND ci_sub_fk = "+params.sub
+            countCheck          += " AND ci_sub_fk = "+params.sub
+        }
 
         if (params?.packageFilter?.startsWith("com.k_int.kbplus.SubscriptionPackage:")) {
             def pkg        = SubscriptionPackage.get(params.packageFilter.split(":")[1]);

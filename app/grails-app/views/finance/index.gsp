@@ -382,7 +382,7 @@
             var selected = $('.bulkcheck:checked');
 
             if(selected.length === 0) {
-                alert('select appropriate checkboxes first :)');
+                alert('Select appropriate checkboxes first');
                 return false;
             }
 
@@ -522,9 +522,10 @@
             //todo send fixed subscription data ... causing redirect on AJAX with below
             //var paginateData = $('#paginateInfo').data();
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
+            // Add sub & insubmode to params
 
             console.log('Params that are to be sent...',$(this).parents('form:first').serialize());
-            if($(this).val() =='reset'){
+            if($(this).val() == 'reset'){
                 var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
                 reqFields.forEach(function (item){
                     $(item).val("")
