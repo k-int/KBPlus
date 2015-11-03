@@ -424,7 +424,7 @@ class PackageDetailsController {
       if(!params.asAt){
         if(packageInstance.startDate > today){
           params.asAt = sdf.format(packageInstance.startDate)
-        }else if(packageInstance.endDate < today){
+        }else if(packageInstance.endDate < today && packageInstance.endDate){
           params.asAt = sdf.format(packageInstance.endDate)
         }
       }
