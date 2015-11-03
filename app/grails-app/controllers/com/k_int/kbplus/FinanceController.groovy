@@ -532,6 +532,11 @@ class FinanceController {
                                  msg: message(code: 'financials.result.filtered.invalid')])
             fqResult.qry_string = ""
             fqResult.fqParams.clear()
+            params.remove('orderNumberFilter')
+            params.remove('invoiceNumberFilter')
+            if (!result.inSubMode)
+                params.remove('subscriptionFilter')
+            params.remove('packageFilter')
         }
         else
             fqResult.fqParams.remove(0) //already have this where necessary in the index method!

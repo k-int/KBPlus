@@ -483,7 +483,7 @@
             {
                 if("${filterMode}"=="OFF" && $(s.ft.filterOpt).val()=="OFF")
                     return false;
-                var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
+                var reqFields = ["#filterInvoiceNumber","#filterOrderNumber","#subscriptionFilter","#packageFilter"];
                 var counter   = 0;
                 var reqSize = reqFields.length;
                 for (var i = 0; i < reqSize; i++) {
@@ -522,11 +522,10 @@
             //todo send fixed subscription data ... causing redirect on AJAX with below
             //var paginateData = $('#paginateInfo').data();
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
-            // Add sub & insubmode to params
 
             console.log('Params that are to be sent...',$(this).parents('form:first').serialize());
             if($(this).val() == 'reset'){
-                var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
+                var reqFields = ["#filterInvoiceNumber","#filterOrderNumber","#subscriptionFilter","#packageFilter"];
                 reqFields.forEach(function (item){
                     $(item).val("")
                 })
