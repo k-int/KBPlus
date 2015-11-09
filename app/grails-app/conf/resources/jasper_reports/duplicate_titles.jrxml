@@ -1,25 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T17:23:56 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
-	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-23T10:34:37 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbplus"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all the duplicate titles, based on the key title.]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[Select  ti.ti_id, ti.ti_title, GROUP_CONCAT(tipp.tipp_pkg_fk)
-from title_instance ti  INNER JOIN 
+		<![CDATA[Select  ti.ti_id, ti.ti_title,IFNULL(ti_issn.issn,'') as issn,IFNULL(ti_eissn.eissn,'') as eissn,IFNULL(ti_isbn.isbn,'') as isbn, IFNULL(GROUP_CONCAT(tipp.tipp_pkg_fk),'') as pkg_group
+from title_instance as ti  INNER JOIN 
 ( select ti2.ti_key_title from title_instance ti2 group by ti2.ti_key_title having count(ti2.ti_key_title) > 1 ) dup on ti.ti_key_title = dup.ti_key_title 
- left join title_instance_package_platform tipp on tipp.tipp_ti_fk = ti.ti_id group by ti.ti_id order by ti.ti_title;]]>
+ left join title_instance_package_platform tipp on tipp.tipp_ti_fk = ti.ti_id
+ left join ( select io_ti_fk,id_value as issn
+                     from identifier_occurrence as io, 
+                          identifier as id,
+                          identifier_namespace as ns
+                   where  id.id_ns_fk = ns.idns_id
+                     and io.io_canonical_id = id_id
+                      and ns.idns_ns in ( 'ISSN', 'issn' ) ) as  ti_issn on io_ti_fk = ti.ti_id
+                      
+                       left join ( select io_ti_fk as io_b,id_value as eissn
+                     from identifier_occurrence as io, 
+                          identifier as id,
+                          identifier_namespace as ns
+                   where  id.id_ns_fk = ns.idns_id
+                     and io.io_canonical_id = id_id
+                      and ns.idns_ns in ( 'eISSN', 'eissn' ) ) as  ti_eissn on io_b = ti.ti_id 
+                      
+                      
+                      
+                      left join ( select io_ti_fk as io_c,id_value as isbn
+                     from identifier_occurrence as io, 
+                          identifier as id,
+                          identifier_namespace as ns
+                   where  id.id_ns_fk = ns.idns_id
+                     and io.io_canonical_id = id_id
+                      and ns.idns_ns in ( 'ISBN', 'isbn' ) ) as  ti_isbn on io_c = ti.ti_id group by ti.ti_id order by ti.sort_title]]>
 	</queryString>
-	<field name="ti_title" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="ti_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="GROUP_CONCAT(tipp.tipp_pkg_fk)" class="java.lang.String"/>
+	<field name="ti_title" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issn" class="java.lang.String"/>
+	<field name="eissn" class="java.lang.String"/>
+	<field name="isbn" class="java.lang.String"/>
+	<field name="pkg_group" class="java.lang.String"/>
 	<sortField name="ti_title"/>
 	<background>
 		<band/>
@@ -27,7 +64,7 @@ from title_instance ti  INNER JOIN
 	<title>
 		<band height="72">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="f3c7c55a-eb6c-4d9a-92c5-da119a4da299"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="842" height="92" backcolor="#007A5E" uuid="f3c7c55a-eb6c-4d9a-92c5-da119a4da299"/>
 				<staticText>
 					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="950af7af-5c44-4235-8f18-34d29b1dee00"/>
 					<textElement>
@@ -36,7 +73,7 @@ from title_instance ti  INNER JOIN
 					<text><![CDATA[Duplicate Titles]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="10" width="180" height="53" forecolor="#FFFFFF" uuid="bdf9e315-a5e0-4a08-b6ae-56fc4dc6591f"/>
+					<reportElement x="470" y="20" width="300" height="53" forecolor="#FFFFFF" uuid="bdf9e315-a5e0-4a08-b6ae-56fc4dc6591f"/>
 					<textElement textAlignment="Right">
 						<font size="14" isBold="false"/>
 					</textElement>
@@ -66,9 +103,11 @@ from title_instance ti  INNER JOIN
 		<band height="13"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="26">
+		<band height="37">
 			<line>
-				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="a6f897e8-ea28-432e-889e-0860d3d71633"/>
+				<reportElement x="-20" y="20" width="842" height="1" forecolor="#666666" uuid="a6f897e8-ea28-432e-889e-0860d3d71633">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 			</line>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="d2ecc2da-975a-41e8-88d2-d63cbb75f687"/>
@@ -94,12 +133,45 @@ from title_instance ti  INNER JOIN
 				</textElement>
 				<text><![CDATA[Pkgs with TIPP]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="638" y="0" width="86" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="3b8b031d-edb4-4e15-b168-8a86892e5721">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[eissn]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="552" y="0" width="86" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="49bf76bc-8da1-4e88-b02d-c77d67547397">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[issn]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="720" y="0" width="80" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="897f5df4-0a5b-4bcf-a7dd-105ab5819854">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[isbn]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="35">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="555" height="1" uuid="f7241db7-0ea8-4f47-a793-7c7b871eacf9"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="806" height="1" uuid="f7241db7-0ea8-4f47-a793-7c7b871eacf9"/>
 			</line>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="0" width="60" height="20" uuid="e0ff5190-bd35-4115-b16c-8ae1193d5d04"/>
@@ -109,20 +181,50 @@ from title_instance ti  INNER JOIN
 				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="90" y="0" width="285" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1"/>
+				<reportElement x="60" y="0" width="315" height="20" uuid="e74274f8-c705-4154-8e85-d088e30ca5a1">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="381" y="0" width="172" height="20" uuid="8ca8cf15-4469-474b-a7d4-f087e4a9c6bd">
+				<reportElement x="375" y="0" width="177" height="20" uuid="8ca8cf15-4469-474b-a7d4-f087e4a9c6bd">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{GROUP_CONCAT(tipp.tipp_pkg_fk)}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pkg_group}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="552" y="0" width="86" height="20" uuid="2e3254db-951b-45c7-b579-bd33bb468ff2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{issn}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="638" y="0" width="86" height="20" uuid="e068987f-0301-4720-8bb3-350757ae0409">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{eissn}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="720" y="0" width="80" height="20" uuid="d12c080a-22ae-48f7-b7cf-53cd40f5f4ec">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{isbn}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -136,7 +238,9 @@ from title_instance ti  INNER JOIN
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="0" width="515" height="13" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c"/>
+				<reportElement mode="Opaque" x="0" y="0" width="800" height="17" backcolor="#E6E6E6" uuid="ab9ce225-2ca8-4d37-b745-a09c2778967c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
@@ -152,7 +256,7 @@ from title_instance ti  INNER JOIN
 	<noData>
 		<band height="223">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="4" width="595" height="92" backcolor="#007A5E" uuid="c8acc70f-277d-4f63-b9e5-8c0c03d4b15e"/>
+				<reportElement mode="Opaque" x="-20" y="4" width="842" height="92" backcolor="#007A5E" uuid="c8acc70f-277d-4f63-b9e5-8c0c03d4b15e"/>
 				<staticText>
 					<reportElement x="20" y="20" width="340" height="43" forecolor="#FFFFFF" uuid="916ebc56-c536-4cf6-892b-d88c0ad11efe"/>
 					<textElement>
@@ -161,30 +265,13 @@ from title_instance ti  INNER JOIN
 					<text><![CDATA[Duplicate Titles]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="395" y="10" width="180" height="53" forecolor="#FFFFFF" uuid="45911de5-6987-4c9b-a7f1-ff0218ddcab0"/>
+					<reportElement x="535" y="20" width="255" height="53" forecolor="#FFFFFF" uuid="45911de5-6987-4c9b-a7f1-ff0218ddcab0"/>
 					<textElement textAlignment="Right">
 						<font size="14" isBold="false"/>
 					</textElement>
 					<text><![CDATA[These are all the duplicate titles]]></text>
 				</staticText>
 			</frame>
-			<line>
-				<reportElement x="-20" y="131" width="595" height="1" forecolor="#666666" uuid="5ccd987f-5232-4f4b-bc85-146655f6e5d9"/>
-			</line>
-			<staticText>
-				<reportElement mode="Opaque" x="0" y="111" width="60" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="2ebeb4b9-25ed-4d55-9c7b-112d3ed1900f"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Title Id]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="60" y="111" width="492" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="b9a93992-08a0-4b44-93b5-3ad58eb4e4fe"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Title]]></text>
-			</staticText>
 			<line>
 				<reportElement x="-20" y="155" width="595" height="1" forecolor="#666666" uuid="44c47a1f-ed70-4083-b484-60c7b6a33b77"/>
 			</line>

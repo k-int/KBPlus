@@ -80,6 +80,11 @@ class MyInstitutionsController {
         def (tip_property, property_field) = (params.sort ?: 'title-title').split("-")
         def list_order = params.order ?: 'asc'
 
+        if (current_inst && !checkUserIsMember(result.user, current_inst)) {
+            flash.error = "You do not have permission to view ${current_inst.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
 
         def criteria = TitleInstitutionProvider.createCriteria();
         def results = criteria.list(max: result.max, offset:result.offset) {
@@ -2449,6 +2454,13 @@ AND EXISTS (
 
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
+
+      if (!checkUserIsMember(result.user, result.institution)) {
+          flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+          response.sendError(401)
+          return;
+      }
+
       def defaults = [ 'owner':result.institution];
 
       if (request.method == 'POST'){

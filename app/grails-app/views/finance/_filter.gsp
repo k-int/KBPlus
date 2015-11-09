@@ -24,8 +24,10 @@
 <g:render template="help" />
 
 <button style="margin-left: 10px" class="btn btn-primary pull-right" type="submit" data-toggle="modal" title="${g.message(code: 'financials.recent.title')}"  href="#recentDialog" id="showHideRecent">Recent Costs</button>
-<button class="btn btn-primary pull-right" type="submit" id="BatchSelectedBtn" title="${g.message(code: 'financials.filtersearch.deleteAll')}" value="remove">Remove Selected</button>
-<button style="margin-right: 10px" class="btn btn-primary pull-right" type="submit" title="${g.message(code: 'financials.addNew.title')}" data-offset="#createCost" id="addNew">Add New Cost</button>
+<g:if test="${editable}">
+    <button class="btn btn-primary pull-right" type="submit" id="BatchSelectedBtn" title="${g.message(code: 'financials.filtersearch.deleteAll')}" value="remove">Remove Selected</button>
+    <button style="margin-right: 10px" class="btn btn-primary pull-right" type="submit" title="${g.message(code: 'financials.addNew.title')}" data-offset="#createCost" id="addNew">Add New Cost</button>
+</g:if>
 <h1>${institution.name} Cost Items</h1>
 <g:form id="filterView" action="index" method="post" params="${[shortcode:params.shortcode]}">
     <input type="hidden" name="shortcode" value="${params.shortcode}"/>

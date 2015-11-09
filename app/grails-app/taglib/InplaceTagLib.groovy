@@ -236,7 +236,7 @@ class InplaceTagLib {
    * user typing into the box. Takes advantage of refdataFind and refdataCreate methods on the domain class.
    */ 
   def simpleReferenceTypedown = { attrs, body ->
-    out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" "
+    out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" ${attrs.disabled ?  'disabled="true"' : ''} "
     if ( attrs.id ) {
       out << "id=\"${attrs.id}\" "
     }

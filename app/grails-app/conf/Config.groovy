@@ -2,6 +2,8 @@
 // config files can either be Java properties files or ConfigSlurper scripts
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.apache.log4j.DailyRollingFileAppender
+import org.apache.log4j.RollingFileAppender
 
 customProperties =[
 "org":["journalAccess":["name":"Public Journal Access","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
@@ -393,7 +395,7 @@ titlelistTransforms = [
 ]
 
 packageTransforms = [
-  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
+  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
   'kbart2':[name:'KBART II', xsl:'kbartii.xsl', returnFileExtention:'tsv', returnMime:'text/tab-separated-values']
 
 ]
@@ -401,6 +403,43 @@ licenceTransforms = [
   'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
   'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'csv', returnMime:'text/csv']
 ]
+
+
+// Log directory/created in current working dir if tomcat var not found.
+def logWatchFile
+
+// First lets see if we have a log file present.
+def base = System.getProperty("catalina.base")
+if (base) {
+   logWatchFile = new File ("${base}/logs/catalina.out")
+
+   if (!logWatchFile.exists()) {
+
+     // Need to create one in current context.
+     base = false;
+   }
+}
+
+if (!base) {
+  logWatchFile = new File("logs/kbplus.log")
+}
+
+// Log file variable.
+def logFile = logWatchFile.canonicalPath
+
+log.info("Using log file location: ${logFile}")
+
+// Also add it as config value too.
+log_location = logFile
+
+grails {
+  fileViewer {
+    locations = ["${logFile}"]
+    linesCount = 250
+    areDoubleDotsAllowedInFilePath = false
+  }
+}
+
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console
@@ -414,8 +453,21 @@ log4j = {
 
   appenders {
     console name: "stdout", threshold: org.apache.log4j.Level.ALL
+    if (!base) {
+      appender new RollingFileAppender(
+          name: 'dailyAppender',
+          fileName: (logFile),
+          layout: pattern(conversionPattern:'%d [%t] %-5p %c{2} %x - %m%n')
+      )
+    }
   }
-
+  root {
+    if (!base) {
+      error 'stdout', 'dailyAppender'
+    } else {
+      error 'stdout'
+    }
+  }
   //    // Enable Hibernate SQL logging with param values
   //    trace 'org.hibernate.type'
   // debug 'org.hibernate.SQL'

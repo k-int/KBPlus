@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T15:35:40 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-23T10:01:51 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Floating_Title" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="319d1c08-fdbd-462e-a21c-a71aa0098a57">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[List all titles that are not attached to any package]]></parameterDescription>
 	</parameter>
 	<queryString language="SQL">
-		<![CDATA[SELECT ti.ti_id, ti.ti_title, ti.date_created FROM title_instance ti LEFT JOIN title_instance_package_platform tipp ON ti.ti_id = tipp.tipp_ti_fk WHERE tipp.tipp_ti_fk IS NULL ORDER BY ti.ti_id;]]>
+		<![CDATA[SELECT ti.ti_id, ti.ti_title, ti.date_created, IF(ti_issn.io_ti_fk, 'Yes','No') as has_id
+FROM title_instance ti LEFT JOIN title_instance_package_platform tipp ON ti.ti_id = tipp.tipp_ti_fk
+left join ( select distinct io_ti_fk
+                    from identifier_occurrence as io, 
+                         identifier as id,
+                         identifier_namespace as ns
+                  where  id.id_ns_fk = ns.idns_id
+                    and io.io_canonical_id = id_id
+                     and ns.idns_ns in ( 'ISBN', 'ISSN', 'eISSN', 'issn', 'eissn','isbn' ) ) as  ti_issn on io_ti_fk = ti.ti_id
+WHERE tipp.tipp_ti_fk IS NULL ORDER BY ti.ti_id]]>
 	</queryString>
 	<field name="ti_id" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -18,6 +27,7 @@
 	<field name="date_created" class="java.sql.Timestamp">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="has_id" class="java.lang.String"/>
 	<background>
 		<band/>
 	</background>
@@ -63,7 +73,7 @@
 		<band height="13"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="23">
+		<band height="25">
 			<line>
 				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="41883d1d-a128-4880-92d0-d992871889c3"/>
 			</line>
@@ -75,7 +85,9 @@
 				<text><![CDATA[ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="160" y="0" width="395" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="150481f6-ba62-4445-b3aa-3692a8a068aa"/>
+				<reportElement mode="Opaque" x="160" y="0" width="345" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="150481f6-ba62-4445-b3aa-3692a8a068aa">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -88,10 +100,21 @@
 				</textElement>
 				<text><![CDATA[Created]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="505" y="0" width="50" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="09be7d4f-8d0e-4126-a54f-ef14c0cee49e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HasIDs]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20">
+		<band height="25">
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="8ccb17fc-772f-4649-b286-b05a3e214696"/>
 			</line>
@@ -103,7 +126,9 @@
 				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="160" y="0" width="395" height="20" uuid="9fdba15c-e7c0-41f5-8892-7a14a8434882"/>
+				<reportElement x="160" y="0" width="345" height="20" uuid="9fdba15c-e7c0-41f5-8892-7a14a8434882">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -112,6 +137,17 @@
 			<textField>
 				<reportElement x="60" y="0" width="100" height="20" uuid="8a251641-ec4a-46dd-9886-448c0bdfa960"/>
 				<textFieldExpression><![CDATA[$F{date_created}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="505" y="0" width="50" height="20" uuid="73edd21c-9c7c-436e-a971-e0c20663ef05">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{has_id}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

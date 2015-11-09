@@ -29,6 +29,7 @@ modules = {
     resource url:'css/select2.css'
     resource url:"css/instances/${Holders.config.defaultCssSkin?:'standard.css'}"
     resource url:'css/style.css'
+    resource url: 'js/inline-content.js'
     resource url:'js/bootstrap.min.js'
     resource url:'js/bootstrap-editable.min.js'
     resource url:'js/moment.min.js'

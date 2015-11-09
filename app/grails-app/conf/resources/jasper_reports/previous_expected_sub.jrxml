@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T15:34:31 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-23T16:01:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="expected_issues" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cac26577-7c58-4fd6-8e92-8b28886ba96c">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KBPLUS"/>
 	<parameter name="search_sub_id" class="com.k_int.kbplus.Subscription">
@@ -15,7 +15,7 @@
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&Expected&Previous}.equals("Expected")
-? "select sub_name, ie_id, ti_title from issue_entitlement, title_instance_package_platform, subscription, title_instance where sub_id = $P!{search_sub_id} AND ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) > '$P{compare_date}'"
+? "select sub_name, ie_id, ti_title from issue_entitlement, title_instance_package_platform, subscription, title_instance where sub_id = $P!{search_sub_id} AND ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_start_date, tipp_access_start_date ) >= '$P{compare_date}'"
 : "select sub_name, ie_id, ti_title from issue_entitlement, title_instance_package_platform, subscription, title_instance where sub_id = $P!{search_sub_id} AND ie_subscription_fk = $P!{search_sub_id} AND ie_tipp_fk = tipp_id AND tipp_ti_fk = ti_id AND ifnull(ie_access_end_date, tipp_access_end_date ) <= '$P{compare_date}'"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="report_description" class="java.lang.String">

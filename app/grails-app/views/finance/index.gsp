@@ -88,11 +88,11 @@
     <div style="padding-left: 2%" hidden="hidden" class="loadingData">
         <span>Loading...<img src="${resource(dir: 'images', file: 'loading.gif')}" /></span>
     </div>
-
-    <div id="CreateTemplateWrapper" class="wrapper">
-        <g:render template="create"></g:render>
-    </div>
-
+    <g:if test="${editable}">
+        <div id="CreateTemplateWrapper" class="wrapper">
+            <g:render template="create"></g:render>
+        </div>
+    </g:if>
     <button class="btn btn-primary pull-right"  data-offset="#costTable" title="Select this button to go back to the top of the page" id="top">Back to top</button>
 </div>
 
@@ -141,7 +141,8 @@
                 ajaxFinancePresent:"<g:createLink controller='finance' action='newCostItemsPresent'/>",
                 ajaxFinanceRefData:"<g:createLink controller='finance' action='financialRef'/>",
                 ajaxFinanceCodeDel:"<g:createLink controller='finance' action='removeBC'/>",
-                ajaxFinanceExport:"<g:createLink controller='finance' action='financialsExport'></g:createLink>"
+                ajaxFinanceExport:"<g:createLink controller='finance' action='financialsExport'></g:createLink>",
+                ajaxFinanceCreateCode:"<g:createLink controller='finance' action='createCode'/>"
             },
             misc: {
                 recentlyUpdated: '#recent',
@@ -316,7 +317,7 @@
                             inst_shortcode: '${params.shortcode}',
                             q: '%'+term , // contains search term
                             page_limit: 20,
-                            subFilter:$(s.ft.filterSubscription).data().subFilter.split(":")[1],
+                            subFilter:$(s.ft.filterSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.SubscriptionPackage'
                         };
                     },
@@ -381,7 +382,7 @@
             var selected = $('.bulkcheck:checked');
 
             if(selected.length === 0) {
-                alert('select appropriate checkboxes first :)');
+                alert('Select appropriate checkboxes first');
                 return false;
             }
 
@@ -482,7 +483,7 @@
             {
                 if("${filterMode}"=="OFF" && $(s.ft.filterOpt).val()=="OFF")
                     return false;
-                var reqFields = ["#filterInvoiceNumber","#orderNumberFilter","#subscriptionFilter","#packageFilter"];
+                var reqFields = ["#filterInvoiceNumber","#filterOrderNumber","#subscriptionFilter","#packageFilter"];
                 var counter   = 0;
                 var reqSize = reqFields.length;
                 for (var i = 0; i < reqSize; i++) {
@@ -523,8 +524,14 @@
             //var paramAppend  = "&sub="+fixedsub+"&inSubMode="+paginateData.insubmode;
 
             console.log('Params that are to be sent...',$(this).parents('form:first').serialize());
-
-            $.ajax({
+            if($(this).val() == 'reset'){
+                var reqFields = ["#filterInvoiceNumber","#filterOrderNumber","#subscriptionFilter","#packageFilter"];
+                reqFields.forEach(function (item){
+                    $(item).val("")
+                })
+                $("#submitFilterMode").val("Search")
+            }
+           $.ajax({
                 type:'POST',
                 data:$(this).parents('form:first').serialize(),
                 url:s.url.ajaxFinanceIndex,
@@ -537,7 +544,6 @@
                 },
                 complete:function(XMLHttpRequest,textStatus){
                     _filterSelection();
-                    fadeAway('info',15000);
                     _bindBehavior();
                 }
             });
@@ -640,12 +646,6 @@
           return $.ajax(config);
         }
 
-        function fadeAway(id,time) {
-             $('#'+id).fadeIn(2000).delay(time).slideUp(4000, function(){
-                $('#'+id).remove();
-             });
-        }
-
         /**
         * Binds everything which needs to be run the once, including the majority of dynamically rendered HTML content
         * For everything else which can't be binded once will be in _bindBehavior
@@ -718,7 +718,7 @@
                             inst_shortcode: '${params.shortcode}',
                             q: '%'+term , // contains search term
                             page_limit: 20,
-                            subFilter:$(s.ct.newSubscription).val().split(":")[1],
+                            subFilter: $(s.ct.newSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.SubscriptionPackage'
                         };
                     },
@@ -742,7 +742,7 @@
                         return {
                             format:'json',
                             q: term,
-                            subFilter: $(s.ct.newSubscription).val().split(":")[1],
+                            subFilter: $(s.ct.newSubscription).data().filtermode.split(":")[1],
                             baseClass:'com.k_int.kbplus.IssueEntitlement'
                         };
                     },
@@ -1016,6 +1016,7 @@
             //todo bind select2 functionality in the content, use addCode controller method
             s.mybody.on('click', s.ft.codeEdit, function(event) {
                 event.preventDefault();
+                cost_item_id = $(this).parent("div").attr('id')
                 $(this).popover({
                      trigger: 'manual',
                      html:true,
@@ -1025,7 +1026,7 @@
                      'max-width':600,
                      content:function() {
                         //return getContent();
-                        return 'Addition of more codes!'
+                        return '<input type="text" class="select2" style="width: 220px; border-radius: 4px;" placeholder="New code or lookup code" data-ci_id='+cost_item_id+' name="additionalBudgetCode" id="additionalBudgetCode" ><input type="button" name="addAdditionalBudgetCode" id="addAdditionalBudgetCode" value="Add"/>'
                      }
                 });
 
@@ -1033,6 +1034,68 @@
                     $(this).popover('hide').removeClass('pop');
                 } else {
                     $(this).popover('show').addClass('pop');
+
+
+                  $('#additionalBudgetCode').select2({
+                    placeholder: "New code or lookup  code",
+                    allowClear: true,
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    minimumInputLength: 1,
+                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                      url: s.url.ajaxLookupURL,
+                      dataType: 'json',
+                      data: function (term, page) {
+                          return {
+                              format:'json',
+                              q: term,
+                              shortcode: '${params.shortcode}',
+                              baseClass:'com.k_int.kbplus.CostItemGroup'
+                          };
+                      },
+                      results: function (data, page) {
+                          return {results: data.values};
+                      }
+                    },
+                    createSearchChoice:function(term, data) {
+                       var existsAlready     = false;
+                       for (var i = 0; i < data.length; i++)
+                       {
+                          if(term.toLowerCase() == data[i].text.toLowerCase())
+                          {
+                              existsAlready = true;
+                              break;
+                          }
+                       }
+                       if(!existsAlready)
+                          return {id:-1+term, text:"new code: "+term};
+                    }
+                  });
+                  $('#addAdditionalBudgetCode').click(function(){
+                     var budget_code_ci = $("input[name='additionalBudgetCode']").attr('data-ci_id')
+                     var cost_item_id = budget_code_ci.split("_")[1]
+                     var new_code = $("input[name='additionalBudgetCode']").val()
+                     var data = {
+                      shortcode :"${params.shortcode}",
+                      id : cost_item_id,
+                      code : new_code
+                     };
+                      $.ajax({
+                        method: "POST",
+                        url: s.url.ajaxFinanceCreateCode,
+                        data: data,
+                        success: function (data) {
+                            console.log(data)
+                            var new_codes = ""
+                            $.each(data.codes, function (index,value){
+                              new_codes += value
+                            })
+                            $('#'+budget_code_ci).prepend(new_codes);
+                            $(".pop").popover('hide').removeClass('pop');
+
+                        },
+                      })
+                  });
                 }
             });
 

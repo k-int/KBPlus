@@ -5,7 +5,7 @@
    <xsl:template match="/">
    <xsl:apply-templates select="//Package" />
    <xsl:apply-templates select="//TitleList" />
-	<xsl:apply-templates select="//TitleListEntry" />
+  <xsl:apply-templates select="//TitleListEntry" />
    </xsl:template>
    <xsl:template match="Package">Provider,<xsl:for-each select="./RelatedOrg">
     <xsl:if test="OrgRole = 'Content Provider'">
@@ -56,9 +56,9 @@ Consortium,
       <xsl:call-template name="csventry">
         <xsl:with-param name="txt">
           <xsl:if test="./CoverageStatement/EndDate != ''">
-	    <xsl:call-template name="formats_date">
-	      <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
-	    </xsl:call-template>
+      <xsl:call-template name="formats_date">
+        <xsl:with-param name="date" select="./CoverageStatement/EndDate" />
+      </xsl:call-template>
           </xsl:if>
         </xsl:with-param>
       </xsl:call-template>
