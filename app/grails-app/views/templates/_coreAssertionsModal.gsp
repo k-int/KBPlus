@@ -49,18 +49,21 @@
       <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
         <input type="hidden" name="tipID" value="${tipID}"/>
         <input type="hidden" name="title" value="${title}"/>
-         <dl>
-          <dt><label class="control-label">Extend Core Dates:</label></dt>
-          <dd>
+        <table>
+          <tr>
+            <td>
               <label class="property-label">Core Start:</label> 
               <g:simpleHiddenValue  id="coreStartDate" name="coreStartDate" type="date"/>
-          </dd>
-          <dd>
-              <label class="property-label">Core End:</label> 
-                <g:simpleHiddenValue id="coreEndDate" name="coreEndDate" type="date"/>
-          </dd>
-        </dl>
-        <input type="submit" value="Apply" class="btn btn-primary btn-small"/>
+            </td>
+            <td>
+             <label class="property-label">Core End:</label> 
+              <g:simpleHiddenValue id="coreEndDate" name="coreEndDate" type="date"/>
+            </td>
+            <td>
+              <input type="submit" value="Apply" class="btn btn-primary btn-small pull-right"/>&nbsp;
+            </td>
+          </tr>
+        </table>
       </g:formRemote>
     </div>
 
