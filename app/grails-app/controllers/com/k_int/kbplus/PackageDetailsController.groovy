@@ -424,7 +424,7 @@ class PackageDetailsController {
       if(!params.asAt){
         if(packageInstance.startDate > today){
           params.asAt = sdf.format(packageInstance.startDate)
-        }else if(packageInstance.endDate < today){
+        }else if(packageInstance.endDate < today && packageInstance.endDate){
           params.asAt = sdf.format(packageInstance.endDate)
         }
       }
@@ -995,6 +995,7 @@ class PackageDetailsController {
     }
 
     result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
     def base_query = 'from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where ( e.className = :pkgcls and e.persistedObjectId = :pkgid ) or ( e.className = :tippcls and e.persistedObjectId in ( select id from TitleInstancePackagePlatform as tipp where tipp.pkg = :pkgid ) )'
 
     def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]

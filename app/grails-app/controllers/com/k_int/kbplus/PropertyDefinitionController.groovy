@@ -52,6 +52,10 @@ class PropertyDefinitionController {
                 }
 
                 propDefInstance.properties = params
+                if (params.refdataCategory) {
+                    def categoryString = RefdataCategory.get(params.refdataCategory).desc
+                    propDefInstance.refdataCategory = categoryString;
+                }
 
                 if (!propDefInstance.save(flush: true)) {
                     render view: 'edit', model: [propDefInstance: propDefInstance]

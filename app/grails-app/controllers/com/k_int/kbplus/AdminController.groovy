@@ -40,19 +40,6 @@ class AdminController {
     result
   }
 
-  @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
-  def appConfig(){
-    def result =[:]
-    //SystemAdmin should only be created once in BootStrap
-    result.adminObj = SystemAdmin.list().first()
-    result.editable = true
-    if(request.method == "POST"){
-      result.adminObj.refresh()
-    }
-    result.currentconf= grails.util.Holders.config
-    result 
-  }
-
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def updatePendingChanges() {
   //Find all pending changes with licence FK and timestamp after summer 14
@@ -417,7 +404,7 @@ class AdminController {
     dataloadService.updateSiteMapping();
     dataloadService.updateFTIndexes();
     log.debug("redirecting to home...");
-    redirect(url: request.getHeader('referer'))
+    redirect(controller:'home')
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -448,7 +435,7 @@ class AdminController {
     }
 
     log.debug("redirecting to home...");
-    redirect(url: request.getHeader('referer'))
+    redirect(controller:'home')
 
   }
 

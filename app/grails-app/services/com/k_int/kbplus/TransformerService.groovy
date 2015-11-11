@@ -28,7 +28,7 @@ class TransformerService {
    * @param main_response - the main {@link #javax.servlet.http.HttpServletResponse HttpServletResponse} 
    */
   def triggerTransform(user, filename, tr, content, main_response) {
-    log.debug("triggerTransform...${user}, ${filename}...");
+    log.debug("triggerTransform...${user}, ${filename}, ${tr}...");
 
     if ( tr ) {
       try{

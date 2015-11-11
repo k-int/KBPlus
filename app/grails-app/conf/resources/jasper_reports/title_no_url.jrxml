@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-04T15:35:18 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-22T15:02:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Simple_Blue" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6de1af87-e712-4c00-b0e0-8c2025684190">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEwNSwyMjA7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwzNzEsNTg5Ow=="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
 	<parameter name="report_description" class="java.lang.String">
 		<parameterDescription><![CDATA[Lists all titles that have no URL]]></parameterDescription>
 	</parameter>
@@ -16,6 +15,7 @@ package pkg left JOIN refdata_value pkg_ref on pkg.pkg_status_rv_fk = pkg_ref.rd
 WHERE tipp.tipp_host_platform_url IS NULL 
 AND tipp.tipp_pkg_fk = pkg.pkg_id 
 AND (  refdata.rdv_value is null OR refdata.rdv_value != 'Deleted')
+AND pkg.pkg_end_date > CURDATE()
 ORDER BY ti.ti_title]]>
 	</queryString>
 	<field name="pkg_name" class="java.lang.String">

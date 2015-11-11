@@ -14,7 +14,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 class FinanceController {
 
     def springSecurityService
-    private final def dateFormat      = new java.text.SimpleDateFormat("YYYY-MM-dd")
+    private final def dateFormat      = new java.text.SimpleDateFormat("yyyy-MM-dd")
     private final def dateTimeFormat  = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss") {{setLenient(false)}}
     private final def ci_count        = 'select count(ci.id) from CostItem as ci '
     private final def ci_select       = 'select ci from CostItem as ci '
@@ -40,7 +40,18 @@ class FinanceController {
         return retval
     }
 
+    def checkUserIsMember(user, org) {
+        def result = false;
+        // def uo = UserOrg.findByUserAndOrg(user,org)
+        def uoq = UserOrg.where {
+            (user == user && org == org && (status == 1 || status == 3))
+        }
 
+        if (uoq.count() > 0)
+            result = true;
+
+        result
+    }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def index() {
@@ -61,7 +72,7 @@ class FinanceController {
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
         //todo Once we know we are in sub only mode, make nessesary adjustments in setupQueryData()
-        result.inSubMode   = params.int('sub')? true : false
+        result.inSubMode   = params.sub ? true : false
         if (result.inSubMode)
         {
             result.fixedSubscription = params.int('sub')? Subscription.get(params.sub) : null
@@ -109,7 +120,7 @@ class FinanceController {
      */
     private def setupQueryData(result, params, user) {
         //Setup params
-        result.editable    =  SpringSecurityUtils.ifAllGranted(admin_role.authority)
+        result.editable    =  result.institution.hasUserWithRole(user,admin_role)
         request.setAttribute("editable", result.editable) //editable Taglib doesn't pick up AJAX request, REQUIRED!
         result.filterMode  =  params.filterMode?: "OFF"
         result.info        =  [] as List
@@ -484,6 +495,10 @@ class FinanceController {
                 params.remove('subscriptionFilter')
             }
         }
+        else if (params?.sub && result.inSubMode) {
+            fqResult.qry_string += " AND ci_sub_fk = "+params.sub
+            countCheck          += " AND ci_sub_fk = "+params.sub
+        }
 
         if (params?.packageFilter?.startsWith("com.k_int.kbplus.SubscriptionPackage:")) {
             def pkg        = SubscriptionPackage.get(params.packageFilter.split(":")[1]);
@@ -521,6 +536,11 @@ class FinanceController {
                                  msg: message(code: 'financials.result.filtered.invalid')])
             fqResult.qry_string = ""
             fqResult.fqParams.clear()
+            params.remove('orderNumberFilter')
+            params.remove('invoiceNumberFilter')
+            if (!result.inSubMode)
+                params.remove('subscriptionFilter')
+            params.remove('packageFilter')
         }
         else
             fqResult.fqParams.remove(0) //already have this where necessary in the index method!
@@ -991,14 +1011,13 @@ class FinanceController {
             response.sendError(403)
             return
         }
-
         def code  = params.code?.trim()
         def ci    = CostItem.findByIdAndOwner(params.id, institution)
 
         if (code && ci)
         {
             def cig_codes = createBudgetCodes(ci,code,institution.shortcode)
-            if (result.codes.isEmpty())
+            if (cig_codes.isEmpty())
                 result.error = "Unable to create budget code(s): ${code}"
             else
             {

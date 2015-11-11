@@ -680,6 +680,7 @@ class SubscriptionDetailsController {
             return
         }
         result.subscriptionInstance = subscriptionInstance
+        result.institution = result.subscriptionInstance.subscriber
 
         userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
@@ -1057,9 +1058,9 @@ class SubscriptionDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
+    result.institution = result.subscription.subscriber
 
     userAccessCheck( result.subscription, result.user, 'view')
-
 
     if ( result.subscription.hasPerm("edit",result.user) ) {
       result.editable = true
@@ -1084,6 +1085,8 @@ class SubscriptionDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
+
+    result.institution = result.subscription.subscriber
 
     userAccessCheck( result.subscription, result.user, 'view')
 

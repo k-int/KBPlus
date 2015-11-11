@@ -104,6 +104,21 @@ class PropertyDefinition {
         }
         result
     }
+  @Transient
+  def getOccurrencesOwner(String[] cls){
+    def all_owners = []
+    cls.each{
+        all_owners.add(getOccurrencesOwner(it)) 
+    }
+    return all_owners
+  }
+
+  @Transient
+  def getOccurrencesOwner(String cls){
+    def qparams = [this]
+    def qry = 'select c.owner from '+cls+" as c where c.type = ?"
+    return PropertyDefinition.executeQuery(qry,qparams); 
+  }
 
   @Transient
   def countOccurrences(String cls) {
