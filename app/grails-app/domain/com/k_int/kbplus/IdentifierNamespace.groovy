@@ -7,6 +7,7 @@ class IdentifierNamespace {
   Boolean hide
   String validationRegex
   String family
+  Boolean nonUnique
 
   static mapping = {
     id column:'idns_id'
@@ -15,6 +16,7 @@ class IdentifierNamespace {
     hide column:'idns_hide'
     validationRegex column:'idns_val_regex'
     family column:'idns_family'
+    nonUnique column:'idns_nonUnique'
   }
 
   static constraints = {
@@ -22,5 +24,6 @@ class IdentifierNamespace {
     hide nullable:true, blank:false
     validationRegex nullable:true, black:false
     family nullable:true, black:false
+    nonUnique nullable:true, black:false
   }
 }
