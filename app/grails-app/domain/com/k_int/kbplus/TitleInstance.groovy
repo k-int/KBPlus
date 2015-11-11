@@ -269,14 +269,20 @@ class TitleInstance {
         if ( id != null ) {
           ids.add(id);
 
-          def io = IdentifierOccurrence.findByIdentifier(id)
-          if ( io && io.ti ) {
-            if ( result == null ) {
-              result = io.ti;
-            }
-            else {
-              if ( result != io.ti ) {
-                throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles [Already located title with id ${result.id}, also located title with id ${io.ti.id}]");
+          // If the namespace is marked as non-unique, we allow repeats. otherwise check for uniqueness
+          if ( id.ns.nonUnique==Boolean.TRUE ) {
+            // Namespace is marked as non-unique, don't perform a uniqueness check
+          }
+          else {
+            def io = IdentifierOccurrence.findByIdentifier(id)
+            if ( io && io.ti ) {
+              if ( result == null ) {
+                result = io.ti;
+              }
+              else {
+                if ( result != io.ti ) {
+                  throw new RuntimeException("Identifiers(${candidate_identifiers}) reference multiple titles [Already located title with id ${result.id}, also located title with id ${io.ti.id}]");
+                }
               }
             }
           }
