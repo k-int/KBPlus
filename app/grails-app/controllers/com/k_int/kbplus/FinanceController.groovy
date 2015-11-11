@@ -54,6 +54,7 @@ class FinanceController {
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
         if (!isFinanceAuthorised(result.institution, user)) {
+            log.error("Sending 403 - forbidden");
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
             response.sendError(403)
         }
@@ -75,12 +76,13 @@ class FinanceController {
 
         result.isXHR = request.isXhr()
         //Other than first run, request will always be AJAX...
-        if (result.isXHR)
-        {
+        if (result.isXHR) {
+            log.debug("XHR Request");
             render (template: "filter", model: result)
         }
         else
         {
+            log.debug("HTML Request");
             //First run, make a date for recently updated costs AJAX operation
             use(groovy.time.TimeCategory) {
                 result.from = dateTimeFormat.format(new Date() - 3.days)
@@ -90,6 +92,10 @@ class FinanceController {
       catch ( Exception e ) {
         log.error("Error processing index",e);
       }
+      finally {
+        log.debug("finance::index returning");
+      }
+
 
       result
     }
