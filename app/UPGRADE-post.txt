@@ -17,3 +17,5 @@ UPDATE license SET date_created=now() where date_created=0;
 UPDATE license SET last_updated=NULL where last_modified=0;
 UPDATE subscription SET date_created=now() where last_modified=0;
 UPDATE subscription SET last_updated=NULL where last_modified=0;
+
+select count(*) as num_lic_dc_zero from license where date_created=0;
