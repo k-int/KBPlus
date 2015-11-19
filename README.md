@@ -27,3 +27,4 @@ feature.finance - Finance
 feature.issnl - upload ISSN to ISSN-L mapping
 feature.eBooks - Ebooks functionality
 
+bump
