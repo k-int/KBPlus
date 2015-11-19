@@ -1,6 +1,6 @@
 package com.k_int.kbplus.batch
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 
 class JuspSyncJob {
 
@@ -24,7 +24,7 @@ class JuspSyncJob {
 
   def execute() {
     log.debug("Execute::JuspSyncJob");
-    if ( ApplicationHolder.application.config.KBPlusMaster == true ) {
+    if ( grails.util.Holders.config.KBPlusMaster == true ) {
       log.debug("This server is marked as KBPlus master. Running JUSP SYNC batch job");
       juspSyncService.doSync()
     }

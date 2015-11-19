@@ -55,7 +55,7 @@ class LicencePage extends AbstractDetails {
         }
 
         searchLicence { date, ref ->
-            $("input",name:"validOn").value(date)
+            $("input",name:"validOn").value( date)
             $("input",name:"keyword-search").value(ref)
             $("input",type:"submit",value:"Search").click()
         }
@@ -73,8 +73,9 @@ class LicencePage extends AbstractDetails {
         }
         addCustomPropType{ name ->
             $("#select2-chosen-2").click()
-            $("#s2id_autogen2_search").value(name)
-            waitFor{$("#select2-result-label-4").click()}
+            waitFor{$("#s2id_autogen2_search").value(name)} 
+            Thread.sleep(400)
+            waitFor{$("span.select2-match",text:name).tail().click()}
             $("input", value:"Add Property").click()
         }
         setRefPropertyValue{ prop, value ->
@@ -93,5 +94,22 @@ class LicencePage extends AbstractDetails {
             }
         }
 
+        addCustomInputProperty { propName, prop ->
+            waitFor { $("td",text:propName).next("td").find("span").click()}
+            Thread.sleep(200)
+            waitFor{$("input.input-medium").value(prop)}
+            $("button.editable-submit").click()
+        }
+
+        propertyChangedCheck { propName ->
+            $("td",text:propName).next("td").find("span").text()
+        }
+
+        rowResults { $("table",0).find("tbody tr").size() }
+
+        exportLicence { export_name ->
+            $("a#export-menu").click()
+            $("a", text: export_name).click()
+        }
     }
 }

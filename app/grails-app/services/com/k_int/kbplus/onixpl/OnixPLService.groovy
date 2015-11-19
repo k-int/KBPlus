@@ -2,11 +2,10 @@ package com.k_int.kbplus.onixpl
 
 import grails.util.GrailsNameUtils
 import grails.util.Holders
-
 import org.apache.commons.collections.list.TreeList
 import org.codehaus.groovy.grails.commons.GrailsApplication
-
 import com.k_int.kbplus.OnixplLicense
+import grails.converters.JSON
 
 /**
  * This service handles the manipulation of the Onix-pl XML documents so they can be displayed, and compared.
@@ -15,6 +14,8 @@ import com.k_int.kbplus.OnixplLicense
  */
 class OnixPLService {
   
+
+
   public static final String COMPARE_RETURN_ALL = "ALL"
   public static final String COMPARE_RETURN_SAME = "EQUAL"
   public static final String COMPARE_RETURN_DIFFERENT = "DIFFERENT"
@@ -152,9 +153,15 @@ class OnixPLService {
    * @param data Row data
    * @return Title if found or null if not
    */
-  public static Map getRowHeadingData (Map row_data) {
+  public static Map getRowHeadingData (Map row_data,licence=null) {
     // Just find the first example of an entry regardless of which license it's defined against.
-    row_data?."${row_data.keySet()[0]}"
+
+
+    if(licence){
+      return row_data."${licence}"
+    }
+    return row_data?."${row_data.keySet()[0]}"
+
   }
   
   /**
@@ -318,7 +325,7 @@ class OnixPLService {
    * @param compare_points List of comparison points.
    * @return The flattened representation of the row.
    */
-  private static void flattenRow (Map rows, Map data, List<String> exclude, String license_name) {
+  private static void flattenRow (Map rows, Map data, Map<String,Closure> exclude, String license_name) {
     
     // Get the name of the element from the XML that this row is built from.
     String name = data['_name']
@@ -333,8 +340,9 @@ class OnixPLService {
       // Create list of element names.
       List el_names = data.keySet() as List
       Map<String,List<String>> priority = ["User":[]];
-
-      generateKeys(data, exclude, keys,priority)
+      //We create a clone for the data because we will be removing entries during key generation
+      //we maybe be ok with simple .copy(), can change later..
+      generateKeys(deepcopy(data), exclude, keys,priority)
       priority.entrySet().each{
         if(it.getValue()){
           keys.add(0,it.getValue())
@@ -358,11 +366,11 @@ class OnixPLService {
       }
       
       String key = "${keys.join('/')}"
-      
+
       if (rows[key] == null) {
         rows[key] = new TreeMap()
       }
-      
+
       rows[key][license_name] = row_cells
     }
   }
@@ -377,21 +385,28 @@ class OnixPLService {
    * @param key Current key to which we should append.
    * @return
    */
-  private static void generateKeys (Map val, List<String> exclude, List keys, Map<String,List<String>> priority) {
+  private static void generateKeys (Map val, Map<String,Closure> exclude, List keys, Map<String,List<String>> priority) {
     
     // Name.
     String name = val['_name']
-    
+
     if (name) {
-      
+
       // Add any key values to the keys list.
-      for (String cp in val.keySet()) {
+      def ignore_list = []
+      for(String cp : val.keySet()){
 
+        if (!cp.startsWith('_')) {
+          //See if we are looking at a node that should not be part of the key
+          if(exclude.containsKey(cp) && exclude.get(cp)(val.get(cp))){
 
-        if (!cp.startsWith('_') && !exclude.contains(cp)) {
+            //skip it, and also add to ignore list
+            ignore_list << cp
+            continue;
+          }
           List value = val.get(cp)
           if (value) {
-            value.each {
+            for(Map it : value){
               String key = it?.get("_content")
               if (key) {
                 keys << treatTextForComparison(key)
@@ -404,16 +419,16 @@ class OnixPLService {
         }
       }
       
-      if (val['_content'] == null) {
-      
+      if (val['_content'] == null ) {
+
         // Add each sub element.
         for (String prop in val.keySet()) {
           switch (prop) {
             default :
-              if (!prop.startsWith("_")) {
-                
+              if (!prop.startsWith("_") && !ignore_list.contains(prop)) {
                 // Recursively call this method.
                 for (Map v in val[prop]) {
+
                   generateKeys (v, exclude, keys,priority)
                 }
               }
@@ -424,6 +439,14 @@ class OnixPLService {
     }
   }
   
+  private static def deepcopy(orig) {
+      def bos = new ByteArrayOutputStream()
+      def oos = new ObjectOutputStream(bos)
+      oos.writeObject(orig); oos.flush()
+      def bin = new ByteArrayInputStream(bos.toByteArray())
+      def ois = new ObjectInputStream(bin)
+      return ois.readObject()
+  }
   /**
    * Get the Map representation of the supplied sections of the License.
    * 
@@ -431,7 +454,7 @@ class OnixPLService {
    * @param sections
    * @return
    */
-  private static void tabularize (Map tables, OnixplLicense license, List<String> exclude, List<String> sections = null, OnixplLicense compare_to = null) {
+  private static void tabularize (Map tables, OnixplLicense license, Map<String,Closure> exclude, List<String> sections = null, OnixplLicense compare_to = null) {
     
     if (!(tables instanceof MapWithDefault)) {
       tables = tables.withDefault {
@@ -450,7 +473,6 @@ class OnixPLService {
       
       // The xpath used to return the elements.
       for (String xpath in data["${table}"].keySet()) {
-        
         // Each entry here is a row in the table.
         for (Map row in data["${table}"]["${xpath}"]) {
           
@@ -473,22 +495,69 @@ class OnixPLService {
    */
   public Map compareLicenses (OnixplLicense license, List<OnixplLicense> licenses_to_compare, List<String> sections = null, String return_filter = COMPARE_RETURN_ALL) {
     
-    // The attributes for comparison. These will be lower-cased and compared. 
-    List<String> exclude = [
-      'SortNumber',
-      'DisplayNumber',
-      'TextPreceding',
-      'Text',
-      'AnnotationType',
-      'AnnotationText',
-      'UsageStatus',
-      'Description',
-      'Name',
-      'AgentPlaceRelator',
-      'AgentType',
-      'DocumentLabel',
-      'IDValue',
-      'PlaceIDType'
+    // The attributes for comparison. These will be lower-cased and compared.
+    //The node with the name given as key is passed for further validation if required
+    def exclude = [
+      'SortNumber':{return true},
+      'DisplayNumber':{return true},
+      'TextPreceding': {return true},
+      'Text': {return true},
+      'AnnotationType': {return true},
+      'AnnotationText': {return true},
+      'UsageStatus': {return true},
+      'Description': {return true},
+      'Name': {return true},
+      'AgentPlaceRelator': {return true},
+      'AgentType': {return true},
+      'DocumentLabel': {return true},
+      'IDValue': {return true},
+      'PlaceIDType': {return true},
+      'UsageExceptionType': {return true},
+      'UsageQuantity': {return true},
+      'GeneralTermRelatedPlace':{return true},
+      'UsageRelatedPlace': {node -> 
+        //Based on 5.0 spec, UsageRelatedPlace with TargetResource should result to new row
+        def deleteNode = true
+        def available_content = node?.'UsagePlaceRelator'?.'_content'
+        if(available_content.contains(["onixPL:TargetResource"])){
+          deleteNode = false
+        }
+        def to_remove = []
+        node.eachWithIndex{ child, index ->
+          if(child.'UsagePlaceRelator'?.'_content'.contains("onixPL:TargetResource")){
+            //leave it ;
+          }else{
+            to_remove += index
+          }
+        }
+        
+        to_remove.each{
+          node.set(it, [:])
+        }
+        return deleteNode
+      },
+      'UsageCondition' : {return true},
+      'UsageRelatedResource' : {node ->
+        //Based on 5.0 spec, UsageResourceRelator with TargetResource should result to new row
+        def deleteNode = true
+        def available_content = node?.'UsageResourceRelator'?.'_content'
+        if(available_content.contains(["onixPL:TargetResource"])){
+          deleteNode = false
+        }
+        def to_remove = []
+        node.eachWithIndex{ child, index ->
+          if(child.'UsageResourceRelator'?.'_content'.contains("onixPL:TargetResource")){
+            //leave it ;
+          }else{
+            to_remove += index
+          }
+        }
+        to_remove.each{
+          //assign empty map to the key we dont want to include
+          node.set(it, [:])
+        }
+        return deleteNode
+      }
     ]
     
     // Get the main license as a map.

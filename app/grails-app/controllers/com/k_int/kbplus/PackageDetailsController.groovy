@@ -77,7 +77,7 @@ class PackageDetailsController {
           result
         }
         csv {
-           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.setHeader("Content-disposition", "attachment; filename=\"packages.csv\"")
            response.contentType = "text/csv"
            def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
            def out = response.outputStream
@@ -112,7 +112,7 @@ class PackageDetailsController {
       if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
           isAdmin = true;
       }else{
-        hasAccess = result.packageInstance.orgLinks.find{it.roleType.value == 'Package Consortia' &&
+        hasAccess = result.packageInstance.orgLinks.find{it.roleType?.value == 'Package Consortia' &&
         it.org.hasUserWithRole(result.user,'INST_ADM') }
       }
 
@@ -274,7 +274,7 @@ class PackageDetailsController {
               institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
               def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
-               response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
+               response.setHeader("Content-disposition", "attachment; filename=\"packageComparison.csv\"")
                response.contentType = "text/csv"
                def out = response.outputStream
                out.withWriter { writer ->
@@ -357,7 +357,7 @@ class PackageDetailsController {
     
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
-      def verystarttime = exportService.printStart("SubscriptionDetails")
+      def verystarttime = exportService.printStart("PackageDetails show")
     
       def result = [:]
       boolean showDeletedTipps=false
@@ -395,10 +395,11 @@ class PackageDetailsController {
       result.subscriptionList=[]
       // We need to cycle through all the users institutions, and their respective subscripions, and add to this list
       // and subscription that does not already link this package
+      def sub_status = RefdataCategory.lookupOrCreate('Subscription Status','Deleted')
       result.user?.getAuthorizedAffiliations().each { ua ->
         if ( ua.formalRole.authority == 'INST_ADM' ) {
-          def qry_params = [ua.org, packageInstance, new Date()]
-          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status.value != 'Deleted' ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
+          def qry_params = [ua.org, sub_status, packageInstance, new Date()]
+          def q = "select s from Subscription as s where  ( ( exists ( select o from s.orgRelations as o where o.roleType.value = 'Subscriber' and o.org = ? ) ) ) AND ( s.status is null or s.status != ? ) AND ( not exists ( select sp from s.packages as sp where sp.pkg = ? ) ) AND s.endDate >= ?"
           Subscription.executeQuery(q, qry_params).each { s ->
             if ( ! result.subscriptionList.contains(s) ) {
               // Need to make sure that this package is not already linked to this subscription
@@ -417,17 +418,25 @@ class PackageDetailsController {
     
       // def base_qry = "from TitleInstancePackagePlatform as tipp where tipp.pkg = ? "
       def qry_params = [packageInstance]
-
+      
+      def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+      def today = new Date()
+      if(!params.asAt){
+        if(packageInstance.startDate > today){
+          params.asAt = sdf.format(packageInstance.startDate)
+        }else if(packageInstance.endDate < today && packageInstance.endDate){
+          params.asAt = sdf.format(packageInstance.endDate)
+        }
+      }
       def date_filter
       if(params.mode == 'advanced'){
          date_filter = null
          params.asAt = null
       }else if(params.asAt && params.asAt.length() > 0 ) {
-         def sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
          date_filter = sdf.parse(params.asAt)    
          result.editable= false
       }else{
-         date_filter = new Date()
+         date_filter = today
       }
 
       def base_qry = generateBasePackageQuery(params, qry_params, showDeletedTipps, date_filter);
@@ -445,7 +454,8 @@ class PackageDetailsController {
       if(executorWrapperService.hasRunningProcess(packageInstance)){
         result.processingpc = true
       }
-    def filename = "packageDetails_${result.packageInstance.name}"
+
+    def filename = "${result.packageInstance.name}_asAt_${date_filter?sdf.format(date_filter):sdf.format(today)}"
     withFormat {
       html result
       json {
@@ -591,7 +601,7 @@ class PackageDetailsController {
     qry_params.add(new Date());
     
 
-    base_qry += " order by tipp.title.title"
+    base_qry += " order by ${params.sort?:'tipp.title.sortTitle'} ${params.order?:'asc'} "
 
     log.debug("Base qry: ${base_qry}, params: ${qry_params}, result:${result}");
     result.titlesList = TitleInstancePackagePlatform.executeQuery("select tipp "+base_qry, qry_params, limits);
@@ -807,7 +817,7 @@ class PackageDetailsController {
       if(params.search.equals("yes")){
         //when searching make sure results start from first page
         params.offset = 0
-        params.search = ""
+        params.remove("search")
       }
 
       result =  ESSearchService.search(params)   
@@ -920,7 +930,7 @@ class PackageDetailsController {
           }
           else {
             log.debug("Bulk removal ${tipp_to_bulk_edit.id}");
-            tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( 'TIPP Status', 'Deleted' );
+            tipp_to_bulk_edit.status = RefdataCategory.lookupOrCreate( RefdataCategory.TIPP_STATUS, 'Deleted' );
             tipp_to_bulk_edit.save();
           }
         }
@@ -985,6 +995,7 @@ class PackageDetailsController {
     }
 
     result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
     def base_query = 'from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where ( e.className = :pkgcls and e.persistedObjectId = :pkgid ) or ( e.className = :tippcls and e.persistedObjectId in ( select id from TitleInstancePackagePlatform as tipp where tipp.pkg = :pkgid ) )'
 
     def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]

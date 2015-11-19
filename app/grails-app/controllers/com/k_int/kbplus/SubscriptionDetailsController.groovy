@@ -19,7 +19,6 @@ import static groovyx.net.http.Method.*
 class SubscriptionDetailsController {
 
   def springSecurityService
-  def ESWrapperService
   def gazetteerService
   def alertsService
   def genericOIDService
@@ -204,7 +203,7 @@ class SubscriptionDetailsController {
     withFormat {
       html result
       csv {
-         response.setHeader("Content-disposition", "attachment; filename=${result.subscriptionInstance.identifier}.csv")
+         response.setHeader("Content-disposition", "attachment; filename=\"${result.subscriptionInstance.identifier}.csv\"")
          response.contentType = "text/csv"
          def out = response.outputStream
          def header = ( params.omitHeader == null ) || ( params.omitHeader != 'Y' )
@@ -395,7 +394,7 @@ class SubscriptionDetailsController {
           institutionsService.generateComparisonMap(unionList, mapA, mapB, 0, unionList.size(),filterRules)
           def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
 
-           response.setHeader("Content-disposition", "attachment; filename=subscriptionComparison.csv")
+           response.setHeader("Content-disposition", "attachment; filename=\"subscriptionComparison.csv\"")
            response.contentType = "text/csv"
            def out = response.outputStream
            out.withWriter { writer ->
@@ -599,7 +598,7 @@ class SubscriptionDetailsController {
       result.editable = false
     }
 
-    def tipp_deleted = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def tipp_deleted = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Deleted');
     def ie_deleted = RefdataCategory.lookupOrCreate('Entitlement Issue Status','Deleted');
 
     log.debug("filter: \"${params.filter}\"");
@@ -681,6 +680,7 @@ class SubscriptionDetailsController {
             return
         }
         result.subscriptionInstance = subscriptionInstance
+        result.institution = result.subscriptionInstance.subscriber
 
         userAccessCheck( result.subscriptionInstance, result.user, 'view')
 
@@ -1058,9 +1058,9 @@ class SubscriptionDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
+    result.institution = result.subscription.subscriber
 
     userAccessCheck( result.subscription, result.user, 'view')
-
 
     if ( result.subscription.hasPerm("edit",result.user) ) {
       result.editable = true
@@ -1085,6 +1085,8 @@ class SubscriptionDetailsController {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
     result.subscription = Subscription.get(params.id)
+
+    result.institution = result.subscription.subscriber
 
     userAccessCheck( result.subscription, result.user, 'view')
 

@@ -1,6 +1,6 @@
 package com.k_int.kbplus
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import groovyx.net.http.*
 import org.apache.http.entity.mime.*
 import static groovyx.net.http.Method.GET
@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 class JuspSyncService {
 
   static transactional = false
-  def FIXED_THREAD_POOL_SIZE = ApplicationHolder.application.config.juspThreadPoolSize ?: 10
+  def FIXED_THREAD_POOL_SIZE = grails.util.Holders.config.juspThreadPoolSize ?: 10
   def executorService
   def factService
   def sessionFactory
@@ -67,7 +67,7 @@ class JuspSyncService {
       log.debug("create thread pool");
       ftp = java.util.concurrent.Executors.newFixedThreadPool(FIXED_THREAD_POOL_SIZE)
 
-      def jusp_api = ApplicationHolder.application.config.JuspApiUrl
+      def jusp_api = grails.util.Holders.config.JuspApiUrl
       if ( ( jusp_api == null ) || ( jusp_api == '' ) ) {
         log.error("JUSP API Not set in config");
         return
@@ -133,7 +133,7 @@ class JuspSyncService {
 
   def processTriple(a,b,c,d,most_recent_closed_period) {
 
-    def jusp_api = ApplicationHolder.application.config.JuspApiUrl
+    def jusp_api = grails.util.Holders.config.JuspApiUrl
 
     // REST endpoint for JUSP
     def jusp_api_endpoint = new RESTClient(jusp_api)

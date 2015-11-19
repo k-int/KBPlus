@@ -1,5 +1,6 @@
 <!doctype html>
 <r:require module="annotations" />
+<%@ page import="com.k_int.custprops.PropertyDefinition" %>
 
 <html>
   <head>
@@ -31,7 +32,7 @@
             <div class="row">
  <h6>${message(code:'licence.properties')}</h6>
               <div id="custom_props_div" class="span12">
-                  <g:render template="/templates/custom_props" model="${[ ownobj:license ]}"/>
+                  <g:render template="/templates/custom_props" model="${[ ownobj:license,prop_desc:PropertyDefinition.LIC_PROP ]}"/>
               </div>
             <br/>
               <div class="span8">

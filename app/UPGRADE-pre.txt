@@ -1,22 +1,6 @@
-select "Updating spelling mistakes";
+select "UPGRADE Pre";
 
-select rdc_id into @concurrentAccessCatId from refdata_category where rdc_description = 'Concurrent Access';
-select rdv_id into @notSpecifiedId from refdata_value where rdv_owner = @concurrentAccessCatId and rdv_value = 'Not Specified';
--- delete from license_custom_property  where ref_value_id = @notSpecifiedId and note is null;
+CREATE INDEX part_sort_title ON title_instance (sort_title ( 50 ) ASC);
 
-
-select pd_id into @concurrentUsersPropDefId from property_definition where pd_name = 'Concurrent Users';
-
-delete from license_custom_property where type_id = @concurrentUsersPropDefId and owner_id in (select owners.id from( select owner_id as id from license_custom_property where type_id = @concurrentUsersPropDefId ) as owners) and int_value = 0;
-
-
-ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
-
-UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
-UPDATE license SET date_created=now() where date_created=0;
-UPDATE license SET last_updated=NULL where last_modified=0;
-UPDATE subscription SET date_created=now() where last_modified=0;
-UPDATE subscription SET last_updated=NULL where last_modified=0;
-
--- worried about this on live... won't it create duplicates?
-UPDATE identifier_namespace SET idns_ns = lower(idns_ns)
+update property_definition SET pd_description='Licence Property';
+update property_definition set pd_description='Organisation Config' where pd_name='Public Journal Access';

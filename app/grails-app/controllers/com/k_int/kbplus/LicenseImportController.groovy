@@ -31,7 +31,7 @@ class LicenseImportController {
    */
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def doImport() {
-    log.debug(grails.util.Holders.config.onix.ghost_licence);
+    // log.debug("Ghost_licence" + grails.util.Holders.config.onix_ghost_licence);
     // Setup result object
     def result = [:]
     result.validationResult = [:]
@@ -60,6 +60,7 @@ class LicenseImportController {
       result.upload_mime_type = params.upload_mime_type
       result.upload_filename = params.upload_filename
       result.existing_opl_id = params.existing_opl_id
+      result.description = params.description
       result.existing_opl = OnixplLicense.findById(result.existing_opl_id)
 
       // A file offered for upload
@@ -99,6 +100,8 @@ class LicenseImportController {
           }
           result.offered_file = offered_multipart_file
           result.accepted_file = onix_parse_result
+
+
           result.putAll(onix_parse_result)
 
           result.validationResult.messages.add("Document validated: ${offered_multipart_file.originalFilename}")
@@ -124,8 +127,6 @@ class LicenseImportController {
           }
         }
 
-        // Read the ONIX-PL file stream (from temp or upload, whichever is specified in the result object
-        result.usageTerms = parseOnixPl(result)
         // Process the import and combine results
         result.validationResult.putAll(processImport(result))
 
@@ -142,6 +143,7 @@ class LicenseImportController {
     // Redirect to some ONIX-PL display page
     //log.debug("Redirecting...");
     //redirect controller: 'licenseDetails', action:'onixpl', id:params.licid, fragment:params.fragment
+    log.debug("Returning result ${result}")
     result
   }
 
@@ -200,59 +202,6 @@ class LicenseImportController {
   }
 
   /**
-   * Parse the ONIX-PL XML from an input stream, and return a set of
-   * UsageTermStatuses.
-   * @param result result object
-   * @return result object
-   * @throws SAXException
-   * @throws IOException
-   */
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def parseOnixPl(result)  throws SAXException, IOException {
-    //log.debug("parseOnixPl(result) "); result.each{k,v-> log.debug("  ${k} -> ${v}")}
-    log.debug("Parsing ONIX-PL")
-    
-    def onix_file_input_stream = result.uploaded_file ? new FileInputStream(result.uploaded_file) : result.offered_file?.inputStream
-    def onixpl = new XmlSlurper().parse(onix_file_input_stream);
-
-    result.description = onixpl.LicenseDetail.Description.text()
-    def usageTerms = []
-    onixpl.UsageTerms.Usage.eachWithIndex { ut, n ->
-      usageTerms[n] = [:]
-      usageTerms[n].type = ut.UsageType.text().replace(onixplPrefix,'')
-      usageTerms[n].status = ut.UsageStatus.text().replace(onixplPrefix,'')
-      usageTerms[n].user = []
-      ut.User.eachWithIndex { user, m ->
-          usageTerms[n].user[m] = user.text().replace(onixplPrefix, '')
-      }
-      usageTerms[n].usedResource = []
-      ut.UsedResource.eachWithIndex { ur, m ->
-          usageTerms[n].usedResource[m] = ur.text().replace(onixplPrefix, '')
-      }
-      def licTexts = []
-      ut.LicenseTextLink.each{ ltl ->
-        licTexts.add(onixpl.LicenseDocumentText.TextElement.find{ it.@id == ltl.@href })
-      }
-
-      // There can be multiple LicenseTexts linked to a single UsageTerm
-      usageTerms[n].licenseTexts = []
-      licTexts.eachWithIndex { lt, m ->
-        usageTerms[n].licenseTexts[m] = [:]
-        usageTerms[n].licenseTexts[m].text = [lt.TextPreceding.text(), lt.Text.text()].join(" ")
-        usageTerms[n].licenseTexts[m].elId = lt.@id.text() //lt.SortNumber.text()
-        usageTerms[n].licenseTexts[m].displayNum = lt.DisplayNumber?.text()
-        if (!usageTerms[n].licenseTexts[m].displayNum) {
-            usageTerms[n].licenseTexts[m].displayNum = lt.SortNumber?.text()
-        }
-      }
-    }
-    log.debug("Found "+usageTerms.size()+" usage terms")
-
-    usageTerms
-  }
-
-
-  /**
    * Process the uploaded license import file, creating database
    * records for the license, an associated KB+ license record, an uploaded
    * document in the docstore, and UsageTerms.
@@ -261,7 +210,7 @@ class LicenseImportController {
    */
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def processImport(upload) {
-    //log.debug("processImport(upload) "); upload.each{k,v-> log.debug("  ${k} -> ${v}")}
+    // log.debug("processImport(upload) "); upload.each{k,v-> log.debug("  ${k} -> ${v}")}
     //log.debug("Processing imported ONIX-PL document");
     // A stats struct holding summary info for display to the user
     def importResult = [:],
@@ -278,8 +227,8 @@ class LicenseImportController {
 
     log.debug("replaceOplRecord: ${replaceOplRecord} createNewDocument: ${createNewDocument} createNewLicense: ${createNewLicense} upload.replace_opl: ${upload.replace_opl} license: ${upload.license!=null}")
     importResult.replace = replaceOplRecord
-    RefdataValue currentStatus = RefdataCategory.lookupOrCreate('License Status', 'Current')
-    RefdataValue templateType  = RefdataCategory.lookupOrCreate('License Type', 'Template')
+    RefdataValue currentStatus = RefdataCategory.lookupOrCreate(RefdataCategory.LIC_STATUTS, 'Current')
+    RefdataValue templateType  = RefdataCategory.lookupOrCreate(RefdataCategory.LIC_TYPE, 'Template')
     // Create a new license
 
     if (createNewLicense) {
@@ -328,7 +277,7 @@ class LicenseImportController {
     // We don't want duplicate doc_contexts.
     if (createNewDocument || createNewLicense) {
       doc_context = new DocContext(
-        license: license,
+          license: license,
           owner:   doc_content,
           doctype: doctype
       ).save(flush:true)
@@ -342,12 +291,16 @@ class LicenseImportController {
       opl.lastmod = new Date()
       opl.doc = doc_content
       opl.title = upload.description
-      // Delete existing usage terms
-      //opl.usageTerm.each { ut -> ut.delete() }
-      opl.usageTerm.clear()
       opl.save()
     } else {
-      opl = recordOnixplLicense(doc_content, upload.description)
+      def opl_title = upload.description
+      // two licences with the same name will make searching and selection for comparison a problem
+      // for now append upload date to distinguish, users can suggest different approach
+      if(OnixplLicense.findByTitle(opl_title)){
+          def upload_date = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').format(new Date())
+          opl_title += " (${upload_date})"
+      }
+      opl = recordOnixplLicense(doc_content, opl_title)
     }
     log.debug("${replaceOplRecord?'Updated':'Created new'} ONIX-PL License ${opl}")
     // If a single license is specified, link it to the OPL
@@ -359,18 +312,7 @@ class LicenseImportController {
     importResult.license = license
     importResult.onixpl_license = opl
 
-    // Record the usage terms
-    importResult.termStatuses = [:]
-    if (upload.usageTerms) {
-      def ts = importResult.termStatuses
-      upload.usageTerms.each { ut ->
-        recordOnixplUsageTerm(opl, ut);
-        def n = ts.get(ut.status)!=null ? ts.get(ut.status)+1 : 1;
-        //log.debug("term statuses "+ut.status+" = "+ts.get(ut.status)+" to "+n)
-        ts.put(ut.status, n)
-      }
-    }
-    // Set success flag
+
     importResult.success = true
 
     importResult
@@ -405,59 +347,5 @@ class LicenseImportController {
     }
     return opl;
   }
-
-
-  /**
-   * Record an ONIX-PL UsageTerm in the database, linked to the given ONIX-PL
-   * license.
-   *
-   * @param opl the OnixplLicense to attach the term to
-   * @param usageTerm a struct representing the UsageTerm
-   */
-  def recordOnixplUsageTerm(opl, usageTerm) {
-    // Retrieve the type and status
-    def rdvType = RefdataCategory.lookupOrCreate(CAT_TYPE, usageTerm.type);
-    def rdvStatus = RefdataCategory.lookupOrCreate(CAT_STATUS, usageTerm.status);
-    // Get the 'users' and 'used resources' for the usage term
-    def rdvUser = [];
-    usageTerm.user.each { user ->
-      rdvUser.add(RefdataCategory.lookupOrCreate(CAT_USER, user));
-    }
-    def rdvUsedResource = [];
-    usageTerm.usedResource.each { ur ->
-        rdvUsedResource.add(RefdataCategory.lookupOrCreate(CAT_USEDRESOURCE, ur));
-    }
-    log.debug("Usage term user: ${usageTerm.user}, Used resource: ${usageTerm.usedResource}");
-    //log.debug("Recording usage term $rdvType : $rdvStatus")
-    // Create the term
-    def term = new OnixplUsageTerm(
-        oplLicense:opl,
-        usageType:rdvType,
-        usageStatus:rdvStatus,
-        user:rdvUser,
-        usedResource:rdvUsedResource
-    );
-    term.save(flush: true);
-    //log.debug("Term "+term.id);
-
-    // License Text
-    usageTerm.licenseTexts.each { lt ->
-      def oplt = new OnixplLicenseText(
-          text:lt.text,
-          elementId:lt.elId,
-          displayNum:lt.displayNum,
-          oplLicense:opl,
-          term: term
-      );
-      oplt = oplt.save(flush: true, insert:true,failOnError: true);
-        // Create the association object:
-      def ass = new OnixplUsageTermLicenseText(
-          usageTerm: term,
-          licenseText: oplt
-      )
-      ass.save(flush: true, insert:true, failOnError: true);
-    }
-  }
-
 }
 

@@ -53,6 +53,9 @@ class SubscriptionImportController {
               case 'cpname':
                 sw.append('cpname')
                 break;
+              case 'endYear':
+                sw.append('endYear')
+                break;
             }
             if ( filter_components[2].indexOf(' ') > 0 ) {
               sw.append(":\"");
@@ -440,7 +443,7 @@ class SubscriptionImportController {
   
   
   
-      response.setHeader "Content-disposition", "attachment; filename=NewSubscription.xls"
+      response.setHeader "Content-disposition", "attachment; filename=\"NewSubscription.xls\""
       // response.contentType = 'application/xls'
       response.contentType = 'application/vnd.ms-excel'
       workbook.write(response.outputStream)

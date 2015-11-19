@@ -46,7 +46,6 @@
        <g:render template="nav"  />
     </div>
 
-
     <g:render template="/templates/pendingChanges" model="${['pendingChanges': pendingChanges,'flash':flash,'model':subscriptionInstance]}"/>
 
 
@@ -76,7 +75,8 @@
                        <thead>
                          <tr>
                            <th>Authority</th>
-                           <th>Identifier</th>
+                           <th>Identifier</th>               
+                           <th>Actions</th>
                          </tr>
                        </thead>
                        <tbody>
@@ -84,6 +84,7 @@
                            <tr>
                              <td>${io.identifier.ns.ns}</td>
                              <td>${io.identifier.value}</td>
+                             <td><g:if test="${editable}"><g:link controller="ajax" action="deleteThrough" params='${[contextOid:"${subscriptionInstance.class.name}:${subscriptionInstance.id}",contextProperty:"ids",targetOid:"${io.class.name}:${io.id}"]}'>Delete Identifier</g:link></g:if></td>
                            </tr>
                          </g:each>
                        </tbody>
@@ -95,7 +96,7 @@
                 <input type="hidden" name="__newObjectClass" value="com.k_int.kbplus.IdentifierOccurrence"/>
                 <input type="hidden" name="__recip" value="sub"/>
                 <input type="hidden" name="identifier" id="addIdentifierSelect"/>
-                <input type="submit" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
+                <input type="submit" id="addIdentBtn" value="Add Identifier..." class="btn btn-primary btn-small"/><br/>
               </g:form>
             </g:if>
                    </dd>

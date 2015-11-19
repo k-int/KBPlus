@@ -146,11 +146,11 @@ class GlobalSourceSyncService {
     def pkg = null;
     boolean auto_accept_flag = false
 
-    def scope = RefdataCategory.lookupOrCreate('Package.Scope',(newpkg?.scope)?:'Unknown');
-    def listStatus = RefdataCategory.lookupOrCreate('Package.ListStatus',(newpkg?.listStatus)?:'Unknown');
-    def breakable = RefdataCategory.lookupOrCreate('Package.Breakable',(newpkg?.breakable)?:'Unknown');
-    def consistent = RefdataCategory.lookupOrCreate('Package.Consistent',(newpkg?.consistent)?:'Unknown');
-    def fixed = RefdataCategory.lookupOrCreate('Package.Fixed',(newpkg?.fixed)?:'Unknown');
+    def scope = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE,(newpkg?.scope)?:'Unknown');
+    def listStatus = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT,(newpkg?.listStatus)?:'Unknown');
+    def breakable = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE,(newpkg?.breakable)?:'Unknown');
+    def consistent = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT,(newpkg?.consistent)?:'Unknown');
+    def fixed = RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED,(newpkg?.fixed)?:'Unknown');
     def paymentType = RefdataCategory.lookupOrCreate('Package.PaymentType',(newpkg?.paymentType)?:'Unknown');
     def global = RefdataCategory.lookupOrCreate('Package.Global',(newpkg?.global)?:'Unknown');
     def isPublic = RefdataCategory.lookupOrCreate('YN','Yes');
@@ -196,7 +196,8 @@ class GlobalSourceSyncService {
       println("Result of lookup or create for ${tipp.title.name} with identifiers ${tipp.title.identifiers} is ${title_instance}");
 
       def plat_instance = Platform.lookupOrCreatePlatform([name:tipp.platform]);
-      def tipp_status = RefdataCategory.lookupOrCreate('TIPP Status',tipp.status?:'Current');
+      def tipp_status_str = tipp.status ? tipp.status.capitalize():'Current'
+      def tipp_status = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,tipp_status_str);
 
       if ( auto_accept ) {
         def new_tipp = new TitleInstancePackagePlatform()

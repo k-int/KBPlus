@@ -30,10 +30,9 @@
             <td colspan="4">
               <g:if test="${ua.license}">
                 <span class="label label-info">License</span>
-                <em><g:link action="licenseDetails"
-                        controller="myInstitutions" 
-                        id="${ua.license.id}"
-                        params="${[shortcode:ua.license.licensee.shortcode]}">${ua.license.reference}</g:link></em>
+                <em><g:link action="index"
+                        controller="licenseDetails" 
+                        id="${ua.license.id}">${ua.license.reference}</g:link></em>
            
               </g:if>
             </td>

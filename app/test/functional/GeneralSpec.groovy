@@ -19,6 +19,18 @@ class GeneralSpec extends BaseSpec {
 	// 	at DashboardPage
 	// }
 
+	def "Search titles" (){
+		setup:
+		$("a", text: "Data Managers").click()
+		$("a", text: "Titles").click()
+		when:
+		$("a", "text": "The British Art Journal")
+		$("input", name: "q").value("American History")
+		$("#search").click()
+		then:
+		$("a", text: "The British Art Journal").isEmpty()
+	}
+
 	def "Create organisation" (){
 		setup:
 		to PublicPage
@@ -84,6 +96,7 @@ class GeneralSpec extends BaseSpec {
 	def "Start downloading titles"() {
 		when:
 		go '/demo/admin/fullReset' // so that new package is displayed
+		Thread.sleep(5000)
 		then:
 		true;
 	}
@@ -460,7 +473,8 @@ class GeneralSpec extends BaseSpec {
 
 	def "Update ES Index"() {
 		when:
-		go '/demo/startFTIndex/index' // should have a few titles by now.
+		go '/demo/admin/esIndexUpdate' // should have a few titles by now.
+		Thread.sleep(5000)
 		then:
 		true;
 	}
@@ -469,6 +483,7 @@ class GeneralSpec extends BaseSpec {
 	//ref 011
 	def "Change default page size"() {
 		setup:
+		browser.report("Before Change size")
 		changeUser(Data.UserA_name, Data.UserA_passwd)
 		to ProfilePage
 		when:
@@ -537,8 +552,8 @@ class GeneralSpec extends BaseSpec {
 		when:
 		newSubscription(Data.Subscription_name_A)
 		and:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
 		and:
 		addNote("Test note")
@@ -560,14 +575,14 @@ class GeneralSpec extends BaseSpec {
 		when:
 		at SubscrDetailsPage
 		then:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		catchException { addDocument("whatever", "doc") }
 		when:
 		at SubscrDetailsPage
 		then:
-                $("a",text:"Details").click()
-                and:
+        $("a",text:"Details").click()
+        and:
 		catchException { editIsPublic("Yes") }
 	}
 
@@ -665,14 +680,6 @@ class GeneralSpec extends BaseSpec {
 	}
 
 	//214
-	def "Subscription JSON Export"() {
-		setup:
-		jsonExport()
-		expect:
-		at SubscrDetailsPage
-	}
-
-	//215
 	def "Subscription JSON Export"() {
 		setup:
 		jsonExport()
@@ -797,7 +804,7 @@ class GeneralSpec extends BaseSpec {
 		then:
 		at MyInstitutionsPage
 	}
-	
+
 	//ref 500
 	def "Search all current titles"() {
 		setup:
@@ -817,7 +824,7 @@ class GeneralSpec extends BaseSpec {
 		$("a", text: "All Titles").click(TitleDetailsPage)
 		when:
 		def totalTitles = numberOfResults()
-		searchTitle("A")
+		searchTitle("Zot")
 		then:
 		totalTitles != numberOfResults()
 	}
@@ -830,20 +837,20 @@ class GeneralSpec extends BaseSpec {
 		allPackages()
 		when:
 		def pkgs = numberOfResults()
-		searchPackage("G")
+		searchPackage("Gra")
 		then:
 		pkgs != numberOfResults()
 	}
 
 	def "Renewals Upload" (){
 		setup:
-		changeUser(Data.UserB_name,Data.UserB_passwd)
+		changeUser(Data.UserD_name,Data.UserD_passwd)
 		importRenewals()
 		when:
 		renewalsUpload(Data.RenewalsUploadFile)
 		then:
 		at MyInstitutionsPage
-	} 
+	}
 
 	def "Spotlight Search"(){
 	setup:
@@ -856,7 +863,6 @@ class GeneralSpec extends BaseSpec {
 	then:
 		at PackageDetailsPage
 	}
-
 }
 
 

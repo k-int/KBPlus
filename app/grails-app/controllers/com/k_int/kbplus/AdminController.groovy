@@ -5,7 +5,7 @@ import grails.plugins.springsecurity.Secured
 import grails.converters.*
 import au.com.bytecode.opencsv.CSVReader
 import com.k_int.custprops.PropertyDefinition
-
+import grails.util.Holders
 
 class AdminController {
 
@@ -98,7 +98,11 @@ class AdminController {
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def hardDeletePkgs(){
     def result = [:]
-
+    //If we make a search while paginating return to start
+    if(params.search == "yes"){
+        params.offset = 0
+        params.search = null
+    }
     result.user = User.get(springSecurityService.principal.id)
     result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
@@ -123,12 +127,12 @@ class AdminController {
         pkg.subscriptions.each{
 
           if(it.subscription.status.value != "Deleted"){
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': it.subscription.name]
           }else{
-            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'index', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
+            subscription_map.details += ['link':createLink(controller:'subscriptionDetails', action: 'details', id:it.subscription.id), 'text': "(Deleted)" + it.subscription.name]
           }
         }
-        subscription_map.action = ['actionRequired':true,'text':"Delete subscriptions"]
+        subscription_map.action = ['actionRequired':true,'text':"Unlink subscriptions. (IEs will be removed as well)"]
         if(subscription_map.details){
           conflicts_list += subscription_map
         }
@@ -150,6 +154,7 @@ class AdminController {
 
       render(template: "hardDeleteDetails",model:result)
     }else{
+
       def criteria = Package.createCriteria()
       result.pkgs = criteria.list(max: result.max, offset:result.offset){
           if(params.pkg_name){
@@ -209,8 +214,8 @@ class AdminController {
              log.debug("Selected users : ${usrMrg}, ${usrKeep}");
              result.userRoles = usrMrg.getAuthorities()
              result.userAffiliations =  usrMrg.getAuthorizedAffiliations()
-             result.usrMrgName = usrMrg.displayName
-             result.userKeepName = usrKeep.displayName
+             result.userMerge = usrMrg
+             result.userKeep = usrKeep
            }else{
             log.error("Missing keep/merge userid ${params}");
             flash.error = "Please select'user to keep' and 'user to merge' from the dropdown."
@@ -276,7 +281,7 @@ class AdminController {
       if(!currentAffil.contains(affil)){
 
         // We should check that the new role does not already exist
-        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRoleAndStatus(affil.org,usrKeep,affil.formalRole,3);
+        def existing_affil_check = UserOrg.findByOrgAndUserAndFormalRole(affil.org,usrKeep,affil.formalRole);
 
         if ( existing_affil_check == null ) {
           log.debug("No existing affiliation");
@@ -290,6 +295,10 @@ class AdminController {
           }
         }
         else {
+          if (affil.status != existing_affil_check.status) {
+            existing_affil_check.status = affil.status
+            existing_affil_check.save()
+          }
           log.debug("Affiliation already present - skipping ${existing_affil_check}");
         }
       }
@@ -387,6 +396,15 @@ class AdminController {
       s.save(flush:true)
     }
     redirect controller: 'admin', action:'settings'
+  }
+
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def esIndexUpdate() { 
+    log.debug("manual start full text index");
+    dataloadService.updateSiteMapping();
+    dataloadService.updateFTIndexes();
+    log.debug("redirecting to home...");
+    redirect(controller:'home')
   }
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
@@ -536,6 +554,33 @@ class AdminController {
     redirect(controller:'home')
   }
 
+  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def tippTransfer(){
+    log.debug("tippTransfer :: ${params}")
+    def result = [:]
+    result.error = []
+
+    if(params.sourceTIPP && params.targetTI){
+      def ti = TitleInstance.get(params.long("targetTI"))
+      def tipp = TitleInstancePackagePlatform.get(params.long("sourceTIPP"))
+      if(ti && tipp){
+        tipp.title = ti
+        try{
+          tipp.save(flush:true,failOnError:true)
+          result.success = true
+        }catch(Exception e){
+          log.error(e)
+          result.error += "An error occured while saving the changes."
+        }
+      }else{
+        if(!ti) result.error += "No TitleInstance found with identifier: ${params.targetTI}."
+        if(!tipp) result.error += "No TIPP found with identifier: ${params.sourceTIPP}" 
+      }
+    }
+
+    result
+  }
+
   @Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
   def ieTransfer(){
     log.debug(params)
@@ -581,7 +626,7 @@ class AdminController {
         redirect(action:'titleMerge',params:[titleIdToDeprecate:params.titleIdToDeprecate, correctTitleId:params.correctTitleId])
       }
 
-      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted")
+      result.title_to_deprecate.status = RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Deleted")
       result.title_to_deprecate.save(flush:true);
     }
     result
@@ -589,7 +634,7 @@ class AdminController {
 
   @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
   def orgsExport() {
-    response.setHeader("Content-disposition", "attachment; filename=orgsExport.csv")
+    response.setHeader("Content-disposition", "attachment; filename=\"orgsExport.csv\"")
     response.contentType = "text/csv"
     def out = response.outputStream
     out << "org.name,sector,consortia,id.jusplogin,id.JC,id.Ringold,id.UKAMF,iprange\n"
@@ -682,7 +727,6 @@ class AdminController {
         else {
           def title = null;
           def bindvars = []
-          def title_id_ctr = 0;
           // Set up base_query
           def q = "Select distinct(t) from TitleInstance as t "
           def joinclause = ''
@@ -702,11 +746,10 @@ class AdminController {
               // Namespace and value
               if ( nl[i].trim().length() > 0 ) {
                 if ( disjunction_ctr++ > 0 ) { whereclause += ' OR ' }
-                joinclause += " join t.ids as id${title_id_ctr} "
-                whereclause += " ( id${title_id_ctr}.identifier.ns.ns = ? AND id${title_id_ctr}.identifier.value = ? ) "
+                joinclause = " join t.ids as id "
+                whereclause += " ( id.identifier.ns.ns = ? AND id.identifier.value = ? ) "
                 bindvars.add(cn.substring(9))
                 bindvars.add(nl[i])
-                title_id_ctr++
               }
             }
             i++;
@@ -750,26 +793,7 @@ class AdminController {
       }
     }
   }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def manageCustomProperties() {
-    def result = [:]
-    result.user = User.get(springSecurityService.principal.id)
-    result.items = PropertyDefinition.executeQuery('select p from com.k_int.custprops.PropertyDefinition as p');
-    result.newProp = flash.newProp
-    result.error = flash.error
-    result
-  }
-
-  @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def deleteCustprop() {
-    def pd = PropertyDefinition.get(params.id);
-    if ( pd != null ) {
-      pd.removeProperty();
-    }
-    redirect(controller:'admin',action:'manageCustomProperties')
-  }
-
+  
     @Secured(['ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
     def uploadIssnL() {
         def result=[:]

@@ -7,7 +7,6 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class BootStrap {
 
-  def ESWrapperService
   def dataloadService
   def grailsApplication
   // def docstoreService
@@ -254,48 +253,88 @@ class BootStrap {
     addDefaultJasperReports()
     addDefaultPageMappings()
     createLicenceProperties()
-
+    initializeDefaultSettings()
     log.debug("Init completed....");
    
   }
 
+  def initializeDefaultSettings(){
+    def admObj = SystemAdmin.list()
+    if(!admObj){
+        log.debug("No SystemAdmin object found, creating new.");
+        admObj = new SystemAdmin(name:"demo").save();
+    }else{
+      admObj = admObj.first()
+    }
+    //Will not overwrite any existing database properties.
+    createDefaultSysProps(admObj);
+    admObj.refresh()
+    log.debug("Finished updating config from SystemAdmin")
+  }
+
+  def createDefaultSysProps(admObj){
+    def requiredProps = [
+    [propname:"onix_ghost_licence",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"Jisc Collections Model Journals Licence 2015",note:"Default licence used for comparison when viewing a single onix licence."],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.keep.first.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"columnHeader",note:"Only show 1 column header for csv"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"columnHeader",note:"Only show 1 column header for xls"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageHeader",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.xls.exclude.origin.band.2",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageFooter",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.band.1",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageHeader",note:" Remove header/footer from csv/xls"],
+    [propname:"net.sf.jasperreports.export.csv.exclude.origin.band.2",descr:PropertyDefinition.SYS_CONF,type:String.toString(),val:"pageFooter",note:" Remove header/footer from csv/xls"]
+    ]
+    createCustomProperties(requiredProps)
+    requiredProps.each{
+      def type = PropertyDefinition.findByNameAndDescr(it.propname,it.descr)
+      if(!SystemAdminCustomProperty.findByType(type)){
+        def newProp = new SystemAdminCustomProperty(type:type,owner:admObj,stringValue:it.val,note:it.note)
+        newProp.save()
+      }
+    }
+  }
+
+
   def createLicenceProperties() {
     def existingProps = LicenseCustomProperty.findAll()
-    def requiredProps = [[propname:"Concurrent Access", descr:'',type:RefdataValue.toString(), cat:'ConcurrentAccess'],
-                         [propname:"Concurrent Users", descr:'',type: Integer.toString()],
-                         [propname:"Remote Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Walk In Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Multi Site Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Partners Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Alumni Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"ILL - InterLibraryLoans", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Include In Coursepacks", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Include in VLE", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Enterprise Access", descr:'',type: RefdataValue.toString(), cat:'YNO'],
-                         [propname:"Post Cancellation Access Entitlement", descr:'',type: RefdataValue.toString(), cat:'YNO'], 
-                         [propname:"Cancellation Allowance", descr:'',type: String.toString()], 
-                         [propname:"Notice Period", descr:'',type: String.toString()], 
-                         [propname:"Signed", descr:'',type: RefdataValue.toString(), cat:'YNO']]
-
+    def requiredProps = [[propname:"Concurrent Access", descr:PropertyDefinition.LIC_PROP,type:RefdataValue.toString(), cat:'ConcurrentAccess'],
+                         [propname:"Concurrent Users", descr:PropertyDefinition.LIC_PROP,type: Integer.toString()],
+                         [propname:"Remote Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Walk In Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Multi Site Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Partners Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Alumni Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"ILL - InterLibraryLoans", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include In Coursepacks", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Include in VLE", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Enterprise Access", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'],
+                         [propname:"Post Cancellation Access Entitlement", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO'], 
+                         [propname:"Cancellation Allowance", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
+                         [propname:"Notice Period", descr:PropertyDefinition.LIC_PROP,type: String.toString()], 
+                         [propname:"Signed", descr:PropertyDefinition.LIC_PROP,type: RefdataValue.toString(), cat:'YNO']]
+    createCustomProperties(requiredProps)
+    log.debug("createLicenceProperties completed");
+  }
     
+  def createCustomProperties(requiredProps){
+
     requiredProps.each{ default_prop ->
-       if ( PropertyDefinition.findByName(default_prop.propname) == null ) {
+        def existing_prop = PropertyDefinition.findByName(default_prop.propname)
+       if ( existing_prop ) {
+          existing_prop.type = default_prop.type
+          existing_prop.descr = default_prop.descr
+          existing_prop.save()
+       }else{
 
           log.debug("Unable to locate property definition for ${default_prop.propname}.. Creating");
 
           def newProp = new PropertyDefinition(name: default_prop.propname, 
                                                type: default_prop.type, 
-                                               descr: "edit desc")
+                                               descr: default_prop.descr)
           if ( default_prop.cat != null )
             newProp.setRefdataCategory(default_prop.cat);
 
-          newProp.save()
-       }
-       else {
-          log.debug("Got property definition for ${default_prop.propname}");
+          newProp.save(failOnError:true)
        }
     }
-    log.debug("createLicenceProperties completed");
   }
 
   def addDefaultPageMappings(){
@@ -413,28 +452,28 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Uncharged").save()
     RefdataCategory.lookupOrCreate("TitleInstancePackagePlatform.PaymentType", "Unknown").save()
   
-    RefdataCategory.lookupOrCreate("TIPP Status", "Current").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Expected").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Deleted").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Transferred").save()
-    RefdataCategory.lookupOrCreate("TIPP Status", "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Current").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Expected").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Deleted").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Transferred").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS, "Unknown").save()
 
-    RefdataCategory.lookupOrCreate("Package.ListStatus", "Checked").save()
-    RefdataCategory.lookupOrCreate("Package.ListStatus", "In Progress").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Breakable", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Consistent", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "No").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "Yes").save()
-    RefdataCategory.lookupOrCreate("Package.Fixed", "Unknown").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Aggregator").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Front File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Back File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Master File").save()
-    RefdataCategory.lookupOrCreate("Package.Scope", "Scope Undefined").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "Checked").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_LIST_STAT, "In Progress").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_BREAKABLE, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_CONSISTENT, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "No").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "Yes").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_FIXED, "Unknown").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Aggregator").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Front File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Back File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Master File").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.PKG_SCOPE, "Scope Undefined").save()
 
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Pending").save()
     RefdataCategory.lookupOrCreate("PendingChangeStatus", "Accepted").save()
@@ -444,8 +483,8 @@ class BootStrap {
     RefdataCategory.lookupOrCreate("LicenseCategory", "Software").save()
     RefdataCategory.lookupOrCreate("LicenseCategory", "Other").save()
 
-    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Current").save()
-    RefdataCategory.lookupOrCreate("TitleInstanceStatus", "Deleted").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Current").save()
+    RefdataCategory.lookupOrCreate(RefdataCategory.TI_STATUS, "Deleted").save()
 
     RefdataCategory.lookupOrCreate("License Status", "In Progress").save()
 

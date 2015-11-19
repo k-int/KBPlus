@@ -8,75 +8,26 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
-
-  def refdata_config = [
-    'ContentProvider' : [
+    def refdata_config = [
+    "ContentProvider" : [
       domain:'Org',
       countQry:'select count(o) from Org as o where lower(o.name) like ?',
       rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
       qryParams:[
-                  [
-                    param:'sSearch',
-                    clos:{ value ->
-                      def result = '%'
-                      if ( value && ( value.length() > 0 ) )
+              [
+                param:'sSearch',
+                clos:{ value ->
+                    def result = '%'
+                    if ( value && ( value.length() > 0 ) )
                         result = "%${value.trim().toLowerCase()}%"
-                      result
-                    }
-                  ]
-                ],
+                    result
+                }
+              ]
+      ],
       cols:['name'],
       format:'map'
     ],
-    'PackageType' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package Type'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'CoreStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='CoreStatus'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YN' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YN'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YN'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'YNO' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='YNO'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='YNO'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TIPP Status'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'ConcurrentAccess' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Concurrent Access'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Licenses' : [
+    "Licenses" : [
       domain:'License',
       countQry:"select count(l) from License as l",
       rowQry:"select l from License as l",
@@ -84,86 +35,19 @@ class AjaxController {
       cols:['reference'],
       format:'simple'
     ],
-    'TIPPStatusReason' : [
+    'Currency' : [
       domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Tipp.StatusReason'",
-      qryParams:[],
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      qryParams:[
+                   [
+                      param:'iDisplayLength',
+                      value: 200
+                   ]
+      ],
       cols:['value'],
       format:'simple'
-    ],
-    'TIPPDelayedOA' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.DelayedOA'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPHybridOA' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.HybridOA'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'TIPPPaymentType' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='TitleInstancePackagePlatform.PaymentType'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.ListStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.ListStatus'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Breakable' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Breakable'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Consistent' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Consistent'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Fixed' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Fixed'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'Package.Scope' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Package.Scope'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
-    'SubscriptionStatus' : [
-      domain:'RefdataValue',
-      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Subscription Status'",
-      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Subscription Status'",
-      qryParams:[],
-      cols:['value'],
-      format:'simple'
-    ],
+    ]
   ]
 
 
@@ -265,7 +149,6 @@ class AjaxController {
     // log.debug("setFieldTableNote(${params})")
     def domain_class=grailsApplication.getArtefact('Domain',"com.k_int.kbplus.${params.type}")
     if ( domain_class ) {
-      println params.id
       def instance = domain_class.getClazz().get(params.id)
        
       if ( instance ) {
@@ -462,10 +345,9 @@ class AjaxController {
 
     // log.debug("refdataSearch params: ${params}");
     
-    // http://datatables.net/blog/Introducing_Scroller_-_Virtual_Scrolling_for_DataTables
     def result = [:]
-    
-    def config = refdata_config[params.id]
+    //we call toString in case we got a GString
+    def config = refdata_config.get(params.id?.toString())
 
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
@@ -485,7 +367,7 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        // log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
+        log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
         if ( qp.clos ) {
           query_params.add(qp.clos(params[qp.param]?:''));
         }
@@ -546,8 +428,8 @@ class AjaxController {
     // log.debug("sel2RefdataSearch params: ${params}");
     
     def result = []
-    
-    def config = refdata_config[params.id]
+    //we call toString in case we got a GString
+    def config = refdata_config.get(params.id?.toString())
 
     if ( config == null ) {
       // If we werent able to locate a specific config override, assume the ID is just a refdata key
@@ -565,8 +447,11 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        if ( qp.clos ) {
+        if ( qp?.clos) {
           query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else if(qp?.value) {
+            params."${qp.param}" = qp?.value
         }
         else {
           query_params.add(params[qp.param]);
@@ -648,7 +533,7 @@ class AjaxController {
     if(params.redirect){
       flash.newProp = newProp
       flash.error = error
-      redirect(controller:"admin",action:"manageCustomProperties")
+      redirect(controller:"propertyDefinition",action:"create")
     }else{
       render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
     }
@@ -761,7 +646,7 @@ class AjaxController {
   }
 
   def addToCollection() {
-    // log.debug("AjaxController::addToCollection ${params}");
+    log.debug("AjaxController::addToCollection ${params}");
 
     def contextObj = resolveOID2(params.__context)
     def domain_class = grailsApplication.getArtefact('Domain',params.__newObjectClass)
@@ -780,7 +665,10 @@ class AjaxController {
                 // Set ref property
                 // log.debug("set assoc ${p.name} to lookup of OID ${params[p.name]}");
                 // if ( key == __new__ then we need to create a new instance )
-                new_obj[p.name] = resolveOID2(params[p.name])              
+                def new_assoc = resolveOID2(params[p.name])
+                if(new_assoc){
+                  new_obj[p.name] = new_assoc               
+                }
               }
               else {
                 // Add to collection
@@ -801,16 +689,23 @@ class AjaxController {
         }
 
         // log.debug("Saving ${new_obj}");
-        if ( new_obj.save() ) {
-          // log.debug("Saved OK");
-        }
-        else {
-          flash.domainError = new_obj
-          new_obj.errors.each { e ->
-            log.debug("Problem ${e}");
+        try{
+          if ( new_obj.save() ) {
+            log.debug("Saved OK");
           }
-        }
+          else {
+            flash.domainError = new_obj
+            new_obj.errors.each { e ->
+              log.debug("Problem ${e}");
+            }
+          }
+        }catch(Exception ex){
 
+            flash.domainError = new_obj
+            new_obj.errors.each { e ->
+            log.debug("Problem ${e}");
+            }
+        }
       }
       else {
         log.debug("Unable to locate instance of context class with oid ${params.__context}");
@@ -821,18 +716,41 @@ class AjaxController {
     }
     redirect(url: request.getHeader('referer'))
   }
+
   def validateIdentifierUniqueness(){
     log.debug("validateIdentifierUniqueness - ${params}")
     def result = [:]
     def owner = resolveOID2(params.owner)
     def identifier = resolveOID2(params.identifier)
-    def duplicates = identifier.occurrences.findAll{it.ti != owner && it.ti != null}?.collect{it.ti}
+    def owner_type = null
+    switch(owner.class){
+      case Subscription:
+        owner_type = "sub"
+        break;
+      case(TitleInstance):
+        owner_type = "ti"
+        break;
+      case (Package):
+        owner_type = "pkg"
+        break;
+      case TitleInstancePackagePlatform:
+        owner_type = "tipp"
+        break;
+      case Org:
+        owner_type = "org"
+        break
+      default:
+        log.error("Unexpected Identifier Owner ${owner.class}")
+        return null
+    }    
+    def duplicates = identifier?.occurrences.findAll{it."${owner_type}" != owner && it."${owner_type}" != null}?.collect{it."${owner_type}"}
     if(duplicates){
       result.duplicates = duplicates
     }
     else{
       result.unique=true
     }
+    log.debug("validateIdentifierUniqueness - ${result}")
     render result as JSON
   }
 
@@ -844,7 +762,7 @@ class AjaxController {
     if ( domain_class ) {
       if ( oid_components[1]=='__new__' ) {
         result = domain_class.getClazz().refdataCreate(oid_components)
-        // log.debug("Result of create ${oid} is ${result.id}");
+        // log.debug("Result of create ${oid} is ${result?.id}");
       }
       else {
         result = domain_class.getClazz().get(oid_components[1])

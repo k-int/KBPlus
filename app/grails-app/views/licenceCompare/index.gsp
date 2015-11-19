@@ -24,7 +24,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="span8">
-				<g:form id="compare" name="compare" action="compare" method="post">
+				<g:form id="compare" name="compare" action="compare" method="get">
 					<input type="hidden" name="institution" value="${institution?.id}"/>
 					<div>
 						<label for="addIdentifierSelect">Search licence for comparison:</label>
@@ -36,8 +36,6 @@
 					<label for="selectedLicences">Licences selected for comparison:</label>
 					
 					<g:select style="width:90%; word-wrap: break-word;" id="selectedLicences" name="selectedLicences" class="compare-license" from="${[]}" multiple="true" />
-
-
 			
 					<div>
 					  <input id="submitButton" disabled='true' type="submit" value="Compare"  name="Compare" class="btn btn-primary" />

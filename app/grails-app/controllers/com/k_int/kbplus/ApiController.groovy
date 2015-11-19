@@ -162,7 +162,7 @@ where tipp.title = ? and orl.roleType.value=?''',[title,'Content Provider']);
 
     def date = new java.text.SimpleDateFormat(session.sessionPreferences?.globalDateFormat)
     date = date.format(new Date())
-    response.setHeader("Content-disposition", "attachment; filename=kbplus_jusp_export_${date}.csv")
+    response.setHeader("Content-disposition", "attachment; filename=\"kbplus_jusp_export_${date}.csv\"")
     response.contentType = "text/csv"
     def out = response.outputStream
     def currentTip = null

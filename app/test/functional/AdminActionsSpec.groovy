@@ -69,15 +69,5 @@ class AdminActionsSpec extends GebReportingSpec {
       true
       // messageBox("successful")
   }
-
-  def "Load issn-l files"(){
-    setup:
-      to ProfilePage
-    when:
-      to UploadIssnLPage
-      $('form').sameasfile = Data.issnl_mapping_file
-      $('button', text: "Upload...").click()
-    then:
-      $('div.alert-info').verifyNotEmpty() 
-  }
 }
+

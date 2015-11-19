@@ -20,7 +20,7 @@
               <g:link action="currentLicenses" params="${params+[format:'csv']}">CSV Export</g:link>
             </li>
             <g:each in="${transforms}" var="transkey,transval">
-                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}"> ${transval.name}</g:link></li>
+                <li><g:link action="currentLicenses" params="${params+[format:'xml',transformId:transkey,format_content:'subie']}">${transval.name}</g:link></li>
               </g:each>
           </ul>
         </li>
@@ -67,11 +67,7 @@
 
                 <form class="form-inline">
                     <label>Valid On:</label> 
-                        <div class="input-append date">
-                          <input class="span2 datepicker-class" size="16" type="text" 
-                          name="validOn" value="${validOn}">
-                        </div>
-
+                    <input size="10" type="text"  id="datepicker-validOn" name="validOn" value="${validOn}">
                     <label>Search by Reference:</label>
                     <input type="text" name="keyword-search" placeholder="enter search term..." value="${params['keyword-search']?:''}" />
                     <br/>
@@ -93,11 +89,12 @@
           </div>
       </div>
 
+
+
+        <div class="container licence-results">
         <g:if test="${licenseCount && licenseCount>0}">
           <span>Showing ${licenseCount} licenses</span>
         </g:if>
-
-        <div class="container licence-results">
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -146,7 +143,7 @@
 
     <r:script type="text/javascript">
 
-        $(".datepicker-class").datepicker({
+        $("#datepicker-validOn").datepicker({
             format:"${session.sessionPreferences?.globalDatepickerFormat}"
         });
 

@@ -1,21 +1,4 @@
 select "Upgrade-post";
-ALTER TABLE org CHANGE COLUMN org_status_rv_fk org_status_rv_fk BIGINT(20) NULL DEFAULT NULL ;
-UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=0;
 
-
-select @NoticePeriodId := pd_id from property_definition where pd_name = 'Notice Period';
-
-select 'Select the notice period property and create new custom propertie values for each license';
-
-insert into license_custom_property(version,owner_id, note, string_value, type_id) 
- select 0, lic_id, " ", lic_notice_period, @NoticePeriodId 
-   from license where lic_notice_period is not null and lic_notice_period != "";
-
-UPDATE org SET org_status_rv_fk=NULL where org_status_rv_fk=1;
-
-UPDATE license SET date_created=now() where date_created=0;
-UPDATE license SET last_updated=NULL where last_modified=0;
-UPDATE subscription SET date_created=now() where last_modified=0;
-UPDATE subscription SET last_updated=NULL where last_modified=0;
-
-select count(*) as num_lic_dc_zero from license where date_created=0;
+update license set lic_lastmod = now() where lic_lastmod=0;
+update license set date_created = now() where date_created=0;

@@ -53,6 +53,15 @@
 
 </body>
 <r:script language="JavaScript">
+
+     $(function () {
+        var repname = $('#available_reports option:selected').text()
+        jQuery.ajax({type:'POST',data:{'report_name': repname}, url:'${createLink(controller: 'jasperReports', action: 'index')}'
+        ,success:function(data,textStatus){jQuery('#report_details').html(data);}
+        ,error:function(XMLHttpRequest,textStatus,errorThrown){}
+        ,complete:function(XMLHttpRequest,textStatus){runJasperJS()}});
+    });
+
     $(function () {
         $('#available_reports').change(function() {
             var repname = $('#available_reports option:selected').text()

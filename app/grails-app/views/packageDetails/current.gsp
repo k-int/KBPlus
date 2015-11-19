@@ -15,18 +15,6 @@
         <li><g:link controller="packageDetails" action="index">All Packages</g:link><span class="divider">/</span></li>
         <li><g:link controller="packageDetails" action="show" id="${packageInstance.id}">${packageInstance.name}</g:link></li>
 
-        <li class="dropdown pull-right">
-          <a class="dropdown-toggle badge" id="export-menu" role="button" data-toggle="dropdown" data-target="#" href="">Exports<b class="caret"></b></a>
-
-          <ul class="dropdown-menu filtering-dropdown-menu" role="menu" aria-labelledby="export-menu">
-            <li><g:link action="show" params="${params+[format:'json']}">Json Export</g:link></li>
-            <li><g:link action="show" params="${params+[format:'xml']}">XML Export</g:link></li>
-            <g:each in="${transforms}" var="transkey,transval">
-              <li><g:link action="show" id="${params.id}" params="${[format:'xml',transformId:transkey]}"> ${transval.name}</g:link></li>
-            </g:each>
-          </ul>
-        </li>
-
         <li class="pull-right">
           View:
           <div class="btn-group" data-toggle="buttons-radio">
@@ -152,7 +140,7 @@
             <tr>
               <th>&nbsp;</th>
               <th>&nbsp;</th>
-              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th style="">Platform</th>
               <th style="">Identifiers</th>
               <th style="">Coverage Start</th>
@@ -175,7 +163,7 @@
                    <g:link controller="tipp" action="show" id="${t.id}">(TIPP)</g:link><br/>
                    <span title="${t.availabilityStatusExplanation}">Access: ${t.availabilityStatus?.value}</span>
                    <g:if test="${params.mode=='advanced'}">
-                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config='TIPPStatus'/>
+                     <br/> Record Status: <g:xEditableRefData owner="${t}" field="status" config="TIPP Status"/>
                      <br/> Access Start: <g:xEditable owner="${t}" type="date" field="accessStartDate" />
                      <br/> Access End: <g:xEditable owner="${t}" type="date" field="accessEndDate" />
                    </g:if>

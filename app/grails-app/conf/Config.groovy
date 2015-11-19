@@ -2,11 +2,14 @@
 // config files can either be Java properties files or ConfigSlurper scripts
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.apache.log4j.DailyRollingFileAppender
+import org.apache.log4j.RollingFileAppender
 
 customProperties =[
 "org":["journalAccess":["name":"Public Journal Access","class":String.toString(),"note":"Set the required rights for accessing the public Journals page. For example 'Staff,Student,Public' or leave empty/delete for no public access."]
       ]
 ]
+
 onix = [
   "codelist" : "ONIX_PublicationsLicense_CodeLists.xsd",
   "comparisonPoints" : [
@@ -329,6 +332,7 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
 
 // What URL patterns should be processed by the resources plugin
 grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**']
 
 
 // The default codec used to encode data with ${}
@@ -391,7 +395,7 @@ titlelistTransforms = [
 ]
 
 packageTransforms = [
-  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'txt', returnMime:'text/plain'],
+  'kbplus':[name:'KBPlus(CSV)', xsl:'kbplusimp.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
   'kbart2':[name:'KBART II', xsl:'kbartii.xsl', returnFileExtention:'tsv', returnMime:'text/tab-separated-values']
 
 ]
@@ -399,6 +403,43 @@ licenceTransforms = [
   'sub_ie':[name:'Licensed Issue Entitlements (CSV)', xsl:'licenced_titles.xsl', returnFileExtention:'csv', returnMime:'text/csv'],
   'sub_pkg':[name:'Licensed Subscriptions/Packages (CSV)', xsl:'licenced_subscriptions_packages.xsl', returnFileExtention:'csv', returnMime:'text/csv']
 ]
+
+
+// Log directory/created in current working dir if tomcat var not found.
+def logWatchFile
+
+// First lets see if we have a log file present.
+def base = System.getProperty("catalina.base")
+if (base) {
+   logWatchFile = new File ("${base}/logs/catalina.out")
+
+   if (!logWatchFile.exists()) {
+
+     // Need to create one in current context.
+     base = false;
+   }
+}
+
+if (!base) {
+  logWatchFile = new File("logs/kbplus.log")
+}
+
+// Log file variable.
+def logFile = logWatchFile.canonicalPath
+
+log.info("Using log file location: ${logFile}")
+
+// Also add it as config value too.
+log_location = logFile
+
+grails {
+  fileViewer {
+    locations = ["${logFile}"]
+    linesCount = 250
+    areDoubleDotsAllowedInFilePath = false
+  }
+}
+
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console
@@ -412,8 +453,21 @@ log4j = {
 
   appenders {
     console name: "stdout", threshold: org.apache.log4j.Level.ALL
+    if (!base) {
+      appender new RollingFileAppender(
+          name: 'dailyAppender',
+          fileName: (logFile),
+          layout: pattern(conversionPattern:'%d [%t] %-5p %c{2} %x - %m%n')
+      )
+    }
   }
-
+  root {
+    if (!base) {
+      error 'stdout', 'dailyAppender'
+    } else {
+      error 'stdout'
+    }
+  }
   //    // Enable Hibernate SQL logging with param values
   //    trace 'org.hibernate.type'
   // debug 'org.hibernate.SQL'
@@ -451,6 +505,7 @@ log4j = {
 }
 
 // Added by the Spring Security Core plugin:
+grails.gsp.tldScanPattern='classpath*:/META-INF/*.tld,/WEB-INF/tld/*.tld'
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.k_int.kbplus.auth.User'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.k_int.kbplus.auth.UserRole'
 grails.plugins.springsecurity.userLookup.usernamePropertyName='username'
@@ -486,13 +541,6 @@ auditLog {
   }
 }
 
-// grails.resources.modules = {
-//   overrides {
-//     'jquery-theme' {
-//       resource id:'theme', url:'/css/path/to/jquery-ui-1.8.17.custom.css'
-//     }
-//   }
-// }
 
 appDefaultPrefs {
   globalDatepickerFormat='yyyy-mm-dd'
@@ -786,3 +834,7 @@ grails.mail.poolSize=20 //default 5 emails at a time, then que based system (pre
 notifications.email.from='notification@kbplus.ac.uk'
 notifications.email.replyTo='no-reply@kbplus.ac.uk'
 notifications.email.genericTemplate=true //If enabled, no customisation in email i.e. Reminder inst info, User info... Else, Customised template will be sent to user
+
+//Finance
+grails.plugins.remotepagination.enableBootstrap=true
+financials.currency="GBP - United Kingdom Pound|EUR - Euro Member Countries|USD - United States Dollar|CHF - Switzerland Franc" //List in priority of order

@@ -1,11 +1,12 @@
 package com.k_int.kbplus
 
 import javax.persistence.Transient
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+ 
 import org.hibernate.proxy.HibernateProxy
 import com.k_int.ClassUtils
 import org.springframework.context.i18n.LocaleContextHolder
 import org.apache.commons.logging.*
+import groovy.time.TimeCategory
 
 class TitleInstancePackagePlatform {
   @Transient
@@ -134,13 +135,15 @@ class TitleInstancePackagePlatform {
     touchPkgLastUpdated()
   }
   def beforeInsert() {
-      touchPkgLastUpdated()
+    touchPkgLastUpdated()
   }
 
   @Transient
   def touchPkgLastUpdated(){
     if(pkg!=null){
-      pkg.lastUpdated ++
+      use(TimeCategory) {
+        pkg.lastUpdated += 1.seconds
+      }
       pkg.save(failOnError:true)
     }
   }
@@ -251,7 +254,7 @@ class TitleInstancePackagePlatform {
     changeNotificationService.broadcastEvent("com.k_int.kbplus.Package:${pkg.id}", changeDocument);
     changeNotificationService.broadcastEvent("${this.class.name}:${this.id}", changeDocument);
 
-    def deleted_tipp_status = RefdataCategory.lookupOrCreate('TIPP Status','Deleted');
+    def deleted_tipp_status = RefdataCategory.lookupOrCreate(RefdataCategory.TIPP_STATUS,'Deleted');
     def deleted_tipp_status_oid = "com.k_int.kbplus.RefdataValue:${deleted_tipp_status.id}".toString()
 
     if ( ( changeDocument.event=='TitleInstancePackagePlatform.updated' ) && 

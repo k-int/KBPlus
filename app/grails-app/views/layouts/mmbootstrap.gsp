@@ -121,7 +121,7 @@
                                <li><g:link controller="myInstitutions"
                                            action="emptySubscription"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
-                               <g:if test="${grailsApplication.config.feature.finance}">
+                               <g:if test="${grailsApplication.config.feature_finance}">
                                  <li><g:link controller="myInstitutions"
                                              action="financeImport"
                                              params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
@@ -199,6 +199,17 @@
                          <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'settings'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="settings">System Settings</g:link></li>
+                    <li class="dropdown-submenu">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">System Admin</a>
+                      <ul class="dropdown-menu">
+
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="appConfig">App Config</g:link></li>
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="appInfo">App Info</g:link></li>
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="logViewer">Log Viewer</g:link></li>
+                        </ul>
                       <li class="divider"></li>
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
@@ -234,6 +245,9 @@
                            <g:link controller="dataManager" onclick="return confirm('This will only delete TIPPs that are not attached to current IEs.')" action="expungeDeletedTIPPS">Expunge Deleted TIPPS</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'titleMerge'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="titleMerge">Title Merge</g:link>
+                      </li>
+                      <li <%= ( ( 'admin'== controllerName ) && ( 'tippTransfer'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="tippTransfer">TIPP Transfer</g:link>
                       </li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'ieTransfer'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="ieTransfer">IE Transfer</g:link>
@@ -271,8 +285,8 @@
                           </li>
                         </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageCustomProperties'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="manageCustomProperties">Manage Custom Properties</g:link>
+                      <li <%= ( ( 'propertyDefinition'== controllerName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="propertyDefinition" action="list">Manage Custom Properties</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>
@@ -288,8 +302,10 @@
                              <g:link controller="admin" action="triggerHousekeeping">Trigger Housekeeping</g:link> </li>
                           <li <%= ( ( 'admin'== controllerName ) && ( 'initiateCoreMigration'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="initiateCoreMigration">Initiate Core Migration</g:link> </li>
-                          <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
-                            <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          <g:if test="${grailsApplication.config.feature.issnl}">
+                            <li <%= ( ( 'admin'== controllerName ) && ( 'uploadIssnL'==actionName ) ) ? ' class="active"' : '' %>>
+                              <g:link controller="admin" action="uploadIssnL">Upload ISSN to ISSN-L File</g:link> </li>
+                          </g:if>
                           <li <%= ( ( 'admin'== controllerName ) && ( 'dataCleanse'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="dataCleanse">Run Data Cleaning (Nominal Platforms)</g:link>
                           </li>
@@ -299,8 +315,8 @@
                           <li <%= ( ( 'admin'== controllerName ) && ( 'fullReset'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="admin" action="fullReset">Run Full ES Index Reset</g:link>
                           </li>
-                          <li <%= ( ( 'startFTIndex'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="startFTIndex" action="index">Start ES Index Update</g:link>
+                          <li <%= ( ( 'admin'== controllerName ) && ( 'esIndexUpdate'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="admin" action="esIndexUpdate">Start ES Index Update</g:link>
                       </li>
                         </ul>
                       </li>

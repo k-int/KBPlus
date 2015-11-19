@@ -113,7 +113,7 @@
             <tr>
               <th rowspan="2"></th>
               <th rowspan="2">#</th>
-              <g:sortableColumn params="${params}" property="tipp.title.title" title="Title" />
+              <g:sortableColumn params="${params}" property="tipp.title.sortTitle" title="Title" />
               <th rowspan="2">Entitlement Medium (P/E)</th>
               <g:sortableColumn params="${params}" property="startDate" title="Earliest date" />
               <g:sortableColumn params="${params}" property="core_status" title="Core Status" />
