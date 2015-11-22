@@ -77,10 +77,18 @@ class DataManagerController {
     result.actors = []
     def actors_dms = []
     def actors_users = []
+
     def all_types = [ 'com.k_int.kbplus.Package','com.k_int.kbplus.License','com.k_int.kbplus.TitleInstance','com.k_int.kbplus.TitleInstancePackagePlatform' ]
+
+    // Get a distinct list of actors
     def auditActors = AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  )',[l:all_types])
+
     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
-    def rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery("select distinct(userorg.user.username) from UserOrg as userorg where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)",[formal_role:formal_role,actors:auditActors])
+
+     
+    // From the list of users, extract and who have the INST_ADM role
+    def rolesMa = auditActors.size() > 0 ? com.k_int.kbplus.auth.UserOrg.executeQuery("select distinct(userorg.user.username) from UserOrg as userorg where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)",[formal_role:formal_role,actors:auditActors] : [] )
+
     auditActors.each {
       def u = User.findByUsername(it)
       
@@ -92,10 +100,14 @@ class DataManagerController {
         }
       }
     }
+
+    // Sort the list of data manager users
     actors_dms.sort{it[1]}
+
+    // Sort the list of ordinary users
     actors_users.sort{it[1]}
 
-   result.actors = actors_dms.plus(actors_users)
+    result.actors = actors_dms.plus(actors_users)
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
