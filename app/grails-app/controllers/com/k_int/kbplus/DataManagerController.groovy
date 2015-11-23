@@ -81,6 +81,7 @@ class DataManagerController {
     def auditActors = AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  )',[l:all_types])
     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
     def rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery("select distinct(userorg.user.username) from UserOrg as userorg where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)",[formal_role:formal_role,actors:auditActors])
+
     auditActors.each {
       def u = User.findByUsername(it)
       
