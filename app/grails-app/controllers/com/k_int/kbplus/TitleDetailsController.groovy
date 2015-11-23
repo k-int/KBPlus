@@ -289,12 +289,13 @@ class TitleDetailsController {
     result.max = params.max ? Integer.parseInt(params.max) : user.defaultPageSize
     result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
     
-    def ti_cat = RefdataCategory.findByDesc("TitleInstanceStatus")
+    def ti_cat = RefdataCategory.findByDesc(RefdataCategory.TI_STATUS)
+
     result.availableStatuses = RefdataValue.findAllByOwner(ti_cat).collect{it.toString()}
     def ti_status = null
     if(params.status){
       if(result.availableStatuses.contains(params.status)){
-        ti_status = RefdataCategory.lookupOrCreate( "TitleInstanceStatus", params.status )
+        ti_status = RefdataCategory.lookupOrCreate( RefdataCategory.TI_STATUS, params.status )
       }
     }
     

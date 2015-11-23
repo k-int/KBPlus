@@ -8,22 +8,22 @@ import com.k_int.custprops.PropertyDefinition
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class AjaxController {
-  def refdata_config = [
+    def refdata_config = [
     "ContentProvider" : [
       domain:'Org',
       countQry:'select count(o) from Org as o where lower(o.name) like ?',
       rowQry:'select o from Org as o where lower(o.name) like ? order by o.name asc',
       qryParams:[
-                  [
-                    param:'sSearch',
-                    clos:{ value ->
-                      def result = '%'
-                      if ( value && ( value.length() > 0 ) )
+              [
+                param:'sSearch',
+                clos:{ value ->
+                    def result = '%'
+                    if ( value && ( value.length() > 0 ) )
                         result = "%${value.trim().toLowerCase()}%"
-                      result
-                    }
-                  ]
-                ],
+                    result
+                }
+              ]
+      ],
       cols:['name'],
       format:'map'
     ],
@@ -33,6 +33,19 @@ class AjaxController {
       rowQry:"select l from License as l",
       qryParams:[],
       cols:['reference'],
+      format:'simple'
+    ],
+    'Currency' : [
+      domain:'RefdataValue',
+      countQry:"select count(rdv) from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      rowQry:"select rdv from RefdataValue as rdv where rdv.owner.desc='Currency'",
+      qryParams:[
+                   [
+                      param:'iDisplayLength',
+                      value: 200
+                   ]
+      ],
+      cols:['value'],
       format:'simple'
     ]
   ]
@@ -354,7 +367,7 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        // log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
+        log.debug("Processing query param ${qp} value will be ${params[qp.param]}");
         if ( qp.clos ) {
           query_params.add(qp.clos(params[qp.param]?:''));
         }
@@ -434,8 +447,11 @@ class AjaxController {
 
       def query_params = []
       config.qryParams.each { qp ->
-        if ( qp.clos ) {
+        if ( qp?.clos) {
           query_params.add(qp.clos(params[qp.param]?:''));
+        }
+        else if(qp?.value) {
+            params."${qp.param}" = qp?.value
         }
         else {
           query_params.add(params[qp.param]);
@@ -517,7 +533,7 @@ class AjaxController {
     if(params.redirect){
       flash.newProp = newProp
       flash.error = error
-      redirect(controller:"admin",action:"manageCustomProperties")
+      redirect(controller:"propertyDefinition",action:"create")
     }else{
       render(template: "/templates/custom_props", model:[ownobj:owner, newProp:newProp, error:error])        
     }

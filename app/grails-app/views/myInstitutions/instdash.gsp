@@ -36,7 +36,7 @@
           <li><g:link controller="myInstitutions" 
                                        action="renewalsUpload" 
                                        params="${[shortcode:params.shortcode]}">Import Renewals</g:link></li>
-          <g:if test="${grailsApplication.config.feature.finance}">
+          <g:if test="${grailsApplication.config.feature_finance}">
             <li><g:link controller="myInstitutions"
                                        action="finance"
                                        params="${[shortcode:params.shortcode]}">Finance</g:link></li>

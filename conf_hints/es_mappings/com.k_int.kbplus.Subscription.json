@@ -1,5 +1,4 @@
 {
-  "com.k_int.kbplus.Subscription": {
     "properties": {
       "name": {
         "type": "string"
@@ -37,5 +36,4 @@
         "index": "not_analyzed"
       }
     }
-  }
 }

@@ -1,3 +1,4 @@
+
 import geb.spock.GebReportingSpec
 import org.elasticsearch.common.joda.time.LocalDate
 import pages.*
@@ -6,6 +7,7 @@ import com.k_int.kbplus.*
 
 @Stepwise
 class LicenceSpec extends GebReportingSpec {
+
 
     //The following will setup everything required for this test case
     def setupSpec(){
@@ -42,6 +44,18 @@ class LicenceSpec extends GebReportingSpec {
         then:
           at DashboardPage
     }
+    // def "Test Licence Search"(){
+    //   setup:
+    //   def licence = License.findByReference("Test Licence")
+    //   go "myInstitutions/${Data.Org_Url}/currentLicenses"
+    //   when:
+    //     $("input",name:"validOn").value = date
+    //     $("input",type:"submit",value:"Search").click()
+    //     Thread.sleep
+    //   then:
+    //     openLicence("Test Licence")
+
+    // }
 
     def "Test CustomProperties"(){
         def licence = License.findByReference("Test Licence")

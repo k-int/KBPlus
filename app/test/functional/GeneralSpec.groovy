@@ -19,6 +19,18 @@ class GeneralSpec extends BaseSpec {
 	// 	at DashboardPage
 	// }
 
+	def "Search titles" (){
+		setup:
+		$("a", text: "Data Managers").click()
+		$("a", text: "Titles").click()
+		when:
+		$("a", "text": "The British Art Journal")
+		$("input", name: "q").value("American History")
+		$("#search").click()
+		then:
+		$("a", text: "The British Art Journal").isEmpty()
+	}
+
 	def "Create organisation" (){
 		setup:
 		to PublicPage
@@ -812,7 +824,7 @@ class GeneralSpec extends BaseSpec {
 		$("a", text: "All Titles").click(TitleDetailsPage)
 		when:
 		def totalTitles = numberOfResults()
-		searchTitle("A")
+		searchTitle("Zot")
 		then:
 		totalTitles != numberOfResults()
 	}
@@ -825,14 +837,14 @@ class GeneralSpec extends BaseSpec {
 		allPackages()
 		when:
 		def pkgs = numberOfResults()
-		searchPackage("G")
+		searchPackage("Gra")
 		then:
 		pkgs != numberOfResults()
 	}
 
 	def "Renewals Upload" (){
 		setup:
-		changeUser(Data.UserB_name,Data.UserB_passwd)
+		changeUser(Data.UserD_name,Data.UserD_passwd)
 		importRenewals()
 		when:
 		renewalsUpload(Data.RenewalsUploadFile)

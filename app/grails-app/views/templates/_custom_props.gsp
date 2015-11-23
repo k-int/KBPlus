@@ -20,7 +20,7 @@
 <g:if test="${editable}">
 <g:formRemote url="[controller: 'ajax', action: 'addCustomPropertyValue']" method="post" name="cust_prop_add_value"
               class="form-inline" update="custom_props_div" onComplete="runCustomPropsJS('${createLink(controller:'ajax', action:'lookup')}')">
-    <input type="hidden" name="propIdent" id="customPropSelect"/>
+    <input type="hidden" name="propIdent" desc="${prop_desc}" id="customPropSelect"/>
     <input type="hidden" name="ownerId" value="${ownobj.id}"/>
     <input type="hidden" name="editable" value="${editable}"/>
     <input type="hidden" name="ownerClass" value="${ownobj.class}"/>
@@ -103,13 +103,12 @@
 
                 <div class="hide" id="cust_prop_ref_data_name">
                     <dd>
-                        <label class="property-label">Refdata Category:</label> <input type="hidden"
-                                                                                       name="refdatacategory"
-                                                                                       id="cust_prop_refdatacatsearch"/>
+                        <label class="property-label">Refdata Category:</label>
+                         <input type="hidden" name="refdatacategory" id="cust_prop_refdatacatsearch"/>
                     </dd>
                 </div>
                 <dd>
-                    <label class="property-label">Description:</label> <g:textArea name="cust_prop_desc" rows="1"/>
+                    <label class="property-label">Context:</label> <g:select name="cust_prop_desc" from="${PropertyDefinition.AVAILABLE_DESCR}"/>
                 </dd>
                 <dd>
                     Create value for this property: <g:checkBox name="autoAdd" checked="true"/>

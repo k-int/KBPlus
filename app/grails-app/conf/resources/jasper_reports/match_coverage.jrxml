@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-18T12:05:55 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-23T11:41:05 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="matchCoverage" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e367de7d-d0b3-49e0-84b2-c989348c5c1f">
 	<property name="com.jaspersoft.studio.data.sql.tables" value="a2JwbHVzLnRpdGxlX2luc3RhbmNlX3BhY2thZ2VfcGxhdGZvcm0gQVMgLDEyMiwxMDM7a2JwbHVz&#xA;LnRpdGxlX2luc3RhbmNlIEFTICwwLDYzNTs="/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kbpluslive"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="coverage_note" class="java.lang.String">
 		<parameterDescription><![CDATA[Coverage note to search]]></parameterDescription>
 	</parameter>
@@ -11,19 +19,19 @@
 		<parameterDescription><![CDATA[List all titles within selected Package, with a matching coverage note. The '%' can be used as wildcard.]]></parameterDescription>
 	</parameter>
 	<parameter name="select&amp;By Name&amp;By ID" class="java.lang.String">
-		<parameterDescription><![CDATA[Show results based on package name, or package ID]]></parameterDescription>
+		<parameterDescription><![CDATA[Search package by name (can match multiple) OR by ID (single match)]]></parameterDescription>
 	</parameter>
 	<parameter name="packageName" class="java.lang.String">
-		<parameterDescription><![CDATA[The package names to match.]]></parameterDescription>
+		<parameterDescription><![CDATA[Use to match by name, accepts wildcard (%)]]></parameterDescription>
 	</parameter>
 	<parameter name="search_package_id" class="com.k_int.kbplus.Package">
-		<parameterDescription><![CDATA[The Package to search into]]></parameterDescription>
+		<parameterDescription><![CDATA[Use to match by ID]]></parameterDescription>
 	</parameter>
 	<parameter name="query" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[$P{select&By Name&By ID}.equals("By Name")
-? "SELECT title_instance_package_platform.tipp_id,title_instance.ti_title,title_instance_package_platform.tipp_coverage_note,pkg_id FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk IN (SELECT pkg_id from package where lower(pkg_name) like lower('$P!{packageName}')) AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = title_instance_package_platform.tipp_pkg_fk"
-: " SELECT title_instance_package_platform.tipp_id,title_instance_package_platform.tipp_version,title_instance.ti_title,	title_instance_package_platform.tipp_coverage_note,pkg_id FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = $P!{search_package_id}"]]></defaultValueExpression>
+? "SELECT title_instance_package_platform.tipp_id,title_instance.ti_id,title_instance.ti_title,title_instance_package_platform.tipp_coverage_note,pkg_id FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk IN (SELECT pkg_id from package where lower(pkg_name) like lower('$P!{packageName}')) AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = title_instance_package_platform.tipp_pkg_fk"
+: " SELECT title_instance_package_platform.tipp_id,title_instance.ti_id,title_instance_package_platform.tipp_version,title_instance.ti_title,	title_instance_package_platform.tipp_coverage_note,pkg_id FROM package, title_instance INNER JOIN title_instance_package_platform ON title_instance_package_platform.tipp_ti_fk = title_instance.ti_id WHERE title_instance_package_platform.tipp_pkg_fk = $P!{search_package_id} AND lower(title_instance_package_platform.tipp_coverage_note) LIKE lower('$P!{coverage_note}') AND package.pkg_id = $P!{search_package_id}"]]></defaultValueExpression>
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[$P!{query}]]>
@@ -38,6 +46,7 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="pkg_id" class="java.lang.String"/>
+	<field name="ti_id" class="java.lang.Long"/>
 	<group name="Group1">
 		<groupFooter>
 			<band/>
@@ -64,7 +73,7 @@
 	<title>
 		<band height="72">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#007A5E" uuid="1ab40572-b316-441a-aae0-000db5a1667e"/>
+				<reportElement mode="Opaque" x="0" y="-20" width="800" height="92" backcolor="#007A5E" uuid="1ab40572-b316-441a-aae0-000db5a1667e"/>
 				<staticText>
 					<reportElement x="113" y="10" width="375" height="43" forecolor="#FFFFFF" uuid="bb707304-f70a-4b32-a4ec-c530d60f14a1"/>
 					<textElement>
@@ -111,14 +120,17 @@
 	<columnHeader>
 		<band height="30">
 			<line>
-				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="a4c31434-07f2-4410-89b1-9fdd46a5d2f8"/>
+				<reportElement x="-20" y="20" width="820" height="1" forecolor="#666666" uuid="a4c31434-07f2-4410-89b1-9fdd46a5d2f8"/>
 			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="-20" y="0" width="100" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="c57fd08d-4867-4a49-bc23-c4c51a8cd47f"/>
+				<reportElement mode="Opaque" x="0" y="0" width="80" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="c57fd08d-4867-4a49-bc23-c4c51a8cd47f">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ID]]></text>
+				<text><![CDATA[Title ID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="80" y="0" width="400" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="7b7b3107-efce-4271-aad7-b34d3b31fd66"/>
@@ -137,19 +149,28 @@
 				</textElement>
 				<text><![CDATA[Package ID]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="575" y="0" width="225" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="df86b5c7-7248-4c20-903b-5724010e92b4">
+					<property name="local_mesure_unity" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Coverage Note]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="25">
+		<band height="26">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="40572f2c-ecdb-4ce4-91e5-85c7ce3b5649"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="25" width="800" height="1" uuid="40572f2c-ecdb-4ce4-91e5-85c7ce3b5649"/>
 			</line>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="0" width="80" height="20" uuid="7d41acd5-83f3-4d15-9b00-7f39066c20ba"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tipp_id}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ti_id}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="80" y="0" width="400" height="20" uuid="92647cd1-c7f3-48df-a14d-2dad7331dd80"/>
@@ -159,13 +180,22 @@
 				<textFieldExpression><![CDATA[$F{ti_title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="0" width="75" height="20" uuid="a488df36-ea81-4294-8128-d326ba0b31c0">
+				<reportElement x="480" y="0" width="95" height="20" uuid="a488df36-ea81-4294-8128-d326ba0b31c0">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{pkg_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="575" y="0" width="225" height="20" uuid="fb6e1246-d0be-4e69-9286-ff8d73f45cf4">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{tipp_coverage_note}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -173,14 +203,14 @@
 		<band/>
 	</columnFooter>
 	<pageFooter>
-		<band height="17">
+		<band height="24">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="b9f6dd5e-b7e0-43f1-9c60-4f58da30fcf1"/>
+				<reportElement mode="Opaque" x="0" y="4" width="750" height="13" backcolor="#E6E6E6" uuid="b9f6dd5e-b7e0-43f1-9c60-4f58da30fcf1"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="47d87e1f-3535-44aa-a13f-0647457235c2"/>
+				<reportElement mode="Opaque" x="750" y="4" width="50" height="13" backcolor="#E6E6E6" uuid="47d87e1f-3535-44aa-a13f-0647457235c2"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
@@ -194,32 +224,12 @@
 	</summary>
 	<noData>
 		<band height="271">
-			<line>
-				<reportElement x="-20" y="120" width="595" height="1" forecolor="#666666" uuid="d8c2cb31-841a-400e-8465-15f0d00fb095"/>
-			</line>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="100" width="130" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="e95315b1-fd16-4253-bf63-b6c158a6eaa8"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ID]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="140" y="100" width="415" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="6144e7ce-db55-45a6-b6e7-158aec25b242"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Title]]></text>
-			</staticText>
-			<line>
-				<reportElement x="-15" y="156" width="595" height="1" forecolor="#666666" uuid="9c5548a3-a758-4986-802f-e6ab456e1bb6"/>
-			</line>
-			<staticText>
-				<reportElement x="0" y="130" width="375" height="30" uuid="231c5c5f-7b11-4c81-a64b-c6978277486a"/>
+				<reportElement x="160" y="130" width="375" height="30" uuid="231c5c5f-7b11-4c81-a64b-c6978277486a"/>
 				<text><![CDATA[No matches found for provided criteria]]></text>
 			</staticText>
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="3" width="595" height="92" backcolor="#007A5E" uuid="2c857aa9-75c0-4160-95c8-c319a5810139"/>
+				<reportElement mode="Opaque" x="0" y="3" width="800" height="92" backcolor="#007A5E" uuid="2c857aa9-75c0-4160-95c8-c319a5810139"/>
 				<staticText>
 					<reportElement x="20" y="0" width="375" height="43" forecolor="#FFFFFF" uuid="7467d9a6-c545-4201-a5dc-54aa762ebbf1"/>
 					<textElement>
@@ -253,6 +263,45 @@
 					<textFieldExpression><![CDATA[$P{coverage_note}]]></textFieldExpression>
 				</textField>
 			</frame>
+			<line>
+				<reportElement x="-20" y="116" width="820" height="1" forecolor="#666666" uuid="05ad2496-bc4c-4320-84b9-0ec9f93387ae"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="96" width="80" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="7fd4a721-77fd-4716-b72c-40f1a55985a7">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="80" y="96" width="400" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="d791762b-8a70-4100-9090-3626c3e7b817"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="480" y="96" width="95" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="a108ac42-a5bd-4fd2-b81b-438231c4f012">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Package ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="575" y="96" width="225" height="20" forecolor="#007A5E" backcolor="#E6E6E6" uuid="34bff64c-2051-4899-a802-a717241d53ab">
+					<property name="local_mesure_unity" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Coverage Note]]></text>
+			</staticText>
 		</band>
 	</noData>
 </jasperReport>

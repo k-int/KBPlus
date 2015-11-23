@@ -1,0 +1,12 @@
+For 5.1:
+
+JAVA_HOME set to java 8
+Grails to 2.5.1
+ES to 1.7.1 
+Drop new ES mappings + Full index reset
+
+** grails cleanAll **
+
+pre/post scripts 
+
+first grails run-app will fail after clean, run again.

@@ -17,7 +17,6 @@ import groovy.sql.Sql
 class MyInstitutionsController {
     def dataSource
     def springSecurityService
-    def ESWrapperService
     def ESSearchService
     def gazetteerService
     def alertsService
@@ -81,6 +80,11 @@ class MyInstitutionsController {
         def (tip_property, property_field) = (params.sort ?: 'title-title').split("-")
         def list_order = params.order ?: 'asc'
 
+        if (current_inst && !checkUserIsMember(result.user, current_inst)) {
+            flash.error = "You do not have permission to view ${current_inst.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
 
         def criteria = TitleInstitutionProvider.createCriteria();
         def results = criteria.list(max: result.max, offset:result.offset) {
@@ -1880,7 +1884,7 @@ AND EXISTS (
 
 
 
-            response.setHeader "Content-disposition", "attachment; filename=comparison.xls"
+            response.setHeader "Content-disposition", "attachment; filename=\"comparison.xls\""
             // response.contentType = 'application/xls'
             response.contentType = 'application/vnd.ms-excel'
             workbook.write(response.outputStream)
@@ -2427,7 +2431,7 @@ AND EXISTS (
             csv {
                 def dateFormat = new SimpleDateFormat("YYYY-MM-dd")
                 def changes = PendingChange.executeQuery("select pc "+base_query+"  order by ts desc", qry_params)
-                response.setHeader("Content-disposition", "attachment; filename=${result.institution.name}_changes.csv")
+                response.setHeader("Content-disposition", "attachment; filename=\"${result.institution.name}_changes.csv\"")
                 response.contentType = "text/csv"
 
                 def out = response.outputStream
@@ -2445,26 +2449,18 @@ AND EXISTS (
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
-    def finance() {
-        def result         = [:]
-        result.user        = User.get(springSecurityService.principal.id)
-        result.institution = Org.findByShortcode(params.shortcode)
-
-        if (!checkUserIsMember(result.user, result.institution)) {
-            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
-            response.sendError(401)
-            return;
-        }
-
-        render view: 'financeActions', model: result, params: [shortcode: params.shortcode]
-    }
-
-    @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def financeImport() {
       def result = [:];
 
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
+
+      if (!checkUserIsMember(result.user, result.institution)) {
+          flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+          response.sendError(401)
+          return;
+      }
+
       def defaults = [ 'owner':result.institution];
 
       if (request.method == 'POST'){
@@ -2480,6 +2476,7 @@ AND EXISTS (
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def tip() {
       def result = [:];
+      log.debug("tip :: ${params}")
       result.user        = User.get(springSecurityService.principal.id)
       result.institution = Org.findByShortcode(params.shortcode)
       result.tip = TitleInstitutionProvider.get(params.id)

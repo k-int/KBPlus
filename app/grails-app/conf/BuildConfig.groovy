@@ -24,10 +24,8 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
-    // def gebVersion = "0.12.2"
-    def gebVersion = "0.9.3"
-    def seleniumVersion = "2.44.0"
-    // def seleniumVersion = "2.47.1"
+    def gebVersion = "0.12.2"
+    def seleniumVersion = "2.48.2"
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -60,10 +58,15 @@ grails.project.dependency.resolution = {
 
 
     }
-    dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        build('org.grails:grails-docs:2.3.11') {
+    dependencies {
+
+        compile "net.sf.ehcache:ehcache-core:2.6.11"
+
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        runtime 'javax.servlet:jstl:1.1.2'
+        runtime 'taglibs:standard:1.1.2'
+        build('org.grails:grails-docs:2.5.1') {
             excludes 'itext'
         }
         compile ('com.k-int:goai:1.0.2') {
@@ -74,19 +77,20 @@ grails.project.dependency.resolution = {
         runtime 'xerces:xercesImpl:2.11.0'
         runtime 'mysql:mysql-connector-java:5.1.30'
 
-        // Would very much like to upgrade to these - but seems to cause a weird class version error when I do
-        runtime 'org.elasticsearch:elasticsearch:1.3.7'
-        runtime 'org.elasticsearch:elasticsearch-client-groovy:1.3.2'
+        runtime ('org.elasticsearch:elasticsearch:1.7.1')
+        runtime ('org.elasticsearch:elasticsearch-groovy:1.7.0') {
+            excludes "org.codehaus.groovy:groovy-all:2.4.3"
+        }
 
         runtime 'gov.loc:bagit:4.0'
         runtime 'org.apache.poi:poi:3.8'
         runtime 'net.sf.opencsv:opencsv:2.0'
         runtime 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
-        runtime 'org.apache.commons:commons-exec:1.2'
-        compile 'org.apache.httpcomponents:httpcore:4.3.2'
+        runtime 'org.apache.commons:commons-exec:1.3'
+        compile 'org.apache.httpcomponents:httpcore:4.4.3'
 
-        compile 'org.apache.httpcomponents:httpclient:4.3.5'
+        compile 'org.apache.httpcomponents:httpclient:4.5.1'
         test 'org.hamcrest:hamcrest-all:1.3'
         test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
             exclude 'xml-apis'
@@ -102,8 +106,12 @@ grails.project.dependency.resolution = {
         runtime ( 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2' ) { 
           excludes "org.codehaus.groovy", "groovy"
         }
-        compile "net.sf.jasperreports:jasperreports:5.6.0"
-        compile "org.eclipse.jdt.core.compiler:ecj:4.4"
+        //There should be a fix for jdt core on jasperreports version 6.
+        // Without exclude jasper report compiling crashes on Java8
+        compile ("net.sf.jasperreports:jasperreports:5.6.1"){
+            excludes "eclipse:jdtcore:3.1.0"
+        }
+        compile "org.eclipse.jdt.core.compiler:ecj:4.3.1"
   
         // II Commented out..
         // compile 'cglib:cglib:2.2.2'
@@ -112,25 +120,23 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":h2:0.2.6"
-        runtime ':hibernate:3.6.10.18'  // 18 is latest
+        runtime ':hibernate:3.6.10.19'  
         runtime ":resources:1.2.8"
+        compile ":scaffolding:2.1.2"
         runtime ':fields:1.5.1'
-        compile ":scaffolding:2.0.3"
         
-        // This is commented out so as not to cause probelms in the CI environment
-        // compile ":functional-test:2.0.RC1"
-        // Uncomment these (or add new ones) to enable additional resources capabilities
-        //runtime ":zipped-resources:1.0"
-        //runtime ":cached-resources:1.0"
-        //runtime ":yui-minify-resources:0.1.4"
-        build ':tomcat:7.0.54'
+        compile ":file-viewer:0.3"
+
+        build (':tomcat:7.0.55.2'){
+            //This is crashing under Java8, we impport newer version manually
+            excludes "org.eclipse.jdt.core.compiler:ecj:3.7.2"
+        }
 
         runtime ":database-migration:1.4.0"
 
-        compile ':cache:1.1.7'
+        compile ':cache:1.1.8'
 
-        compile ':mail:1.0.1', {
+        compile ':mail:1.0.7', {
            excludes 'spring-test'
         }
 
@@ -146,18 +152,17 @@ grails.project.dependency.resolution = {
         // Font awesome for font based icons.
         compile ":font-awesome-resources:4.3.0.1"
 
-        compile ':spring-security-core:1.2.7.3'
+        compile ':spring-security-core:1.2.7.4'
         compile ':spring-security-ldap:1.0.6'
         compile ':spring-security-shibboleth-native-sp:1.0.3'
 
         runtime ":gsp-resources:0.4.4"
-        runtime ":jquery:1.9.1"
+        runtime ":jquery:1.11.1"
 
         runtime ":audit-logging:1.0.3"
         runtime ":executor:0.3"
         runtime ":markdown:1.1.1"
         runtime ":quartz:1.0.1"
-        runtime ":rest:0.7"
         compile ":grails-melody:1.53.0"
         // runtime "com.k-int:domain-model-oai-pmh:0.1"
         compile ":jsonp:0.2"

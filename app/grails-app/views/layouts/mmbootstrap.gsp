@@ -121,7 +121,7 @@
                                <li><g:link controller="myInstitutions"
                                            action="emptySubscription"
                                            params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.emptySubscription')} </g:link></li>
-                               <g:if test="${grailsApplication.config.feature.finance}">
+                               <g:if test="${grailsApplication.config.feature_finance}">
                                  <li><g:link controller="myInstitutions"
                                              action="financeImport"
                                              params="${[shortcode:org.shortcode]}">${message(code:'menu.institutions.financeImport')} </g:link></li>
@@ -199,6 +199,17 @@
                          <g:link controller="admin" action="manageAffiliationRequests">Manage Affiliation Requests</g:link></li>
                       <li <%= ( ( 'admin'== controllerName ) && ( 'settings'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="admin" action="settings">System Settings</g:link></li>
+                    <li class="dropdown-submenu">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">System Admin</a>
+                      <ul class="dropdown-menu">
+
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="appConfig">App Config</g:link></li>
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="appInfo">App Info</g:link></li>
+                      <li <%= ( ( 'sysAdmin'== controllerName ) && ( 'sysAdmin'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="sysAdmin" action="logViewer">Log Viewer</g:link></li>
+                        </ul>
                       <li class="divider"></li>
                       <li <%= ( ( 'organisations'== controllerName ) && ( 'index'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="organisations" action="index">Manage Organisations</g:link>
@@ -274,8 +285,8 @@
                           </li>
                         </ul>
                       </li>
-                      <li <%= ( ( 'admin'== controllerName ) && ( 'manageCustomProperties'==actionName ) ) ? ' class="active"' : '' %>>
-                         <g:link controller="admin" action="manageCustomProperties">Manage Custom Properties</g:link>
+                      <li <%= ( ( 'propertyDefinition'== controllerName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="propertyDefinition" action="list">Manage Custom Properties</g:link>
                       </li>
                       <li class="divider"></li>
                       <li <%= ( ( 'stats'== controllerName ) && ( 'statsHome'==actionName ) ) ? ' class="active"' : '' %>>

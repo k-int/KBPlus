@@ -1,4 +1,5 @@
-<%@ page import="com.k_int.kbplus.Org" %>
+<%@ page import="com.k_int.kbplus.Org; com.k_int.custprops.PropertyDefinition" %>
+
 <!doctype html>
 <html>
   <head>
@@ -20,7 +21,7 @@
 
      <h6>${message(code:'org.properties')}</h6>
               <div id="custom_props_div" class="span12">
-                  <g:render template="/templates/custom_props" model="${[ ownobj:orgInstance ]}"/>
+                  <g:render template="/templates/custom_props" model="${[ prop_desc:PropertyDefinition.ORG_CONF,ownobj:orgInstance ]}"/>
               </div>
     </div>
         <r:script language="JavaScript">

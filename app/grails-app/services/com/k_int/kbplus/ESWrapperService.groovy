@@ -1,92 +1,39 @@
 package com.k_int.kbplus
 
-import org.elasticsearch.groovy.node.GNode
-import org.elasticsearch.groovy.node.GNodeBuilder
-import static org.elasticsearch.groovy.node.GNodeBuilder.*
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.elasticsearch.common.settings.ImmutableSettings
+import org.elasticsearch.common.transport.InetSocketTransportAddress
+import org.elasticsearch.common.settings.Settings
+import org.elasticsearch.client.transport.TransportClient
+import grails.util.Holders
 
 class ESWrapperService {
 
   static transactional = false
 
-  def grailsApplication;
-
-
-  def gNode = null;
+  def clientSettings = [:];
 
   @javax.annotation.PostConstruct
   def init() {
-    log.debug("Init");
+    updateSettings()
+    log.debug("ES Init completed");
+  }
 
-    // System.setProperty("java.net.preferIPv4Stack","true");
-    // log.debug("Attempting to create a transport client...");
-    // Map<String,String> m = new HashMap<String,String>();
-    // m.put("cluster.name","aggr");
-    // Settings s = ImmutableSettings.settingsBuilder() .put(m).build();
-    // TransportClient client = new TransportClient(s);
-
-    def clus_nm = grailsApplication.config.aggr.es.cluster ?: "aggr"
-
-    log.debug("Using ${clus_nm} as ES cluster name...");
-
-
-    def nodeBuilder = new org.elasticsearch.groovy.node.GNodeBuilder()
-
-    log.debug("Construct node settings");
-
-    nodeBuilder.settings {
-      node {
-        client = true
-      }
-      cluster {
-        name = clus_nm
-      }
-      http {
-        enabled = false
-      }
-      discovery {
-        zen {
-          minimum_master_nodes=1
-          ping {
-            unicast {
-              hosts = [ "localhost" ] 
-            }
-          }
-        }
-      }
+  def getClient() {
+    if(clientSettings.settings.get("cluster.name") != Holders.config.aggr_es_cluster){
+      updateSettings()
     }
-
-    log.debug("Constructing node...");
-    gNode = nodeBuilder.node()
-
-    // log.debug("Sending record to es");
-    // def future = gNode.client.index {
-    //   index "courses"
-    //   type "course"
-    //   id "1"
-    //   source {
-    //     test = "value"
-    //     value1 = "value1"
-    //     value2 = "value2"
-    //   }
-    // }
-    // log.debug("waiting for response...");
-
-    // log.debug("Indexed $future.response.index/$future.response.type/$future.response.id")
-
-    log.debug("Init completed");
+    TransportClient esclient = new TransportClient(clientSettings.settings)
+    esclient.addTransportAddress(clientSettings.address)
+    return esclient
   }
 
-  @javax.annotation.PreDestroy
-  def destroy() {
-    log.debug("Destroy");
-    gNode.close()
-    log.debug("Destroy completed");
-  }
-
-  def getNode() {
-    log.debug("getNode()");
-    gNode
+  def updateSettings() {
+    ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder()
+    def es_cluster = Holders.config.aggr_es_cluster?:"elasticsearch"
+    builder.put("cluster.name", es_cluster).put("client.transport.sniff", true)
+    Settings settings = builder.build()
+    clientSettings.settings = settings
+    clientSettings.address = new InetSocketTransportAddress("localhost",9300)
   }
 
 }

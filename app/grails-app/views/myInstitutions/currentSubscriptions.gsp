@@ -81,7 +81,7 @@
           <g:each in="${subscriptions}" var="s">
             <tr>
               <td colspan="7">
-                <g:link controller="subscriptionDetails" action="index" id="${s.id}">
+                <g:link controller="subscriptionDetails" action="index" params="${[shortcode:params.shortcode]}" id="${s.id}">
                   <g:if test="${s.name}">${s.name}</g:if><g:else>-- Name Not Set  --</g:else>
                   <g:if test="${s.consortia}">( ${s.consortia?.name} )</g:if>
                 </g:link>

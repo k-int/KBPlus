@@ -81,6 +81,9 @@ class InplaceTagLib {
           break;
       }
 
+      if (attrs?.emptytext)
+          out << " data-emptytext=\"${attrs.emptytext}\""
+
       out << " data-url=\"${data_link}\""
       out << ">"
 
@@ -134,11 +137,14 @@ class InplaceTagLib {
         def data_link = createLink(controller:dataController, action: dataAction, params:[id:attrs.config,format:'json',oid:oid]).encodeAsHTML()
         def update_link = createLink(controller:'ajax', action: 'genericSetRel').encodeAsHTML()
         def id = attrs.id ?: "${oid}:${attrs.field}"
+        def emptyText = attrs?.emptytext? " data-emptytext=\"${attrs.emptytext}\"" : ''
 
         out << "<span>"
-   
+
         // Output an editable link
-        out << "<span id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\" data-url=\"${update_link}\">"
+        out << "<span id=\"${id}\" class=\"xEditableManyToOne\" data-pk=\"${oid}\" data-type=\"select\" data-name=\"${attrs.field}\" data-source=\"${data_link}\" data-url=\"${update_link}\" ${emptyText}>"
+
+
 
         // Here we can register different ways of presenting object references. The most pressing need to be
         // outputting a span containing an icon for refdata fields.
@@ -230,7 +236,7 @@ class InplaceTagLib {
    * user typing into the box. Takes advantage of refdataFind and refdataCreate methods on the domain class.
    */ 
   def simpleReferenceTypedown = { attrs, body ->
-    out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" "
+    out << "<input type=\"hidden\" name=\"${attrs.name}\" data-domain=\"${attrs.baseClass}\" ${attrs.disabled ?  'disabled="true"' : ''} "
     if ( attrs.id ) {
       out << "id=\"${attrs.id}\" "
     }

@@ -420,7 +420,7 @@ class ExportService {
 				getIECoreDates(e)?.each{
 					Element coreDate = addXMLElementInto(doc,coreDateList,"CoreDate",null)
 					addXMLElementInto(doc,coreDate,"CoreStart",it[0]?formatter.format(it[0]):'')
-					if(it.endDate){
+					if(it[1]){
 						addXMLElementInto(doc,coreDate,"CoreEnd",it[1]?formatter.format(it[1]):'')
 					}
 				}

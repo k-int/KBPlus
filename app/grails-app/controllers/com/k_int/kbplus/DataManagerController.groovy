@@ -146,66 +146,49 @@ class DataManagerController {
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
   
-        def line_to_add = [:]
-        def linetype = null
-  
-        switch(hl.className) {
-          case 'com.k_int.kbplus.License':
-            def license_object = License.get(hl.persistedObjectId);
-            def licence_name = license_object.licenseType ?"${license_object.licenseType}: ": ""
-            licence_name += license_object.reference != null?license_object.reference:"**No reference**"
-            line_to_add = [ link: createLink(controller:'licenseDetails', action: 'index', id:hl.persistedObjectId),
-                            name: licence_name,
-                            lastUpdated: hl.lastUpdated,
+        def line_to_add = [ lastUpdated: hl.lastUpdated,
                             actor: User.findByUsername(hl.actor), 
                             propertyName: hl.propertyName,
                             oldValue: hl.oldValue,
                             newValue: hl.newValue
                           ]
+        def linetype = null
+
+        switch(hl.className) {
+          case 'com.k_int.kbplus.License':
+            def license_object = License.get(hl.persistedObjectId);
+            if (license_object) {
+                def licence_name = license_object.licenseType ? license_object.licenseType+': ' : ''
+                licence_name += license_object.reference ?: '**No reference**'
+                line_to_add.link = createLink(controller:'licenseDetails', action: 'index', id:hl.persistedObjectId)
+                line_to_add.name = licence_name
+            }
             linetype = 'Licence'
             break;
           case 'com.k_int.kbplus.Subscription':
             break;
           case 'com.k_int.kbplus.Package':
             def package_object = Package.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
-                            name: package_object.name,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
+            if (package_object) {
+                line_to_add.link = createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = package_object.name
+            }
             linetype = 'Package'
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
             if ( tipp_object != null ) {
-              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
-                              lastUpdated: hl.lastUpdated,
-                              propertyName: hl.propertyName,
-                              actor: User.findByUsername(hl.actor),
-                              oldValue: hl.oldValue,
-                              newValue: hl.newValue
-                            ]
-              linetype = 'TIPP'
+                line_to_add.link = createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = tipp_object.title?.title + ' / ' + tipp_object.pkg?.name
             }
-            else {
-              log.debug("Cleaning up history line that relates to a deleted item");
-              hl.delete(); 
-            }
+            linetype = 'TIPP'
             break;
           case 'com.k_int.kbplus.TitleInstance':
             def title_object = TitleInstance.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'titleDetails', action: 'show', id:hl.persistedObjectId),
-                            name: title_object.title,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
+            if (title_object) {
+                line_to_add.link = createLink(controller:'titleDetails', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = title_object.title
+            }
             linetype = 'Title'
             break;
           case 'com.k_int.kbplus.IdentifierOccurrence':
@@ -251,7 +234,7 @@ class DataManagerController {
         if(result.formattedHistoryLines.size() == 10000 ){
           //show some error somehow
         }
-        response.setHeader("Content-disposition", "attachment; filename=DMChangeLog.csv")
+        response.setHeader("Content-disposition", "attachment; filename=\"DMChangeLog.csv\"")
         response.contentType = "text/csv"
         def out = response.outputStream
         def actors_list = getActorNameList(params)

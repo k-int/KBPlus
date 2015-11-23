@@ -77,7 +77,7 @@ class PackageDetailsController {
           result
         }
         csv {
-           response.setHeader("Content-disposition", "attachment; filename=packages.csv")
+           response.setHeader("Content-disposition", "attachment; filename=\"packages.csv\"")
            response.contentType = "text/csv"
            def packages = Subscription.executeQuery("select p ${base_qry}", qry_params) 
            def out = response.outputStream
@@ -274,7 +274,7 @@ class PackageDetailsController {
               institutionsService.generateComparisonMap(unionList, mapA, mapB,0, unionList.size(),filterRules)
               log.debug("Create CSV Response")
               def dateFormatter = new java.text.SimpleDateFormat('yyyy-MM-dd')
-               response.setHeader("Content-disposition", "attachment; filename=packageComparison.csv")
+               response.setHeader("Content-disposition", "attachment; filename=\"packageComparison.csv\"")
                response.contentType = "text/csv"
                def out = response.outputStream
                out.withWriter { writer ->
@@ -995,6 +995,7 @@ class PackageDetailsController {
     }
 
     result.packageInstance = Package.get(params.id)
+    result.editable=isEditable()
     def base_query = 'from org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent as e where ( e.className = :pkgcls and e.persistedObjectId = :pkgid ) or ( e.className = :tippcls and e.persistedObjectId in ( select id from TitleInstancePackagePlatform as tipp where tipp.pkg = :pkgid ) )'
 
     def limits = (!params.format||params.format.equals("html"))?[max:result.max, offset:result.offset]:[offset:0]

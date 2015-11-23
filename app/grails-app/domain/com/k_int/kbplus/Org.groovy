@@ -161,9 +161,10 @@ class Org {
    */
   public boolean hasUserWithRole( com.k_int.kbplus.auth.User user, com.k_int.kbplus.auth.Role formalRole ) {
     def result = false;
-    def l = com.k_int.kbplus.auth.UserOrg.findAllByUserAndOrgAndFormalRole(user,this,formalRole)
-    if ( l.size() > 0 )
-      result = true
+    def userOrg = com.k_int.kbplus.auth.UserOrg.findByUserAndOrgAndFormalRole(user,this,formalRole)
+	  if( userOrg && ( userOrg.status==1 || userOrg.status==3  )){
+		  result = true
+    }
     return result;
   }
 
