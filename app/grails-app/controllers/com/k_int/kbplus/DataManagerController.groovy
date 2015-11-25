@@ -86,11 +86,12 @@ class DataManagerController {
     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
      
     // From the list of users, extract and who have the INST_ADM role
-    def rolesMa = null
-    if ( auditActors.size() > 0 )
-     rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery("select distinct(userorg.user.username) from UserOrg as userorg where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)",[formal_role:formal_role,actors:auditActors])
-    else
-     rolesMa = []
+    def rolesMa = []
+    if ( auditActors )
+      rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery(
+        'select distinct(userorg.user.username) from UserOrg as userorg ' +
+        'where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)',
+        [formal_role:formal_role,actors:auditActors])
 
     auditActors.each {
       def u = User.findByUsername(it)
