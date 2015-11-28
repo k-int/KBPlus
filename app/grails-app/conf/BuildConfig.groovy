@@ -58,7 +58,11 @@ grails.project.dependency.resolution = {
 
 
     }
+
     dependencies {
+
+        compile "net.sf.ehcache:ehcache-core:2.6.11"
+
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         runtime 'javax.servlet:jstl:1.1.2'
         runtime 'taglibs:standard:1.1.2'

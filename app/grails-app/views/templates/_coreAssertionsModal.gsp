@@ -32,7 +32,7 @@
               <td>
               <g:if test="${editable == 'true' || editable == true}">
                 <g:remoteLink url="[controller: 'ajax', action: 'deleteCoreDate', params:[tipID:tipID,title:title,coreDateID:coreDate.id]]" method="get" name="show_core_assertion_modal" 
-                before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea" class="delete-coreDate">Delete </g:remoteLink></dd>
+                before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea" class="delete-coreDate">Delete </g:remoteLink>
                 </g:if>
               </td>
             </tr>
@@ -41,15 +41,15 @@
     </table>
 
 
-    <div class="well">
+    <div class="well" style="word-break: normal;">
       <h4>Add new core date range</h4>
-      <p>Use this form to add new core date ranges. Set the start date and optionally an end date then click apply. If the dates you specify can be merged with a statement
-         in the table above they will be, or a new line will be created.</p>
+      <p>Use this form to add new core date ranges. Set the start date and optionally an end date then click apply. If the dates you specify overlap with existing core dates
+        in the table above they will be merged into a single core statement, otherwise a new line will be added to the table.</p>
       
       <g:formRemote  name="coreExtendForm" url="[controller: 'ajax', action: 'coreExtend']" before="hideModal()" onComplete="showCoreAssertionModal()" update="magicArea">
         <input type="hidden" name="tipID" value="${tipID}"/>
         <input type="hidden" name="title" value="${title}"/>
-        <table>
+        <table style="width:100%">
           <tr>
             <td>
               <label class="property-label">Core Start:</label> 

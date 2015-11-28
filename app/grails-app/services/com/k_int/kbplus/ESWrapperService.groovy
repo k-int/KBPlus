@@ -4,36 +4,39 @@ import org.elasticsearch.common.settings.ImmutableSettings
 import org.elasticsearch.common.transport.InetSocketTransportAddress
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.client.transport.TransportClient
-import grails.util.Holders
 
 class ESWrapperService {
 
   static transactional = false
-
-  def clientSettings = [:];
+  def grailsApplication
+  def esclient = null;
 
   @javax.annotation.PostConstruct
   def init() {
-    updateSettings()
+
+    log.debug("ESWrapperService::init");
+
+    def es_cluster_name = grailsApplication.config.aggr_es_cluster?:"elasticsearch"
+
+    log.debug("es_cluster = ${es_cluster_name}");
+
+    esclient = new TransportClient(ImmutableSettings.settingsBuilder {
+      cluster {
+        name = es_cluster_name
+      }
+      client {
+        transport {
+          sniff = true
+        }
+      }
+    })
+
+    esclient.addTransportAddress(new InetSocketTransportAddress("localhost", 9300))
     log.debug("ES Init completed");
   }
 
   def getClient() {
-    if(clientSettings.settings.get("cluster.name") != Holders.config.aggr_es_cluster){
-      updateSettings()
-    }
-    TransportClient esclient = new TransportClient(clientSettings.settings)
-    esclient.addTransportAddress(clientSettings.address)
     return esclient
-  }
-
-  def updateSettings() {
-    ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder()
-    def es_cluster = Holders.config.aggr_es_cluster?:"elasticsearch"
-    builder.put("cluster.name", es_cluster).put("client.transport.sniff", true)
-    Settings settings = builder.build()
-    clientSettings.settings = settings
-    clientSettings.address = new InetSocketTransportAddress("localhost",9300)
   }
 
 }

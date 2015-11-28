@@ -77,10 +77,22 @@ class DataManagerController {
     result.actors = []
     def actors_dms = []
     def actors_users = []
+
     def all_types = [ 'com.k_int.kbplus.Package','com.k_int.kbplus.License','com.k_int.kbplus.TitleInstance','com.k_int.kbplus.TitleInstancePackagePlatform' ]
+
+    // Get a distinct list of actors
     def auditActors = AuditLogEvent.executeQuery('select distinct(al.actor) from AuditLogEvent as al where al.className in ( :l  )',[l:all_types])
+
     def formal_role = com.k_int.kbplus.auth.Role.findByAuthority('INST_ADM')
-    def rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery("select distinct(userorg.user.username) from UserOrg as userorg where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)",[formal_role:formal_role,actors:auditActors])
+     
+    // From the list of users, extract and who have the INST_ADM role
+    def rolesMa = []
+    if ( auditActors )
+      rolesMa = com.k_int.kbplus.auth.UserOrg.executeQuery(
+        'select distinct(userorg.user.username) from UserOrg as userorg ' +
+        'where userorg.formalRole = (:formal_role) and userorg.user.username in (:actors)',
+        [formal_role:formal_role,actors:auditActors])
+
     auditActors.each {
       def u = User.findByUsername(it)
       
@@ -92,10 +104,14 @@ class DataManagerController {
         }
       }
     }
+
+    // Sort the list of data manager users
     actors_dms.sort{it[1]}
+
+    // Sort the list of ordinary users
     actors_users.sort{it[1]}
 
-   result.actors = actors_dms.plus(actors_users)
+    result.actors = actors_dms.plus(actors_users)
 
     log.debug("${params}");
     if ( types_to_include.size() == 0 ) {
@@ -146,66 +162,49 @@ class DataManagerController {
       result.formattedHistoryLines = []
       result.historyLines.each { hl ->
   
-        def line_to_add = [:]
-        def linetype = null
-  
-        switch(hl.className) {
-          case 'com.k_int.kbplus.License':
-            def license_object = License.get(hl.persistedObjectId);
-            def licence_name = license_object.licenseType ?"${license_object.licenseType}: ": ""
-            licence_name += license_object.reference != null?license_object.reference:"**No reference**"
-            line_to_add = [ link: createLink(controller:'licenseDetails', action: 'index', id:hl.persistedObjectId),
-                            name: licence_name,
-                            lastUpdated: hl.lastUpdated,
+        def line_to_add = [ lastUpdated: hl.lastUpdated,
                             actor: User.findByUsername(hl.actor), 
                             propertyName: hl.propertyName,
                             oldValue: hl.oldValue,
                             newValue: hl.newValue
                           ]
+        def linetype = null
+
+        switch(hl.className) {
+          case 'com.k_int.kbplus.License':
+            def license_object = License.get(hl.persistedObjectId);
+            if (license_object) {
+                def licence_name = license_object.licenseType ? license_object.licenseType+': ' : ''
+                licence_name += license_object.reference ?: '**No reference**'
+                line_to_add.link = createLink(controller:'licenseDetails', action: 'index', id:hl.persistedObjectId)
+                line_to_add.name = licence_name
+            }
             linetype = 'Licence'
             break;
           case 'com.k_int.kbplus.Subscription':
             break;
           case 'com.k_int.kbplus.Package':
             def package_object = Package.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId),
-                            name: package_object.name,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
+            if (package_object) {
+                line_to_add.link = createLink(controller:'packageDetails', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = package_object.name
+            }
             linetype = 'Package'
             break;
           case 'com.k_int.kbplus.TitleInstancePackagePlatform':
             def tipp_object = TitleInstancePackagePlatform.get(hl.persistedObjectId);
             if ( tipp_object != null ) {
-              line_to_add = [ link: createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId),
-                              name: tipp_object.title?.title + " / "+tipp_object.pkg?.name,
-                              lastUpdated: hl.lastUpdated,
-                              propertyName: hl.propertyName,
-                              actor: User.findByUsername(hl.actor),
-                              oldValue: hl.oldValue,
-                              newValue: hl.newValue
-                            ]
-              linetype = 'TIPP'
+                line_to_add.link = createLink(controller:'tipp', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = tipp_object.title?.title + ' / ' + tipp_object.pkg?.name
             }
-            else {
-              log.debug("Cleaning up history line that relates to a deleted item");
-              hl.delete(); 
-            }
+            linetype = 'TIPP'
             break;
           case 'com.k_int.kbplus.TitleInstance':
             def title_object = TitleInstance.get(hl.persistedObjectId);
-            line_to_add = [ link: createLink(controller:'titleDetails', action: 'show', id:hl.persistedObjectId),
-                            name: title_object.title,
-                            lastUpdated: hl.lastUpdated,
-                            propertyName: hl.propertyName,
-                            actor: User.findByUsername(hl.actor),
-                            oldValue: hl.oldValue,
-                            newValue: hl.newValue
-                          ]
+            if (title_object) {
+                line_to_add.link = createLink(controller:'titleDetails', action: 'show', id:hl.persistedObjectId)
+                line_to_add.name = title_object.title
+            }
             linetype = 'Title'
             break;
           case 'com.k_int.kbplus.IdentifierOccurrence':
