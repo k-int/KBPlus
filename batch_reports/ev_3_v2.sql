@@ -7,6 +7,8 @@ select @e_issn2_type_id:=idns_id from identifier_namespace where idns_ns='e-issn
 select @jusp_type_id:=idns_id from identifier_namespace where idns_ns='jusp';
 select @publisher:=rdv_id from refdata_value where rdv_value='Publisher';
 
+select @reportTitle := 'EV3-V2';
+
 select pkg.pkg_id,
        title.ti_id identifier_kbplus,
        title.ti_title title,
@@ -32,5 +34,5 @@ from   title_instance_package_platform as tipp
            join kbplus_fact as fact on fact.related_title_id = title.ti_id
 where 
      pkg.pkg_id = 511
- and fact.supplier_id = 1
+ and fact.supplier_id = 172
 group by title.ti_id, fact.inst_id, fact.fact_type_rdv_fk, fact.reporting_year, fact.reporting_month
