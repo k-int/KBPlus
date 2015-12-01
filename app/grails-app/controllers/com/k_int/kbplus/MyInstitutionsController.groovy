@@ -833,6 +833,12 @@ class MyInstitutionsController {
         result.institution = Org.findByShortcode(params.shortcode)
         result.transforms = grailsApplication.config.titlelistTransforms
 
+        if (!checkUserIsMember(result.user, result.institution)) {
+            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
+
         // Set Date Restriction
         def date_restriction = null;
 
@@ -2346,6 +2352,12 @@ AND EXISTS (
         def result = [:]
         result.user = User.get(springSecurityService.principal.id)
         result.institution = Org.findByShortcode(params.shortcode)
+
+        if (!checkUserIsMember(result.user, result.institution)) {
+            flash.error = "You do not have permission to view ${result.institution.name}. Please request access on the profile page";
+            response.sendError(401)
+            return;
+        }
 
         result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
         result.offset = params.offset ? Integer.parseInt(params.offset) : 0;

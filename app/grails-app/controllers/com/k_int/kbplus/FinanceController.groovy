@@ -65,9 +65,9 @@ class FinanceController {
         result.institution =  Org.findByShortcode(params.shortcode)
         def user           =  User.get(springSecurityService.principal.id)
         if (!isFinanceAuthorised(result.institution, user)) {
-            log.error("Sending 403 - forbidden");
+            log.error("Sending 401 - forbidden");
             flash.error=message(code: 'financials.permission.unauthorised', args: [result.institution? result.institution.name : 'N/A'])
-            response.sendError(403)
+            response.sendError(401)
         }
 
         //Accessed from Subscription page, 'hardcoded' set subscription 'hardcode' values
