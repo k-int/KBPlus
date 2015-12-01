@@ -362,7 +362,7 @@ class SubscriptionDetailsController {
           params.countB = Subscription.executeQuery(countQuery, [result.subInsts.get(1).id])
         }
       }catch(IllegalArgumentException e){
-        flash.error = e.getMessage()
+        request.message = e.getMessage()
         return
       }
 

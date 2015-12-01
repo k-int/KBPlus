@@ -241,10 +241,10 @@ class PackageDetailsController {
               def countHQL = "select count(elements(pkg.tipps)) from Package pkg where pkg.id = ?"
               params.countA = Package.executeQuery(countHQL, [result.pkgInsts.get(0).id])
               params.countB = Package.executeQuery(countHQL, [result.pkgInsts.get(1).id])
-            }         
+            }
           }catch(IllegalArgumentException e){
-            flash.error = e.getMessage()
-            return             
+            request.message = e.getMessage()
+            return
           }
           result.listACount = listA.size()
           result.listBCount = listB.size()
