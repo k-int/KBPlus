@@ -20,11 +20,25 @@
 
     <div class="container" style="text-align:center">
       <g:form action="list" method="get" class="form-inline">
-        <label>Search text : </label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  /> &nbsp;
-        <label>Updated After : </label> <input name="startDate" type="date" value="${params.startDate}"/> &nbsp;
-        <label>Updated Before : </label> <input name="endDate" type="date" value="${params.endDate}"/> &nbsp;
-        <input type="submit" class="btn btn-primary" value="Search" />
-        <button type="submit" name="format" value="csv" class="btn btn-primary" value="Search">Export</button>
+        <table>
+          <tr>
+            <td >
+              <label>Search text : </label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  /> &nbsp;
+            </td>
+            <td style="width:30%;">
+              <label>Updated After : </label> <input name="updateStartDate" type="date" value="${params.updateStartDate}"/> &nbsp;
+              <label>Created After : </label> <input name="createStartDate" type="date" value="${params.createStartDate}"/> &nbsp;
+            </td>
+            <td style="width:30%;">
+              <label>Updated Before : </label> <input name="updateEndDate" type="date" value="${params.updateEndDate}"/> &nbsp;
+              <label>Created Before : </label> <input name="createEndDate" type="date" value="${params.createEndDate}"/> &nbsp;
+            </td>
+            <td >
+              <input type="submit" class="btn btn-primary" value="Search" />
+              <button type="submit" name="format" value="csv" class="btn btn-primary" value="Search">Export</button>
+            </td>
+          </tr>
+        </table>
       </g:form><br/>
     </div>
 
