@@ -107,14 +107,15 @@
                         </div>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" <%= ( editable ) ? '' : 'disabled' %> class="btn btn-primary">
-                            <i class="icon-ok icon-white"></i>
-                            <g:message code="default.button.update.label" default="Update"/>
-                        </button>
-                        <button type="submit" <%= ( ( usages == 0  ) ) ? '' : 'disabled' %> class="btn btn-danger" name="_action_delete" formnovalidate>
-                            <i class="icon-trash icon-white"></i>
-                            <g:message code="default.button.delete.label" default="Delete"/>
-                        </button>
+                        <g:if test="${editable}">
+                          <button type="submit" <%= ( ( usages == 0  ) ) ? '' : 'disabled' %> class="btn btn-danger" name="_action_delete" formnovalidate>
+                              <i class="icon-trash icon-white"></i>
+                              <g:message code="default.button.delete.label" default="Delete"/>
+                          </button>
+                        </g:if>
+                        <g:else>
+                          You do not have permission to delete properties
+                        </g:else>
                     </div>
                 </fieldset>
             </g:form>
@@ -129,7 +130,7 @@
     //Runs if type edited is Refdata
     if( $("#type option:selected").val() == "class com.k_int.kbplus.RefdataValue") {
         $("#cust_prop_ref_data_name").show();
-    }
+   
 
     //Runs everytime type is changed
     $('#type').change(function() {
