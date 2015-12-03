@@ -49,14 +49,24 @@ class PackageDetailsController {
         qry_params.add("%${params.q.trim().toLowerCase()}%");
       }
 
-      if ( params.startDate?.length() > 0 ) {
+      if ( params.updateStartDate?.length() > 0 ) {
         base_qry += " and ( p.lastUpdated > ? )"
-        qry_params.add(params.date('startDate','yyyy-MM-dd'));
+        qry_params.add(params.date('updateStartDate','yyyy-MM-dd'));
       }
 
-      if ( params.endDate?.length() > 0 ) {
+      if ( params.updateEndDate?.length() > 0 ) {
         base_qry += " and ( p.lastUpdated < ? )"
-        qry_params.add(params.date('endDate','yyyy-MM-dd'));
+        qry_params.add(params.date('updateEndDate','yyyy-MM-dd'));
+      }
+
+      if ( params.createStartDate?.length() > 0 ) {
+        base_qry += " and ( p.dateCreated > ? )"
+        qry_params.add(params.date('createStartDate','yyyy-MM-dd'));
+      }
+
+      if ( params.createEndDate?.length() > 0 ) {
+        base_qry += " and ( p.dateCreated < ? )"
+        qry_params.add(params.date('createEndDate','yyyy-MM-dd'));
       }
 
       if ( ( params.sort != null ) && ( params.sort.length() > 0 ) ) {
@@ -241,10 +251,10 @@ class PackageDetailsController {
               def countHQL = "select count(elements(pkg.tipps)) from Package pkg where pkg.id = ?"
               params.countA = Package.executeQuery(countHQL, [result.pkgInsts.get(0).id])
               params.countB = Package.executeQuery(countHQL, [result.pkgInsts.get(1).id])
-            }         
+            }
           }catch(IllegalArgumentException e){
-            flash.error = e.getMessage()
-            return             
+            request.message = e.getMessage()
+            return
           }
           result.listACount = listA.size()
           result.listBCount = listB.size()
