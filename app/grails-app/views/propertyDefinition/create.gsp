@@ -86,7 +86,7 @@
                   </div>
                   <dd>
                       <label class="property-label">Context:</label> 
-                         <g:select name="descr"  from="${PropertyDefinition.AVAILABLE_DESCR}"/> 
+                         <g:select name="cust_prop_desc"  from="${PropertyDefinition.AVAILABLE_DESCR}"/> 
 
                   </dd>
                   <button type="submit" class="btn btn-success">
