@@ -5,6 +5,7 @@ aggr_es_cluster='tigerelasticsearch'
 onix_ghost_licence="Jisc Collections Model Journals Licence 2015"
 aggr_es_index='kbplustest'
 publicationService.baseurl='http://knowplus.edina.ac.uk:2012/kbplus/api'
+// no slash at end of SystemBaseURL
 SystemBaseURL="http://localhost:19080/demo"
 docstore='http://deprecated/deprecated'
 kbplusSystemId='KITestIntsance'
