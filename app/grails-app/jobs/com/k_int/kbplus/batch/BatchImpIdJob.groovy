@@ -11,13 +11,14 @@ class BatchImpIdJob {
 
 
   static triggers = {
-  	simple name:'BatchImpIdJob', startDelay:40000, repeatInterval:30000, repeatCount:0  
+    simple name:'BatchImpIdJob', startDelay:40000, repeatInterval:30000, repeatCount:0  
   }
 
   def execute() {
-  	def event = "BatchImpIdJob"
-  	def startTime = printStart(event)
-  	def counter = 0
+    log.debug("BatchImpIdJob::execute()");
+    def event = "BatchImpIdJob"
+    def startTime = printStart(event)
+    def counter = 0
     def classList = [com.k_int.kbplus.Package,com.k_int.kbplus.Org,com.k_int.kbplus.License,com.k_int.kbplus.Subscription,com.k_int.kbplus.Platform,com.k_int.kbplus.TitleInstance] 
     classList.each{ currentClass ->
       def auditable_store = null
@@ -34,8 +35,8 @@ class BatchImpIdJob {
                 counter ++ 
               }
               if(counter == 500){
-              	cleanUpGorm(session)
-              	counter = 0
+                cleanUpGorm(session)
+                counter = 0
               }
            }
            cleanUpGorm(session)
@@ -51,7 +52,6 @@ class BatchImpIdJob {
   }
 
   def cleanUpGorm(session) {
-    log.debug("Batch of currentClasss, clean up GORM");
     session.flush()
     session.clear()
   }
@@ -61,20 +61,20 @@ class BatchImpIdJob {
     obj.impId = java.util.UUID.randomUUID().toString();
     obj.save()
   }
-	
+  
    def printStart(event){
-   		def starttime = new Date();
-   		log.debug("******* Start ${event}: ${starttime} *******")
-   		return starttime
+       def starttime = new Date();
+       log.debug("******* Start ${event}: ${starttime} *******")
+       return starttime
    }
 
-	def printDuration(starttime, event){
-		use(groovy.time.TimeCategory) {
-			def duration = new Date() - starttime
-			log.debug("******* End ${event}: ${new Date()} *******")
-			log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
-		}
-	}
+  def printDuration(starttime, event){
+    use(groovy.time.TimeCategory) {
+      def duration = new Date() - starttime
+      log.debug("******* End ${event}: ${new Date()} *******")
+      log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
+    }
+  }
 
 
 
