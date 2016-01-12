@@ -394,9 +394,9 @@
                                       <b class="caret"></b>
                                   </a>
                                   <ul class="dropdown-menu">
-                                      <li><a href="http://www.kbplus.ac.uk/kbplus/myInstitutions/index">KB+</a></li>
-                                      <li><a href="http://www.kbplus.ac.uk/demo/myInstitutions/index">KB+ Demo</a></li>
-                                      <li><a href="http://www.kbplus.ac.uk/test/myInstitutions/index">KB+ Sandpit</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/kbplus/home/index">KB+</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/demo/home/index">KB+ Demo</a></li>
+                                      <li><a href="http://www.kbplus.ac.uk/test/home/index">KB+ Sandpit</a></li>
                                   </ul>
                               </li>
                               <li><a href="https://github.com/k-int/KBPlus/releases/tag/${appVersion}">
