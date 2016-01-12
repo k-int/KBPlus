@@ -137,7 +137,7 @@
                          </g:each>
                        </g:if>
                        <g:else>
-                         <li>${message(code:'menu.institutions.affiliation')} <g:link controller="profile" action="index">${message(code:'menu.user.profile')}</g:link></li>
+                         <li><span>${message(code:'menu.institutions.affiliation')}</span> <g:link controller="profile" action="index">${message(code:'menu.user.profile')}</g:link></li>
                        </g:else>
                        <li class="divider"></li>
                        <li><a href="${message(code:'help.location')}">${message(code:'menu.institutions.help')}</a></li>
