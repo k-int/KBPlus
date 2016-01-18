@@ -12,10 +12,12 @@ class BatchTouchJob {
 
 
   static triggers = {
-  	simple name:'BatchTouchJob', startDelay:50000, repeatInterval:30000, repeatCount:0  
+    simple name:'BatchTouchJob', startDelay:50000, repeatInterval:30000, repeatCount:0  
   }
 
   def execute() {
+    log.debug("BatchTouchJob::execute");
+
     //The following will only make changes to objects when required. If fields are populated they will skip
     //Make sure all classes have impIDs, as they are the key used for ES
     impIdJob();
@@ -26,6 +28,9 @@ class BatchTouchJob {
   }
 
   def titleBatchUpdate() {
+
+    log.debug("BatchTouchJob::titleBatchUpdate");
+
     def event = "TitleBatchUpdateJob"
     def startTime = printStart(event)
     def counter = 0
@@ -66,6 +71,7 @@ class BatchTouchJob {
   }
 
   def impIdJob(){
+    log.debug("BatchTouchJob::impIdJob");
     def event = "BatchImpIdJob"
     def startTime = printStart(event)
     def counter = 0
@@ -102,6 +108,7 @@ class BatchTouchJob {
   }
 
   def pkgBatchUpdate() {
+    log.debug("BatchTouchJob::pkgBatchUpdate");
     def event = "PackageBatchUpdateJob"
     def startTime = printStart(event)
     def counter = 0
@@ -139,7 +146,7 @@ class BatchTouchJob {
 
   }
   def cleanUpGorm(session) {
-    log.debug("Batch of currentClasss, clean up GORM");
+    log.debug("clean up GORM");
     session.flush()
     session.clear()
   }
@@ -149,21 +156,19 @@ class BatchTouchJob {
     obj.impId = java.util.UUID.randomUUID().toString();
     obj.save()
   }
-	
+  
    def printStart(event){
-   		def starttime = new Date();
-   		log.debug("******* Start ${event}: ${starttime} *******")
-   		return starttime
+       def starttime = new Date();
+       log.debug("******* Start ${event}: ${starttime} *******")
+       return starttime
    }
 
-	def printDuration(starttime, event){
-		use(groovy.time.TimeCategory) {
-			def duration = new Date() - starttime
-			log.debug("******* End ${event}: ${new Date()} *******")
-			log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
-		}
-	}
-
-
+  def printDuration(starttime, event){
+    use(groovy.time.TimeCategory) {
+      def duration = new Date() - starttime
+      log.debug("******* End ${event}: ${new Date()} *******")
+      log.debug("Duration: ${(duration.hours*60)+duration.minutes}m ${duration.seconds}s")
+    }
+  }
 
 }

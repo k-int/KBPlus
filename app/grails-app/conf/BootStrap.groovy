@@ -13,7 +13,7 @@ class BootStrap {
 
   def init = { servletContext ->
 
-      log.error("Sys id: ${grailsApplication.config.kbplusSystemId}")
+    log.info("Sys id: ${grailsApplication.config.kbplusSystemId}")
   
     if ( grailsApplication.config.kbplusSystemId != null ) {
       def system_object = SystemObject.findBySysId(grailsApplication.config.kbplusSystemId) ?: new SystemObject(sysId:grailsApplication.config.kbplusSystemId).save(flush:true);
