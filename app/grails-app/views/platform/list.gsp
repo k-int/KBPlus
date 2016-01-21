@@ -41,7 +41,14 @@
 				<g:if test="${flash.message}">
 				<bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
 				</g:if>
-				
+
+				<div class="container" style="text-align:left">
+					<g:form action="list" method="get" class="form-inline">
+						<label>Search text : </label> <input type="text" name="q" placeholder="enter search term..." value="${params.q?.encodeAsHTML()}"  /> &nbsp;
+						<input type="submit" class="btn btn-primary" value="Search" />
+					</g:form><br/>
+				</div>
+
 				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
@@ -65,7 +72,7 @@
 					</tbody>
 				</table>
 				<div class="pagination">
-					<bootstrap:paginate total="${platformInstanceTotal}" />
+					<bootstrap:paginate  action="list" controller="platform" params="${params}" next="Next" prev="Prev" max="${max}" total="${platformInstanceTotal}" />
 				</div>
 			</div>
 
