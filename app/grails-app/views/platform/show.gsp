@@ -52,6 +52,37 @@
           </dt>
           <dd><g:fieldValue bean="${platformInstance}" field="name"/></dd>
         </g:if>
+
+        <g:if test="${platformInstance?.primaryUrl}">
+          <dt>
+            <g:annotatedLabel owner="${platformInstance}" property="PrimaryURL">
+              <g:message code="platform.primaryUrl.label" default="PrimaryURL" />
+            </g:annotatedLabel>
+          </dt>
+          <dd>
+            <a href="${platformInstance.primaryUrl}">
+              <g:fieldValue bean="${platformInstance}" field="primaryUrl"/>
+            </a>
+          </dd>
+        </g:if>
+
+        <g:if test="${platformInstance?.serviceProvider}">
+          <dt>
+            <g:annotatedLabel owner="${platformInstance}" property="ServiceProvider">
+              <g:message code="platform.serviceProvider.label" default="ServiceProvider" />
+            </g:annotatedLabel>
+          </dt>
+          <dd><g:fieldValue bean="${platformInstance}" field="serviceProvider"/></dd>
+        </g:if>
+
+        <g:if test="${platformInstance?.softwareProvider}">
+          <dt>
+            <g:annotatedLabel owner="${platformInstance}" property="SoftwareProvider">
+              <g:message code="platform.softwareProvider.label" default="SoftwareProvider" />
+            </g:annotatedLabel>
+          </dt>
+          <dd><g:fieldValue bean="${platformInstance}" field="softwareProvider"/></dd>
+        </g:if>
         
         <dl>
           <dt>Availability of titles in this platform by package</dt>

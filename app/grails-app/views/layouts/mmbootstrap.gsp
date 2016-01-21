@@ -157,6 +157,8 @@
                          <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
+                       <li <%= ( ( 'platform'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="platform" action="list">Search Platforms</g:link></li>
                        <li class="divider"></li>
                          <li <%= ( ( 'upload'== controllerName ) && ( 'reviewPackage'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="upload" action="reviewPackage">Upload new Package</g:link></li>
