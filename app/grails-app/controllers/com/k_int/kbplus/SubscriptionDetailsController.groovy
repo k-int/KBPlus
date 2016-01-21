@@ -99,6 +99,11 @@ class SubscriptionDetailsController {
       redirect action:'currentTitles', params:params
     }
 
+    if ( result.subscriptionInstance == null ) {
+      flash.error = "No subscription found -- is it deleted?"
+      redirect controller:'home', action:'index'
+    }
+
     // result.institution = Org.findByShortcode(params.shortcode)
     result.institution = result.subscriptionInstance.subscriber
     if ( result.institution ) {
@@ -436,6 +441,7 @@ class SubscriptionDetailsController {
     }
     result
   }
+
   def formatDateOrNull(formatter, date) {
       def result;
       if(date){

@@ -456,7 +456,7 @@ class ExportService {
 			def licPropElem = addXMLElementInto(doc, licElem, "LicenceProperties", null)
 			
 			licence.customProperties.each{ prop ->
-				def propertyType = addXMLElementInto(doc, licPropElem, "${prop.type.name.replaceAll("\\s","")}", null)
+				def propertyType = addXMLElementInto(doc, licPropElem, "${prop.type.name.replaceAll("\\s","").replaceAll("/","_")}", null)
 				addXMLElementInto(doc, propertyType, "Value","${prop.getValue()}")
 				addXMLElementInto(doc, propertyType, "Note","${prop.note?:''}")
 
