@@ -1,5 +1,6 @@
 package com.k_int.kbplus
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
@@ -70,6 +71,7 @@ class PlatformController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
+      def editable
       def platformInstance = Platform.get(params.id)
       if (!platformInstance) {
         flash.message = message(code: 'default.not.found.message', 
@@ -78,6 +80,12 @@ class PlatformController {
         return
       }
 
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+          editable = true
+      }
+      else {
+          editable = false
+      }
 
      // Build up a crosstab array of title-platforms under this package
       def packages = [:]
@@ -126,7 +134,8 @@ class PlatformController {
         }
       }
 
-        [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list]
+        [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list, editable: editable]
+
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
