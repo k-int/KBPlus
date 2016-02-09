@@ -23,7 +23,9 @@
                   </xsl:call-template>
                 </xsl:when>
 	        	<xsl:otherwise>
-	        		<xsl:value-of select="./TitleIDs/ID[@namespace='ISBN' or @namspace='isbn'][1]"/>
+              <xsl:call-template name="tsventry">
+	        		 <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISBN' or @namespace='isbn'][1]"/>
+              </xsl:call-template>
 	        	</xsl:otherwise>
         	</xsl:choose>
         </xsl:otherwise>
