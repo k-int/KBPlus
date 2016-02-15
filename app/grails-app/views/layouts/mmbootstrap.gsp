@@ -34,6 +34,13 @@
   <body>
 
 
+  <script>
+    dataLayer = [{
+     'Institution': '${params.shortcode}',
+     'UserDefaultOrg': '${user?.defaultDash?.shortcode}',
+     'UserRole': 'ROLE_USER'
+    }];
+  </script>
 <!-- Google Tag Manager - Placed here as instructed by MB 20/01/2016, made aware of possible negative impacts -->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5BMV57"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
