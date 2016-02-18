@@ -49,7 +49,7 @@
 
         <fieldset class="inline-lists">
             <dl>
-              <dt>Package Name</dt>
+              <dt>Platform Name</dt>
               <dd> <g:xEditable owner="${platformInstance}" field="name"/></dd>
             </dl>
 
