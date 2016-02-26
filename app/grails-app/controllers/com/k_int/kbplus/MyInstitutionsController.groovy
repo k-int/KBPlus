@@ -209,7 +209,8 @@ class MyInstitutionsController {
             qry_params += [ref:"%${params['keyword-search'].toLowerCase()}%"]
             result.keyWord = params['keyword-search'].toLowerCase()
         }
-        if( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
+
+        if ( (params.propertyFilter != null) && params.propertyFilter.trim().length() > 0 ) {
             def propDef = PropertyDefinition.findByName(params.propertyFilterType)
             def propQuery = buildPropertySearchQuery(params,propDef)
             qry += propQuery.query
@@ -219,7 +220,7 @@ class MyInstitutionsController {
         }
 
         if (date_restriction) {
-            qry += " and l.startDate <= :date_restr and l.endDate >= :date_restr "
+            qry += " and ( ( l.startDate <= :date_restr and l.endDate >= :date_restr ) OR l.startDate is null OR l.endDate is null ) "
             qry_params += [date_restr: date_restriction]
             qry_params += [date_restr: date_restriction]
         }
