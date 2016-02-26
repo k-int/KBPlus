@@ -8,8 +8,7 @@ import org.openqa.selenium.Keys
  */
 class LicencePage extends AbstractDetails {
     static at = {
-        browser.page.title.startsWith("KB+ Current Licences") ||
-                browser.page.title.startsWith("KB+")
+        browser.page.title.startsWith("KB+ Current Licences") || browser.page.title.startsWith("KB+")
     }
     static content = {
         createNewLicense { ref ->
