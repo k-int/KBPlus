@@ -217,7 +217,7 @@ class GeneralSpec extends BaseSpec {
 		templateLicence()
 		$("input", name: "reference").value(Data.Licence_template_D)
 		$("input", type: "submit").click()
-                waitFor{$('h6',text:'License Properties')};
+                // waitFor{$('h6',text:'License Properties')};
 		when:
                 at LicensePage
 		editIsPublic("Yes")
