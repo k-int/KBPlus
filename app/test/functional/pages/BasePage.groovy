@@ -69,6 +69,7 @@ class BasePage extends Page {
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
             waitFor{$("a", text: "Logout").click()}
             waitFor { $("a", text: "Knowledge Base+ Member Login").click() }
+            waitFor { $("#submit").displayed }
             $("form").j_username = user
             $("form").j_password = passwd
             $("#submit", value: "Login").click(DashboardPage)
