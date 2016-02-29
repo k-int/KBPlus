@@ -216,7 +216,7 @@ class GeneralSpec extends BaseSpec {
 		changeUser(Data.UserD_name, Data.UserD_passwd)
 		templateLicence()
 		$("input", name: "reference").value(Data.Licence_template_D)
-		$("input", type: "submit").click(LicensePage)
+		$("input", type: "submit").click(LicencePage)
 		when:
 		editIsPublic("Yes")
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
