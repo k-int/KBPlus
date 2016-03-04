@@ -216,10 +216,8 @@ class GeneralSpec extends BaseSpec {
 		changeUser(Data.UserD_name, Data.UserD_passwd)
 		templateLicence()
 		$("input", name: "reference").value(Data.Licence_template_D)
-		$("input", type: "submit").click()
-                // waitFor{$('h6',text:'License Properties')};
+		$("input", type: "submit").click(LicencePage)
 		when:
-                at LicensePage
 		editIsPublic("Yes")
 		addDocument(Data.Test_Doc_name, Data.Test_Doc_file)
 		//            addCustomPropType("FunctTestProp")
