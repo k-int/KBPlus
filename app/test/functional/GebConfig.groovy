@@ -15,6 +15,11 @@ driver = { new FirefoxDriver()}
 reportsDir = "target/geb-reports"
 atCheckWaiting = true
 
+waiting {
+  timeout = 60
+  retryInterval = 0.1
+}
+
 
 environments {
 
