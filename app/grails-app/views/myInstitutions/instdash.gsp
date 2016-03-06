@@ -132,6 +132,7 @@
               </tbody>
             </table>
         </div>
+        <g:if test="${grailsApplication.config.ZenDeskBaseURL}">
         <div class="span4">
            <table class="table table-bordered dashboard-widget">
               <thead>
@@ -180,6 +181,7 @@
           </tbody>
           </table>
         </div>
+        </g:if>
       </div>
     </div>
 

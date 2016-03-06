@@ -163,30 +163,30 @@ class LicenseDetailsController {
   def consortia() {
     def result = [:]
     result.user = User.get(springSecurityService.principal.id)
-    result.licence = License.get(params.id)
+    result.license = License.get(params.id)
    
     def hasAccess
     def isAdmin
     if (result.user.getAuthorities().contains(Role.findByAuthority('ROLE_ADMIN'))) {
         isAdmin = true;
     }else{
-       hasAccess = result.licence.orgLinks.find{it.roleType?.value == 'Licensing Consortium' &&
+       hasAccess = result.license.orgLinks.find{it.roleType?.value == 'Licensing Consortium' &&
       it.org.hasUserWithRole(result.user,'INST_ADM') }
     }
-    if( !isAdmin && (result.licence.licenseType != "Template" || hasAccess == null)) {
+    if( !isAdmin && (result.license.licenseType != "Template" || hasAccess == null)) {
       flash.error = message(code:'licence.consortia.access.error')
       response.sendError(401) 
       return
     }
-    if ( result.licence.hasPerm("edit",result.user) ) {
+    if ( result.license.hasPerm("edit",result.user) ) {
       result.editable = true
     }
     else {
       result.editable = false
     }
 
-    log.debug("${result.licence}")
-    def consortia = result.licence?.orgLinks?.find{
+    log.debug("consortia(${params.id}) - ${result.license}")
+    def consortia = result.license?.orgLinks?.find{
       it.roleType?.value == 'Licensing Consortium'}?.org
 
     if(consortia){
@@ -199,7 +199,7 @@ class LicenseDetailsController {
      result.consortiaInstsWithStatus = [ : ]
      def findOrgLicences = "SELECT lic from License AS lic WHERE exists ( SELECT link from lic.orgLinks AS link WHERE link.org = ? and link.roleType.value = 'Licensee') AND exists ( SELECT incLink from lic.incomingLinks AS incLink WHERE incLink.fromLic = ? ) AND lic.status.value != 'Deleted'"
      consortiaInstitutions.each{ 
-        def queryParams = [ it, result.licence]
+        def queryParams = [ it, result.license]
         def hasLicence = License.executeQuery(findOrgLicences, queryParams)
         if (hasLicence){
           result.consortiaInstsWithStatus.put(it, RefdataCategory.lookupOrCreate("YNO","Yes") )    
