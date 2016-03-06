@@ -70,9 +70,11 @@ class GeneralSpec extends BaseSpec {
 		when:
 		go "/demo/admin/globalSync"
 		go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
+                waitFor { $("form") }
 		$('form').newEmptySubName = Data.Subscription_name_A
 		$('input', type: 'submit').click()
 		then:
+                waitFor{ $("h1 span") }
 		$('h1 span').text() == Data.Subscription_name_A
 	}
 
