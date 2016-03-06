@@ -22,7 +22,7 @@
 </g:if>
 
 <div class="container">
-    <h1>${licence?.reference}</h1>
+    <h1>${license?.reference}</h1>
     <g:render template="nav"/>
 </div>
 
@@ -32,7 +32,7 @@
 <br><p> The following list displays all members of ${consortia.name} consortia. To create child licences
     select the desired checkboxes and click 'Create child licences'</p><br>
 <g:form action="generateSlaveLicences" controller="licenseDetails" method="POST">
-<input type="hidden" name="baselicense" value="${licence.id}"/>
+<input type="hidden" name="baselicense" value="${license.id}"/>
 <input type="hidden" name="id" value="${id}"/>
 <table class="table table-bordered"> 
 <thead>
@@ -55,7 +55,7 @@
 </table>
 <dl>
 <dt>Licence name: <input type="text" name="lic_name" 
-    value="Child licence for ${licence?.reference}"/></dt>
+    value="Child licence for ${license?.reference}"/></dt>
 <dd><input type="submit" class="btn btn-primary" value="Create child licences"/></dd>
 </dl>
 </g:form>
