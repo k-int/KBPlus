@@ -71,6 +71,7 @@ class BasePage extends Page {
             waitFor{$("a", text: "Logout").click()}
             waitFor { $("a", text: "Knowledge Base+ Member Login").click() }
             waitFor { $("#submit").displayed }
+            waitFor { $("form") }
             $("form").j_username = user
             $("form").j_password = passwd
             $("#submit", value: "Login").click(DashboardPage)
