@@ -39,6 +39,7 @@ class GeneralSpec extends BaseSpec {
 		login(Data.UserD_name, Data.UserD_passwd)
 		when:
 		go "/demo/org/create"
+		waitFor{$("form")}
 		$("form").name = Data.Org_name
 		$("form").impId = Data.Org_impId
 		$("form").sector = "Higher Education"
