@@ -47,7 +47,8 @@ class BasePage extends Page {
         }
         logout {
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
-            waitFor{$("a", text: "Logout").click()}
+            waitFor{$("a", text: "Logout")}
+            $("a", text: "Logout").click()
         }
         manageAffiliationReq {
             $("a", text: "Admin Actions").click()
@@ -55,7 +56,8 @@ class BasePage extends Page {
         }
         templateLicence {
             $("a", text: "Data Managers").click()
-            waitFor{ $("a", text: "New Licence").click()}
+            waitFor{ $("a", text: "New Licence")}
+            $("a", text: "New Licence").click()
         }
         changeUserNoDash { user, passwd ->
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
@@ -68,8 +70,10 @@ class BasePage extends Page {
         }
         changeUser { user, passwd ->
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
-            waitFor{$("a", text: "Logout").click()}
-            waitFor { $("a", text: "Knowledge Base+ Member Login").click() }
+            waitFor{$("a", text: "Logout")}
+            $("a", text: "Logout").click()
+            waitFor { $("a", text: "Knowledge Base+ Member Login") }
+            $("a", text: "Knowledge Base+ Member Login").click()
             waitFor { $("#submit").displayed }
             waitFor { $("form") }
             $("form").j_username = user
