@@ -61,10 +61,11 @@ class BasePage extends Page {
         }
         changeUserNoDash { user, passwd ->
             $("ul.pull-right").children().find("a.dropdown-toggle").click()
+            waitFor{$("a", text: "Logout")}
             $("a", text: "Logout").click()
             waitFor { $("a", text: "Knowledge Base+ Member Login") }
             $("a", text: "Knowledge Base+ Member Login").click()
-            waitFor { $("form") }
+            waitFor { $("#submit").displayed }
             $("form").j_username = user
             $("form").j_password = passwd
             $("#submit", value: "Login").click()
