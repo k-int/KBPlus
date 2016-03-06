@@ -14,7 +14,8 @@ class LicenceComparePage extends BasePage {
             $("#select2-chosen-1").click()
             $("#s2id_autogen1_search").value(val)
             Thread.sleep(100)
-            waitFor{$("div.select2-result-label").click()}
+            waitFor{$("div.select2-result-label")}
+            $("div.select2-result-label").click()
             $("#addToList").click()
         }
 

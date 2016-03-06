@@ -61,7 +61,8 @@ class LicencePage extends AbstractDetails {
 
         importONIX { fileName ->
             $("a", text: "Import an ONIX-PL licence").click()
-            waitFor{$("input", type: "file", name: "import_file").value(fileName)}
+            waitFor{$("input", type: "file", name: "import_file")}
+            $("input", type: "file", name: "import_file").value(fileName)
             $("button", text: "Import licence").click()
             def createNew = $("#replace_opl")
             if (!createNew.isEmpty()) {
@@ -74,12 +75,14 @@ class LicencePage extends AbstractDetails {
             $("#select2-chosen-2").click()
             waitFor{$("#s2id_autogen2_search").value(name)} 
             Thread.sleep(400)
-            waitFor{$("span.select2-match",text:name).tail().click()}
+            waitFor{$("span.select2-match",text:name)}
+            $("span.select2-match",text:name).tail().click()
             $("input", value:"Add Property").click()
         }
         setRefPropertyValue{ prop, value ->
             // waitElement{$("span",'data-pk':"com.k_int.kbplus.LicenseCustomProperty:13").click()}
-            waitElement { $("td",text:prop).next("td").find("span").find("span").click()}
+            waitElement { $("td",text:prop) }
+            $("td",text:prop).next("td").find("span").find("span").click()
             waitElement { $("form.editableform") }
             waitFor {$("select.input-medium")}
             $("select.input-medium").value(value)
@@ -94,9 +97,11 @@ class LicencePage extends AbstractDetails {
         }
 
         addCustomInputProperty { propName, prop ->
-            waitFor { $("td",text:propName).next("td").find("span").click()}
+            waitFor { $("td",text:propName)}
+            $("td",text:propName).next("td").find("span").click()
             Thread.sleep(200)
-            waitFor{$("input.input-medium").value(prop)}
+            waitFor{$("input.input-medium")}
+            $("input.input-medium").value(prop)
             $("button.editable-submit").click()
         }
 

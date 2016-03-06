@@ -134,16 +134,19 @@ class BasePage extends Page {
 
         uploadJasper { 
             $("a", text: "Admin Actions").click()
-            waitFor{ $("a", text: "Upload Report Definitions").click(JasperPage)}
+            waitFor{ $("a", text: "Upload Report Definitions")}
+            $("a", text: "Upload Report Definitions").click(JasperPage)
         }
 
         generateJasper {
             $("a", text: "Data Managers").click()
-            waitFor{ $("a", text: "Reports").click(JasperPage)}
+            waitFor{ $("a", text: "Reports")}
+            $("a", text: "Reports").click(JasperPage)
         }
         dmChangeLog {
             $("a", text: "Data Managers").click()
-            waitFor{ $("a",text:"Data Manager Change Log").click(DataManagerPage)}
+            waitFor{ $("a",text:"Data Manager Change Log")}
+            $("a",text:"Data Manager Change Log").click(DataManagerPage)
         }
 
         showInstMenu {
