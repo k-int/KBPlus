@@ -10,45 +10,57 @@
 
    <xsl:template match="TitleListEntry">
       <xsl:choose>
-      	<xsl:when test="./TitleIDs/ID[@namespace='ISSN'] != ''">
-        	<xsl:value-of select="./TitleIDs/ID[@namespace='ISSN']"/>
+        <xsl:when test="./TitleIDs/ID[@namespace='ISSN' or @namespace='issn'] != ''">
+          <xsl:call-template name="tsventry">
+            <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISSN' or @namespace='issn'][1]" />
+          </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
         	<xsl:choose>
-	        	<xsl:when test="./TitleIDs/ID[@namespace='eISSN'] != ''">
-	        		<xsl:value-of select="./TitleIDs/ID[@namespace='eISSN']"/>
-	        	</xsl:when>
+                <xsl:when test="./TitleIDs/ID[@namespace='eISSN' or @namespace='eissn'] != ''">
+                  <xsl:call-template name="tsventry">
+                    <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='eISSN' or @namespace='eissn'][1]" />
+                  </xsl:call-template>
+                </xsl:when>
 	        	<xsl:otherwise>
-	        		<xsl:value-of select="./TitleIDs/ID[@namespace='ISBN']"/>
+              <xsl:call-template name="tsventry">
+	        		 <xsl:with-param name="txt" select="./TitleIDs/ID[@namespace='ISBN' or @namespace='isbn'][1]"/>
+              </xsl:call-template>
 	        	</xsl:otherwise>
         	</xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>&#x9;</xsl:text>
-      <xsl:choose>
-	  <!-- all the values StartDate, StartVolume and StartIssue are empty -->
-	      <xsl:when test="((./CoverageStatement/StartDate = '') and (./CoverageStatement/StartVolume = '') and (./CoverageStatement/StartIssue = '')) and
-						(not(./CoverageStatement/EndDate = '') or not(./CoverageStatement/EndVolume = '') or not(./CoverageStatement/EndIssue = ''))">
-			<xsl:call-template name="only_end"/>
-	      </xsl:when>
-	      <!-- all the values EndDate, EndVolume and EndIssue are empty -->
-	      <xsl:when test="(not(./CoverageStatement/StartDate = '') or not(./CoverageStatement/StartVolume = '') or not(./CoverageStatement/StartIssue = '')) and
-						((./CoverageStatement/EndDate = '') and (./CoverageStatement/EndVolume = '') and (./CoverageStatement/EndIssue = ''))">			
-			<xsl:call-template name="only_start"/>
-	      </xsl:when>
-	      <!-- all the values are empty -->
-	      <xsl:when test="((./CoverageStatement/StartDate = '') and (./CoverageStatement/StartVolume = '') and (./CoverageStatement/StartIssue = '')) and
-						((./CoverageStatement/EndDate = '')  and (./CoverageStatement/EndVolume = '') and (./CoverageStatement/EndIssue = ''))">
-			<xsl:call-template name="without_both"/>
-	      </xsl:when>
-	      <!-- all the values are NOT empty -->
-	      <xsl:otherwise>
-			<xsl:call-template name="with_both"/>	
-	      </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>&#x9;ACTIVE</xsl:text>
-      <xsl:text>&#xA;</xsl:text>
-   </xsl:template>
+      <xsl:variable name="coverage">
+          <xsl:choose>
+    	  <!-- all the values StartDate, StartVolume and StartIssue are empty -->
+    	      <xsl:when test="((./CoverageStatement/StartDate = '') and (./CoverageStatement/StartVolume = '') and (./CoverageStatement/StartIssue = '')) and
+    						(not(./CoverageStatement/EndDate = '') or not(./CoverageStatement/EndVolume = '') or not(./CoverageStatement/EndIssue = ''))">
+    			<xsl:call-template name="only_end"/>
+    	      </xsl:when>
+    	      <!-- all the values EndDate, EndVolume and EndIssue are empty -->
+    	      <xsl:when test="(not(./CoverageStatement/StartDate = '') or not(./CoverageStatement/StartVolume = '') or not(./CoverageStatement/StartIssue = '')) and
+    						((./CoverageStatement/EndDate = '') and (./CoverageStatement/EndVolume = '') and (./CoverageStatement/EndIssue = ''))">			
+    			<xsl:call-template name="only_start"/>
+    	      </xsl:when>
+    	      <!-- all the values are empty -->
+    	      <xsl:when test="((./CoverageStatement/StartDate = '') and (./CoverageStatement/StartVolume = '') and (./CoverageStatement/StartIssue = '')) and
+    						((./CoverageStatement/EndDate = '')  and (./CoverageStatement/EndVolume = '') and (./CoverageStatement/EndIssue = ''))">
+    			<xsl:call-template name="without_both"/>
+    	      </xsl:when>
+    	      <!-- all the values are NOT empty -->
+    	      <xsl:otherwise>
+    			<xsl:call-template name="with_both"/>	
+    	      </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:call-template name="tsventry">
+          <xsl:with-param name="txt" select="$coverage" />
+        </xsl:call-template>
+        <xsl:call-template name="tsventry">
+          <xsl:with-param name="txt" select="'ACTIVE'" />
+        </xsl:call-template>
+        <xsl:text>&#xA;</xsl:text>
+    </xsl:template>
 
    
    <xsl:template name="extract_year">
@@ -132,5 +144,8 @@
     <xsl:template name="without_both">
     	<xsl:text></xsl:text>
     </xsl:template>
+
+    <xsl:template name="tsventry"><xsl:param name="txt"/><xsl:value-of select="normalize-space($txt)"/><xsl:text>&#x9;</xsl:text></xsl:template>
+    <xsl:template name="plainentry"><xsl:param name="txt"/><xsl:value-of select="$txt"/></xsl:template>
 
 </xsl:stylesheet>
