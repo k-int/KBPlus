@@ -39,6 +39,7 @@ class GeneralSpec extends BaseSpec {
 		login(Data.UserD_name, Data.UserD_passwd)
 		when:
 		go "/demo/org/create"
+		waitFor{$("form")}
 		$("form").name = Data.Org_name
 		$("form").impId = Data.Org_impId
 		$("form").sector = "Higher Education"
@@ -69,9 +70,11 @@ class GeneralSpec extends BaseSpec {
 		when:
 		go "/demo/admin/globalSync"
 		go '/demo/myInstitutions/'+Data.Org_Url+'/emptySubscription'
+                waitFor { $("form") }
 		$('form').newEmptySubName = Data.Subscription_name_A
 		$('input', type: 'submit').click()
 		then:
+                waitFor{ $("h1 span") }
 		$('h1 span').text() == Data.Subscription_name_A
 	}
 

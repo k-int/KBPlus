@@ -14,7 +14,9 @@ class InstitutionsService {
                 type: license_type,
                 noticePeriod: baseLicense?.noticePeriod,
                 licenseUrl: baseLicense?.licenseUrl,
-                onixplLicense: baseLicense?.onixplLicense
+                onixplLicense: baseLicense?.onixplLicense,
+                startDate:baseLicense?.startDate,
+                endDate:baseLicense?.endDate
         )
         if(params.copyStartEnd){
             licenseInstance.startDate = baseLicense?.startDate

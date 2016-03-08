@@ -23,11 +23,8 @@ class ZenDeskSyncService {
   // see http://developer.zendesk.com/documentation/rest_api/forums.html#create-forum
 
   def doSync() {
-
-    if ( Holders.config.ZenDeskBaseURL == null || 
-         Holders.config.ZenDeskBaseURL == '' || 
-         Holders.config.kbplusSystemId == null ||
-         Holders.config.kbplusSystemId == '' )
+    if ( ! Holders.config.ZenDeskBaseURL ||
+         ! Holders.config.kbplusSystemId   )
       return;
 
     // Select all public packages where there is currently no forumId
@@ -244,6 +241,10 @@ class ZenDeskSyncService {
 
 
   def getLatestForumActivity() {
+    if ( ! Holders.config.ZenDeskBaseURL ) {
+      return;
+    }
+
     log.debug("getLatestForumActivity()");
     // https://ostephens.zendesk.com/api/v2/search.json?query=type:topic
     def now = System.currentTimeMillis();
