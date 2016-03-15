@@ -171,6 +171,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                          <g:link controller="announcement" action="index">Announcements</g:link></li>
                        <li <%= ( ( 'packageDetails'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="packageDetails" action="list">Search Packages</g:link></li>
+                       <li <%= ( ( 'platform'== controllerName ) && ( 'list'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="platform" action="list">Search Platforms</g:link></li>
                        <li class="divider"></li>
                          <li <%= ( ( 'upload'== controllerName ) && ( 'reviewPackage'==actionName ) ) ? ' class="active"' : '' %>>
                              <g:link controller="upload" action="reviewPackage">Upload new Package</g:link></li>
@@ -181,6 +183,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                          <g:link controller="titleDetails" action="findTitleMatches">New Title</g:link></li>
                        <li <%= ( ( 'licenseDetails'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
                          <g:link controller="licenseDetails" action="create">${message(code:'licence.new')}</g:link></li>
+                       <li <%= ( ( 'platform'== controllerName ) && ( 'create'==actionName ) ) ? ' class="active"' : '' %>>
+                         <g:link controller="platform" action="create">New Platform</g:link></li>
                        <li class="divider"></li>
 
                         <li<%= ( ( 'subscriptionDetails'== controllerName ) && ( 'compare'==actionName ) ) ? ' class="active"' : '' %>><g:link controller="subscriptionDetails"

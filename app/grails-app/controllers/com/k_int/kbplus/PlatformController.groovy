@@ -1,5 +1,6 @@
 package com.k_int.kbplus
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 import grails.converters.*
 import org.elasticsearch.groovy.common.xcontent.*
@@ -22,9 +23,30 @@ class PlatformController {
     def list() {
       def result = [:]
       result.user = User.get(springSecurityService.principal.id)
-      params.max = Math.min(params.max ? params.int('max') : 10, 100)
-      result.platformInstanceList = Platform.list(params)
-      result.platformInstanceTotal = Platform.count()
+      result.max = params.max ? Integer.parseInt(params.max) : result.user.defaultPageSize;
+
+      result.offset = params.offset ? Integer.parseInt(params.offset) : 0;
+
+        def deleted_platform_status =  RefdataCategory.lookupOrCreate( 'Platform Status', 'Deleted' );
+        def qry_params = [deleted_platform_status]
+
+      def base_qry = " from Platform as p where ( (p.status is null ) OR ( p.status = ? ) )"
+
+        if ( params.q?.length() > 0 ) {
+            base_qry += "and p.normname like ?"
+            qry_params.add("%${params.q.trim().toLowerCase()}%");
+        }
+        else {
+            base_qry += "order by p.normname asc"
+            //qry_params.add("%");
+        }
+
+        log.debug(base_qry)
+        log.debug(qry_params)
+
+        result.platformInstanceTotal = Subscription.executeQuery("select count(p) "+base_qry, qry_params )[0]
+        result.platformInstanceList = Subscription.executeQuery("select p ${base_qry}", qry_params, [max:result.max, offset:result.offset]);
+
       result
     }
 
@@ -49,6 +71,7 @@ class PlatformController {
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])
     def show() {
+      def editable
       def platformInstance = Platform.get(params.id)
       if (!platformInstance) {
         flash.message = message(code: 'default.not.found.message', 
@@ -57,6 +80,12 @@ class PlatformController {
         return
       }
 
+      if ( SpringSecurityUtils.ifAllGranted('ROLE_ADMIN') ) {
+          editable = true
+      }
+      else {
+          editable = false
+      }
 
      // Build up a crosstab array of title-platforms under this package
       def packages = [:]
@@ -105,7 +134,8 @@ class PlatformController {
         }
       }
 
-        [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list]
+        [platformInstance: platformInstance, packages:package_list, crosstab:crosstab, titles:title_list, editable: editable]
+
     }
 
     @Secured(['ROLE_USER', 'IS_AUTHENTICATED_FULLY'])

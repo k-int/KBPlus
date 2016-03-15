@@ -28,6 +28,9 @@
         </li>
 
         <li class="pull-right">
+          <g:if test="${editable}">
+              <span class="badge badge-warning">Editable</span>&nbsp;
+          </g:if>
           View:
           <div class="btn-group" data-toggle="buttons-radio">
             <g:link controller="packageDetails" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>

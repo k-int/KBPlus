@@ -8,51 +8,86 @@
     <title><g:message code="default.show.label" args="[entityName]" /></title>
   </head>
   <body>
-    <div class="row-fluid">
-      
-      <div class="span2">
-        <div class="well">
-          <ul class="nav nav-list">
-            <li class="nav-header">${entityName}</li>
-            <li>
-              <g:link class="list" action="list">
-                <i class="icon-list"></i>
-                <g:message code="default.list.label" args="[entityName]" />
-              </g:link>
-            </li>
-            <sec:ifAnyGranted roles="ROLE_ADMIN">
-            <li>
-              <g:link class="create" action="create">
-                <i class="icon-plus"></i>
-                <g:message code="default.create.label" args="[entityName]" />
-              </g:link>
-            </li>
-            </sec:ifAnyGranted>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="span10">
+
+    <div class="container">
+      <ul class="breadcrumb">
+        <li><g:link controller="home" action="index">Home</g:link> <span class="divider">/</span></li>
+        <li><g:link controller="platform" action="index">All Platforms</g:link><span class="divider">/</span></li>
+        <li><g:link controller="platform" action="show" id="${platformInstance.id}">${platformInstance.name}</g:link></li>
+
+        <li class="pull-right">
+          <g:if test="${editable}">
+            <span class="badge badge-warning">Editable</span>&nbsp;
+          </g:if>
+          View:
+          <div class="btn-group" data-toggle="buttons-radio">
+            <g:link controller="platform" action="show" params="${params+['mode':'basic']}" class="btn btn-primary btn-mini ${((params.mode=='basic')||(params.mode==null))?'active':''}">Basic</g:link>
+            <g:link controller="platform" action="show" params="${params+['mode':'advanced']}" class="btn btn-primary btn-mini ${params.mode=='advanced'?'active':''}">Advanced</g:link>
+          </div>
+          &nbsp;
+         </li>
+
+      </ul>
+    </div>
+
+    <div class="container">
+      <div class="span12">
 
         <div class="page-header">
-          <h1>Platform : ${platformInstance?.name}</h1>
+          <h1>Platform : <g:if test="${editable}"><span id="platformNameEdit"
+                                                        class="xEditableValue"
+                                                        data-type="textarea"
+                                                        data-pk="${platformInstance.class.name}:${platformInstance.id}"
+                                                        data-name="name"
+                                                        data-url='<g:createLink controller="ajax" action="editableSetValue"/>'>${platformInstance.name}</span></g:if><g:else>${platformInstance.name}</g:else>
+          </h1>
         </div>
 
         <g:if test="${flash.message}">
-        <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
+            <bootstrap:alert class="alert-info">${flash.message}</bootstrap:alert>
         </g:if>
 
-        <dl>
-        
-        <g:if test="${platformInstance?.name}">
-          <dt>
-            <g:annotatedLabel owner="${platformInstance}" property="Name">
-              <g:message code="platform.name.label" default="Name" />
-            </g:annotatedLabel>
-          </dt>
-          <dd><g:fieldValue bean="${platformInstance}" field="name"/></dd>
-        </g:if>
-        
+        <fieldset class="inline-lists">
+            <dl>
+              <dt>Platform Name</dt>
+              <dd> <g:xEditable owner="${platformInstance}" field="name"/></dd>
+            </dl>
+
+            <dl>
+              <dt>Primary URL</dt>
+              <dd> <g:xEditable owner="${platformInstance}" field="primaryUrl"/></dd>
+            </dl>
+
+            <dl>
+              <dt>Service Provider</dt>
+              <dd>
+                <g:xEditableRefData owner="${platformInstance}" field="serviceProvider" config="YN"/>
+              </dd>
+            </dl>
+
+            <dl>
+              <dt>Software Provider</dt>
+              <dd>
+                <g:xEditableRefData owner="${platformInstance}" field="softwareProvider" config="YN"/>
+              </dd>
+            </dl>
+
+            <g:if test="${params.mode=='advanced'}">
+
+              <dl>
+                <dt>Type</dt>
+                <dd> <g:xEditableRefData owner="${platformInstance}" field="type" config="YNO"/></dd>
+              </dl>
+
+              <dl>
+                <dt>Status</dt>
+                <dd> <g:xEditableRefData owner="${platformInstance}" field="status" config="UsageStatus"/></dd>
+              </dl>
+
+            </g:if>
+
+        </fieldset>
+
         <dl>
           <dt>Availability of titles in this platform by package</dt>
           <dd>
@@ -95,24 +130,9 @@
           </dd>
         </dl>
 
-        <g:form>
-          <sec:ifAnyGranted roles="ROLE_ADMIN">
-          <g:hiddenField name="id" value="${platformInstance?.id}" />
-          <div class="form-actions">
-            <g:link class="btn" action="edit" id="${platformInstance?.id}">
-              <i class="icon-pencil"></i>
-              <g:message code="default.button.edit.label" default="Edit" />
-            </g:link>
-            <button class="btn btn-danger" type="submit" name="_action_delete">
-              <i class="icon-trash icon-white"></i>
-              <g:message code="default.button.delete.label" default="Delete" />
-            </button>
-          </div>
-          </sec:ifAnyGranted>
-        </g:form>
-
       </div>
 
     </div>
+
   </body>
 </html>
