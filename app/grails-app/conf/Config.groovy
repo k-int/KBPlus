@@ -838,3 +838,27 @@ notifications.email.genericTemplate=true //If enabled, no customisation in email
 //Finance
 grails.plugins.remotepagination.enableBootstrap=true
 financials.currency="GBP - United Kingdom Pound|EUR - Euro Member Countries|USD - United States Dollar|CHF - Switzerland Franc" //List in priority of order
+
+defaultOaiConfig = [
+  serverName: 'K-Int generic Grails OAI Module :: KBPlus.ac.uk',
+  lastModified:'lastUpdated',
+  serverEmail:'ian.ibbotson@k-int.com',
+  schemas:[
+    'oai_dc':[
+      type:'method',
+      methodName:'toOaiDcXml',
+      schema:'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
+      metadataNamespaces: [
+        '_default_' : 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+        'dc'        : "http://purl.org/dc/elements/1.1/"
+      ]],
+    'kbplus':[
+      type:'method',
+      methodName:'toKBPlus',
+      schema:'http://www.kbplus.ac.uk/schemas/oai_metadata.xsd',
+      metadataNamespaces: [
+        '_default_': 'http://www.kbplus.ac.uk/oai_metadata/'
+      ]],
+  ]
+]
+

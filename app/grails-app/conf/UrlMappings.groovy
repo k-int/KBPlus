@@ -29,6 +29,7 @@ class UrlMappings {
     "/publichome"(view:"/publichome")
     "/signup"(view:"/signup")
     "/noHostPlatformUrl"(view:"/noHostPlatformUrl")
+    "/oai/$id"(controller:'oai',action:'index')
 
     "500"(view:'/serverCodes/error')
     "401"(view:'/serverCodes/forbidden')
