@@ -881,6 +881,11 @@ class TitleInstance {
         builder.'title' (['id':(id)]) {
           builder.'title' (title)
         }
+        builder.'identifiers' () {
+          ids?.each { id_oc ->
+            builder.identifier([namespace:id_oc.identifier?.ns.ns, value:id_oc.identifier?.value])
+          }
+        }
       }
     }
     catch ( Exception e ) {
