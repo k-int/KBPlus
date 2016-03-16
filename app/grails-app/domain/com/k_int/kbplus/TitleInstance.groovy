@@ -875,6 +875,7 @@ class TitleInstance {
   def toKBPlus(builder, attr) {
 
     def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    def pub = getPublisher()
 
     try {
       builder.'kbplus' (attr) {
@@ -884,6 +885,11 @@ class TitleInstance {
         builder.'identifiers' () {
           ids?.each { id_oc ->
             builder.identifier([namespace:id_oc.identifier?.ns.ns, value:id_oc.identifier?.value])
+          }
+        }
+        if ( pub ) {
+          builder.'publisher' ([id:(pub.id)]) {
+            builder.'name' (pub.name)
           }
         }
       }
