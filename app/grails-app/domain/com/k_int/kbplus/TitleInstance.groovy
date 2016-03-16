@@ -854,7 +854,7 @@ class TitleInstance {
   static def oaiConfig = [
     id:'titles',
     textDescription:'Title repository for KBPlus',
-    query:" from TitleInstance as o where o.status.value != 'Deleted'",
+    query:" from TitleInstance as o ",
     pageSize:20
   ]
 

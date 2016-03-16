@@ -353,6 +353,8 @@ class OaiController {
       def clazz = Class.forName(result.className)
 
       log.debug("prefix handler for ${metadataPrefix} is ${prefixHandler}");
+      log.debug("Count query is select count(o) ${query} ${query_params}");
+
       def rec_count = clazz.executeQuery("select count(o) ${query}",query_params)[0];
       def records = clazz.executeQuery("select o ${query}",query_params,[offset:offset,max:max])
 
