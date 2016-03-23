@@ -136,7 +136,7 @@ class OaiController {
 
     log.debug("Created XML, write");
 
-    render(text: writer.toString(), contentType: "text/xml", encoding: "UTF-8")
+    render(text: writer.toString(), contentType: "application/xml", encoding: "UTF-8")
   }
 
   def identify(result) {
@@ -177,7 +177,7 @@ class OaiController {
         }
       }
     }
-    render(text: writer.toString(), contentType: "text/xml", encoding: "UTF-8")
+    render(text: writer.toString(), contentType: "application/xml", encoding: "UTF-8")
   }
 
   def listIdentifiers(result) {
@@ -267,7 +267,7 @@ class OaiController {
     writer << xml.bind(resp)
 
     log.debug("Render");
-    render(text: writer.toString(), contentType: "text/xml", encoding: "UTF-8")
+    render(text: writer.toString(), contentType: "application/xml", encoding: "UTF-8")
   }
 
   def listMetadataFormats(result) {
@@ -295,7 +295,7 @@ class OaiController {
 
     writer << xml.bind(resp)
 
-    render(text: writer.toString(), contentType: "text/xml", encoding: "UTF-8")
+    render(text: writer.toString(), contentType: "application/xml", encoding: "UTF-8")
   }
 
 
@@ -436,7 +436,7 @@ class OaiController {
 
     writer << xml.bind(resp)
 
-    render(text: writer.toString(), contentType: "text/xml", encoding: "UTF-8")
+    render(text: writer.toString(), contentType: "application/xml", encoding: "UTF-8")
   }
 
 }
