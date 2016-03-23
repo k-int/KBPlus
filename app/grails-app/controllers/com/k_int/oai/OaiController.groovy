@@ -300,7 +300,7 @@ class OaiController {
 
 
   def listRecords(result) {
-    response.contentType = "text/xml"
+    response.contentType = "application/xml"
     response.setCharacterEncoding("UTF-8");
     def out = response.outputStream
 
