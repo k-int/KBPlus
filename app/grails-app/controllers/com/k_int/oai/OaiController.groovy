@@ -345,11 +345,22 @@ class OaiController {
       def query = result.oaiConfig.query
 
       if ((params.from != null)&&(params.from.length()>0)) {
-        query += ' and o.lastUpdated > ?'
+        if ( query.contains('where') ) {
+          query += ' and o.lastUpdated > ?'
+        }
+        else {
+          query += ' where o.lastUpdated > ?'
+        }
         query_params.add(sdf.parse(params.from))
       }
       if ((params.until != null)&&(params.until.length()>0)) {
-        query += ' and o.lastUpdated < ?'
+        if ( query.contains('where') ) {
+          query += ' and o.lastUpdated < ?'
+        }
+        else {
+          query += ' where o.lastUpdated < ?'
+        }
+
         query_params.add(sdf.parse(params.until))
       }
 
