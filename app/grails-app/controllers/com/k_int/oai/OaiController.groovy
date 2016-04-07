@@ -303,6 +303,7 @@ class OaiController {
     response.contentType = "application/xml"
     response.setCharacterEncoding("UTF-8");
     def out = response.outputStream
+    // Could use this ideally:: response.setContentLength(assetContent.size())
 
     out.withWriter { writer ->
 
