@@ -141,9 +141,10 @@ grails.project.dependency.resolution = {
         }
 
         // compile ":profiler:0.5"
-        test ":spock:0.7", {
-          exclude "spock-grails-support"
-        }
+        // Now part of framework, including this plugin will cause tests to execute twice
+        // test ":spock:0.7", {
+        //   exclude "spock-grails-support"
+        // }
         test ":geb:$gebVersion"
 
         test ":remote-control:2.0"
