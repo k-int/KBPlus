@@ -1152,7 +1152,7 @@ class SubscriptionDetailsController {
 
       cost_row.total_cost_for_sub = it[2];
 
-      log.debug("Total costs for sub : ${cost_row.total_cost_for_sub} period will be ${t[0].startDate} ${end:it[0].endDate}");
+      log.debug("Total costs for sub : ${cost_row.total_cost_for_sub} period will be ${it[0].startDate}  to ${end:it[0].endDate}");
 
       if ( it[0].startDate && it[0].endDate ) {
         def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0]
