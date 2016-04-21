@@ -1151,28 +1151,35 @@ class SubscriptionDetailsController {
       def cost_row = [invoice:it[0],total:it[2]]
 
       cost_row.total_cost_for_sub = it[2];
-      def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0]
 
-      if ( usage_str && usage_str.trim().length() > 0 ) {
-        cost_row.total_usage_for_sub = Double.parseDouble(usage_str);
-        if ( cost_row.total_usage_for_sub > 0 ) {
-          cost_row.overall_cost_per_use = cost_row.total_cost_for_sub / cost_row.total_usage_for_sub;
+      log.debug("Total costs for sub : ${cost_row.total_cost_for_sub} period will be ${t[0].startDate} ${end:it[0].endDate}");
+
+      if ( it[0].startDate && it[0].endDate ) {
+        def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0]
+
+        if ( usage_str && usage_str.trim().length() > 0 ) {
+          cost_row.total_usage_for_sub = Double.parseDouble(usage_str);
+          if ( cost_row.total_usage_for_sub > 0 ) {
+            cost_row.overall_cost_per_use = cost_row.total_cost_for_sub / cost_row.total_usage_for_sub;
+          }
+          else {
+            cost_row.overall_cost_per_use = 0;
+          }
         }
         else {
-          cost_row.overall_cost_per_use = 0;
+          cost_row.total_usage_for_sub = Double.parseDouble('0');
+          cost_row.overall_cost_per_use = cost_row.total_usage_for_sub
         }
+
+
+        // Work out what cost items appear under this subscription in the period given
+        cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
+
+        result.costItems.add(cost_row);
       }
       else {
-        cost_row.total_usage_for_sub = Double.parseDouble('0');
-        cost_row.overall_cost_per_use = cost_row.total_usage_for_sub
+        log.error("Invoice ${it[0].id} had no start or end date");
       }
-
-
-      // Work out what cost items appear under this subscription in the period given
-      cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
-
-      result.costItems.add(cost_row);
-
     }
 
 
