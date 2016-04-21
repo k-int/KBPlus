@@ -33,7 +33,7 @@ class SubscriptionDetailsController {
 
 
   private static String INVOICES_FOR_SUB_HQL =
-     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency) from CostItem as co where co.sub = :sub group by co.invoice order by min(co.invoice.startDate) desc';
+     'select co.invoice, sum(co.costInLocalCurrency), sum(co.costInBillingCurrency), co from CostItem as co where co.sub = :sub group by co.invoice order by min(co.invoice.startDate) desc';
 
   private static String USAGE_FOR_SUB_IN_PERIOD =
     'select f.reportingYear, f.reportingMonth+1, sum(factValue) '+
@@ -1148,14 +1148,23 @@ class SubscriptionDetailsController {
     log.debug("Get all invoices for sub ${result.subscription}");
     result.costItems = []
     CostItem.executeQuery(INVOICES_FOR_SUB_HQL,[sub:result.subscription]).each {
+
+      log.debug(it);
+
       def cost_row = [invoice:it[0],total:it[2]]
 
       cost_row.total_cost_for_sub = it[2];
 
-      log.debug("Total costs for sub : ${cost_row.total_cost_for_sub} period will be ${it[0].startDate}  to ${end:it[0].endDate}");
 
-      if ( it[0].startDate && it[0].endDate ) {
-        def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])[0]
+      if ( it && ( it[3]?.startDate ) && ( it[3]?.endDate ) ) {
+
+        log.debug("Total costs for sub : ${cost_row.total_cost_for_sub} period will be ${it[3]?.startDate} to ${it[3]?.endDate}");
+
+        def usage_str = Fact.executeQuery(TOTAL_USAGE_FOR_SUB_IN_PERIOD,[
+                                                                         start:it[3].startDate, 
+                                                                         end:it[3].endDate, 
+                                                                         sub:result.subscription, 
+                                                                         jr1a:'JUSP:JR1' ])[0]
 
         if ( usage_str && usage_str.trim().length() > 0 ) {
           cost_row.total_usage_for_sub = Double.parseDouble(usage_str);
@@ -1173,12 +1182,12 @@ class SubscriptionDetailsController {
 
 
         // Work out what cost items appear under this subscription in the period given
-        cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[0].startDate, end:it[0].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
+        cost_row.usage = Fact.executeQuery(USAGE_FOR_SUB_IN_PERIOD,[start:it[3].startDate, end:it[3].endDate, sub:result.subscription, jr1a:'JUSP:JR1' ])
 
         result.costItems.add(cost_row);
       }
       else {
-        log.error("Invoice ${it[0].id} had no start or end date");
+        log.error("Invoice ${it} had no start or end date");
       }
     }
 
