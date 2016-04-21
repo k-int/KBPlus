@@ -25,7 +25,9 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
     def gebVersion = "0.12.2"
-    def seleniumVersion = "2.48.2"
+    def seleniumVersion = "2.53.0"
+    def seleniumHtmlunitDriverVersion = "2.52.0"
+
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -92,7 +94,7 @@ grails.project.dependency.resolution = {
 
         compile 'org.apache.httpcomponents:httpclient:4.5.1'
         test 'org.hamcrest:hamcrest-all:1.3'
-        test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumVersion") {
+        test("org.seleniumhq.selenium:selenium-htmlunit-driver:$seleniumHtmlunitDriverVersion") {
             exclude 'xml-apis'
         }
         test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
