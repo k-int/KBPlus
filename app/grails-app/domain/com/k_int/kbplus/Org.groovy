@@ -3,6 +3,7 @@ package com.k_int.kbplus
 import com.k_int.kbplus.auth.*;
 import org.apache.commons.logging.LogFactory
 import groovy.util.logging.*
+import javax.persistence.Transient
 
 @Log4j
 class Org {
@@ -214,4 +215,50 @@ class Org {
  
     result 
   }
+
+  @Transient
+  static def oaiConfig = [
+    id:'orgs',
+    textDescription:'Org repository for KBPlus',
+    query:" from Org as o ",
+    pageSize:20
+  ]
+
+  /**
+   *  Render this title as OAI_dc
+   */
+  @Transient
+  def toOaiDcXml(builder, attr) {
+    builder.'dc'(attr) {
+      'dc:title' (name)
+    }
+  }
+
+  /**
+   *  Render this Title as KBPlusXML
+   */
+  @Transient
+  def toKBPlus(builder, attr) {
+
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    def pub = getPublisher()
+
+    try {
+      builder.'kbplus' (attr) {
+        builder.'org' (['id':(id)]) {
+          builder.'name' (name)
+        }
+        builder.'identifiers' () {
+          ids?.each { id_oc ->
+            builder.identifier([namespace:id_oc.identifier?.ns.ns, value:id_oc.identifier?.value])
+          }
+        }
+      }
+    }
+    catch ( Exception e ) {
+      log.error(e);
+    }
+
+  }
+
 }
