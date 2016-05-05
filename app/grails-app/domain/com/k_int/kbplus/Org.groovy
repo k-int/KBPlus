@@ -20,6 +20,7 @@ class Org {
 
   RefdataValue orgType
   RefdataValue status
+  RefdataValue membership
 
 
   // Used to generate friendly semantic URLs
@@ -52,6 +53,7 @@ class Org {
     categoryId column:'org_cat'
        orgType column:'org_type_rv_fk'
         status column:'org_status_rv_fk'
+    membership column:'org_membership'
   }
 
   static constraints = {
@@ -64,6 +66,7 @@ class Org {
     categoryId(nullable:true, blank:true, maxSize:128);
        orgType(nullable:true, blank:true, maxSize:128);
         status(nullable:true, blank:true);
+    membership(nullable:true, blank:true, maxSize:128);
   }
 
   def beforeInsert() {
