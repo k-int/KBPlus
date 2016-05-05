@@ -1,3 +1,4 @@
+<%@ page import="com.k_int.kbplus.RefdataValue" %>
 <!doctype html>
 <html>
   <head>
@@ -140,7 +141,7 @@
           <g:form name="affiliationRequestForm" controller="profile" action="processJoinRequest" class="form-search" method="get">
 
             <g:select name="org"
-                      from="${com.k_int.kbplus.Org.findAllBySector('Higher Education',[sort:'name'])}"
+                      from="${com.k_int.kbplus.Org.findAllByMembership(com.k_int.kbplus.RefdataValue.findById(108),[sort:'name'])}"
                       optionKey="id"
                       optionValue="name"
                       class="input-medium"/>

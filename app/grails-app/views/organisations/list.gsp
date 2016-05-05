@@ -34,6 +34,7 @@
               <g:sortableColumn property="type" title="${message(code: 'org.type.label', default: 'Type')}" />
               <g:sortableColumn property="sector" title="${message(code: 'org.sector.label', default: 'Sector')}" />
               <g:sortableColumn property="scope" title="${message(code: 'org.scope.label', default: 'Scope')}" />
+              <g:sortableColumn property="membership" title="${message(code: 'org.membership.label', default: 'Membership')}" />
             </tr>
           </thead>
           <tbody>
@@ -44,6 +45,7 @@
               <td>${orgInstance?.orgType?.value}</td>
               <td>${fieldValue(bean: orgInstance, field: "sector")}</td>
               <td>${fieldValue(bean: orgInstance, field: "scope")}</td>
+              <td>${orgInstance?.membership?.value}</td>
             </tr>
           </g:each>
           </tbody>

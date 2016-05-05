@@ -50,6 +50,16 @@
                </g:else>
             </dd>
 
+            <dt><g:message code="org.membership.label" default="Membership Organisation" /></dt>
+            <dd>
+                <g:if test="${editable}">
+                    <g:xEditableRefData owner="${orgInstance}" field="membership" config='YN'/>
+                </g:if>
+                <g:else>
+                    <g:fieldValue bean="${orgInstance}" field="membership"/>
+                </g:else>
+            </dd>
+
             <dt><g:message code="org.ids.label" default="Ids" /></dt>
             Select an existing identifer using the typedown, or create a new one by entering namespace:value (EG eISSN:2190-9180) then clicking that value in the dropdown to confirm.
             <g:if test="${orgInstance?.ids}">
@@ -144,8 +154,8 @@
           return {id:'com.k_int.kbplus.Identifier:__new__:'+term,text:term};
         }
       });
-    });
-    </g:if>
+  </g:if>
+      });
   </r:script>
   
   </body>

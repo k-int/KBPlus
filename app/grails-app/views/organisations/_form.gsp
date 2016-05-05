@@ -26,6 +26,14 @@
 	<g:textField name="sector" maxlength="128" value="${orgInstance?.sector}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: orgInstance, field: 'membership', 'error')} ">
+	<label for="membership">
+		<g:message code="org.membership.label" default="Membership" />
+
+	</label>
+	<g:xEditableRefData name="membership" config="YN"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: orgInstance, field: 'ids', 'error')} ">
 	<label for="ids">
 		<g:message code="org.ids.label" default="Ids" />

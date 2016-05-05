@@ -48,6 +48,13 @@
               <dd><g:fieldValue bean="${orgInstance}" field="sector"/></dd>
             
           </g:if>
+
+      <g:if test="${orgInstance?.membership}">
+        <dt><g:message code="org.membership.label" default="Membership" /></dt>
+
+        <dd><g:fieldValue bean="${orgInstance}" field="membership"/></dd>
+
+      </g:if>
         
           <g:if test="${orgInstance?.ids}">
             <dt><g:message code="org.ids.label" default="Ids" /></dt>
